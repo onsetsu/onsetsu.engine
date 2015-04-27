@@ -51,6 +51,7 @@ Syllable.prototype.copy = function() {
   return new Syllable(this.values, this.cost);
 };
 // create hybrid Syllables
+// TODO: not the semantic of hybrid Syllables -> FIXME
 Syllable.prototype.or = function(syllable) {
   return new Syllable(_(this.values).union(syllable.values), -1);
 };
@@ -132,12 +133,24 @@ var SyllableStone = function SyllableStone(syllable) {
 
 };
 
-var SyllableBoardField = function SyllableBoardField() {
-
+var SyllableBoardField = function SyllableBoardField(index) {
+  this.index = index;
 };
 
-var SyllableBoard = function SyllableBoard(boardSize, mage) {
+var SyllableBoard = function SyllableBoard(size, mage) {
+  this.size = size;
+  this.mage = mage;
 
+  // construct field and stone matrix
+  this.fields = [];
+  this.syllableStones = [];
+  for(var i = 0; i < this.size.x; i++) {
+    this.fields.push([]);
+    this.syllableStones.push([]);
+    for(var j = 0; j < this.size.y; j++) {
+      this.fields[i].push(new SyllableBoardField({ x: i, y: j }));
+    }
+  }
 };
 
 var SpellBook = function SpellBook() {};
