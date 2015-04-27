@@ -13,6 +13,9 @@ var Gem = function Gem() {};
 // --------------------------------------------------------------------------------
 var SyllablePoints = function SyllablePoints() {};
 
+/**
+ * Raw SyllableValue representing an atomic characteristic of a Syllable.
+ */
 var SyllableValue = function SyllableValue(value) {
   this.value = value;
 };
@@ -35,6 +38,9 @@ SyllableValue.prototype.toString = function() {
   SyllableValue[name] = new SyllableValue(name);
 });
 
+/**
+ * Syllable class.
+ */
 var Syllable = function Syllable(values, cost) {
   this.values = values;
   this.cost = cost;
@@ -42,12 +48,21 @@ var Syllable = function Syllable(values, cost) {
 Syllable.prototype.copy = function() {
   return new Syllable(this.values, this.cost);
 };
+Syllable.prototype.or = function(syllable) {
+  return new Syllable(_(this.values).union(syllable.values), -1);
+};
+Syllable.prototype.contains = function(syllableValue) {
+  return _(this.values).contains(syllableValue);
+};
 // e.g. SOL is a LIGHT Syllable, but LIGHT is not a SOL Syllable.
 Syllable.prototype.isA = function(syllable) {
   return typeof syllable !== 'undefined' &&
     _(syllable.values).difference(this.values).length === 0;
 };
 
+/**
+ * Concrete Syllable prototypes to copy from.
+ */
 var Syllables = {};
 ['CHI', 'MA', 'PAI'].forEach(function(name) {
   Syllables[name] = new Syllable([SyllableValue[name]], 1);
