@@ -11,6 +11,8 @@ var Gem = function Gem() {};
 // --------------------------------------------------------------------------------
 // Syllable Board
 // --------------------------------------------------------------------------------
+
+// TODO: exchange Syllable costs with an instance of this class
 var SyllablePoints = function SyllablePoints() {};
 
 /**
@@ -48,6 +50,7 @@ var Syllable = function Syllable(values, cost) {
 Syllable.prototype.copy = function() {
   return new Syllable(this.values, this.cost);
 };
+// create hybrid Syllables
 Syllable.prototype.or = function(syllable) {
   return new Syllable(_(this.values).union(syllable.values), -1);
 };
@@ -113,11 +116,29 @@ Syllables.LUNA = new Syllable([
   ], -1);
 });
 
+/**
+ * Contains the Syllables a mage can intonate.
+ */
+var SyllablePool = function SyllablePool(syllables) {
+
+};
+
+/**
+ * Represents a Syllable on the SyllableBoard
+ *
+ * disabled
+ */
 var SyllableStone = function SyllableStone(syllable) {
 
 };
 
-var SyllableBoard = function SyllableBoard() {};
+var SyllableBoardField = function SyllableBoardField() {
+
+};
+
+var SyllableBoard = function SyllableBoard(boardSize, mage) {
+
+};
 
 var SpellBook = function SpellBook() {};
 
@@ -131,9 +152,18 @@ var SpellRepository = function SpellRepository() {};
 // --------------------------------------------------------------------------------
 // Parts of a Spell
 // --------------------------------------------------------------------------------
-var SyllableSequence = function SyllableSequence() {};
 
-var Spell = function Spell() {};
+var SyllableSequence = function SyllableSequence(syllables, ordered) {
+  this.syllables = syllables;
+  this.ordered = ordered;
+};
+
+var Spell = function Spell(name, syllableSequences, effectText, effect) {
+  this.name = name;
+  this.syllableSequences = syllableSequences;
+  this.effectText = effectText;
+  this.effect = effect;
+};
 
 /**
  * The SuperTypes all have rules text attached to them.
@@ -156,6 +186,7 @@ var SubType = function SubType() {};
 // --------------------------------------------------------------------------------
 // Battlefield
 // --------------------------------------------------------------------------------
+
 var Zone = function Zone() {};
 
 var Battlefield = function Battlefield() {};
@@ -175,7 +206,12 @@ var Battle = function Battle() {};
 // --------------------------------------------------------------------------------
 // Timeline
 // --------------------------------------------------------------------------------
+
 var Timeline = function Timeline() {};
+
+// --------------------------------------------------------------------------------
+// Timeline
+// --------------------------------------------------------------------------------
 
 var Stack = function Stack() {};
 

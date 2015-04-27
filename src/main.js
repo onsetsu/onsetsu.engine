@@ -8,5 +8,7 @@ var engine = new Engine();
 // Syllable Board
 // --------------------------------------------------------------------------------
 
+var CLord = new Mage();
+var CLordBoard = new SyllableBoard({ x: 5, y: 5 }, CLord);
 
 console.log(Syllables)
