@@ -215,7 +215,11 @@ SpellChecker.prototype.stripeMatchesSpell = function(index, stripe, spell, direc
 
   for(var i = 0; i < stripe.length; i++) {
     if(matchesStart(i) && matchesSequenceBeginning(i)) {
-      callback(i);
+      // call the given callback with the spell, its startingIndex and its direction
+      callback(spell, {
+        x: direction === Direction.horizontal ? i : index.x,
+        y: direction === Direction.vertical ? i : index.y
+      }, direction);
     }
   }
 };
