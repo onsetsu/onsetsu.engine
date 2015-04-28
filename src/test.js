@@ -39,10 +39,42 @@ test(function() {
 });
 
 test(function() {
-  var CLord = new Mage();
-  var CLordBoard = new SyllableBoard({ x: 5, y: 5 }, CLord);
+  var spellsCasted = 0;
+  var TestSkill = new Spell(
+    'TestSkill',
+    [
+      new SyllableSequence([
+        Syllables.LIGHT,
+        Syllables.CHI,
+        Syllables.CHI,
+        Syllables.NIF
+      ], SyllableSequence.ordered),
+    ],
+    'Test description.',
+    function effect() {}
+  );
 
-  //assert(1 == 2, "AAAAARGH");
+  var TestMage = new Mage();
+  var TestMageBoard = new SyllableBoard({ x: 8, y: 8 }, TestMage);
+  TestMageBoard.placeSyllable({ x: 2, y: 3 }, Syllables.SOL);
+  TestMageBoard.placeSyllable({ x: 2, y: 4 }, Syllables.CHI);
+  TestMageBoard.placeSyllable({ x: 2, y: 5 }, Syllables.CHI);
+  TestMageBoard.placeSyllable({ x: 2, y: 6 }, Syllables.NIF);
+  TestMageBoard.placeSyllable({ x: 2, y: 7 }, Syllables.CHI);
+
+  TestMageBoard.placeSyllable({ x: 1, y: 4 }, Syllables.LIGHT);
+  TestMageBoard.placeSyllable({ x: 3, y: 4 }, Syllables.CHI);
+  TestMageBoard.placeSyllable({ x: 4, y: 4 }, Syllables.NIF);
+
+  var callback = function(spell, startIndex, direction) {
+    assert(startIndex.x === (direction === Direction.horizontal ? 1 : 2));
+    assert(startIndex.y === (direction === Direction.vertical ? 3 : 4));
+    spellsCasted += 1;
+  };
+
+  new SpellChecker().checkForSpell({ x: 2, y: 4 }, TestMageBoard, TestSkill, callback);
+
+  assert(spellsCasted === 2, "AAAAARGH");
 });
 
 

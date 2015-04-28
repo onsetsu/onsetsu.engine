@@ -179,8 +179,6 @@ var SpellChecker = function() {};
 SpellChecker.prototype.checkForSpell = function(index, board, spell, callback) {
   var column = board.getColumn(index.x),
       row = board.getRow(index.y);
-  console.log(column);
-  console.log(row);
 
   this.stripeMatchesSpell(index, column, spell, Direction.vertical, callback);
   this.stripeMatchesSpell(index, row, spell, Direction.horizontal, callback);
@@ -224,9 +222,10 @@ SpellChecker.prototype.stripeMatchesSpell = function(index, stripe, spell, direc
   }
 };
 
+// Direction enum
 Direction = {
-  vertical: true,
-  horizontal: false
+  vertical: {},
+  horizontal: {}
 };
 
 var SpellBook = function SpellBook() {};
