@@ -130,7 +130,8 @@ var SyllablePool = function SyllablePool(syllables) {
  * disabled
  */
 var SyllableStone = function SyllableStone(syllable) {
-
+  this.syllable = syllable;
+  this.disabled = false;
 };
 
 var SyllableBoardField = function SyllableBoardField(index) {
@@ -152,6 +153,77 @@ var SyllableBoard = function SyllableBoard(size, mage) {
     }
   }
 };
+SyllableBoard.prototype.placeSyllable = function(index, syllable) {
+  var stone = new SyllableStone(syllable);
+  this.syllableStones[index.x][index.y] = stone;
+};
+SyllableBoard.prototype.getStone = function(index) {
+  return this.syllableStones[index.x][index.y];
+};
+SyllableBoard.prototype.getColumn = function(x) {
+  var column = [];
+  for(var i = 0; i < this.size.y; i++) {
+    column.push(this.getStone({ x: x, y: i }));
+  }
+  return column;
+};
+SyllableBoard.prototype.getRow = function(y) {
+  var row = [];
+  for(var i = 0; i < this.size.x; i++) {
+    row.push(this.getStone({ x: i, y: y }));
+  }
+  return row;
+};
+
+var SpellChecker = function() {};
+SpellChecker.prototype.checkForSpell = function(index, board, spell, callback) {
+  var column = board.getColumn(index.x),
+      row = board.getRow(index.y);
+  console.log(column);
+  console.log(row);
+
+  this.stripeMatchesSpell(index, column, spell, Direction.vertical, callback);
+  this.stripeMatchesSpell(index, row, spell, Direction.horizontal, callback);
+};
+// does only support a single sequence so far
+// does only support ordered sequences so far
+SpellChecker.prototype.stripeMatchesSpell = function(index, stripe, spell, direction, callback) {
+  var sequence = spell.getSequence(0),
+      indexOnStripe = direction === Direction.vertical ? index.y : index.x;
+
+  if(spell.getSequences().length !== 1) { throw new Error('Multiple Sequences not supported'); }
+  if(sequence.ordered === SyllableSequence.unordered) { throw new Error('Unordered Sequences not supported'); }
+
+  function matchesStart(i) {
+    return stripe[i] && stripe[i].syllable.isA(sequence.at(0));
+  }
+
+  function matchesSequenceBeginning(i) {
+    var cast = true;
+    for(var j = 0; j < sequence.getLength(); j++) {
+      if(i+j >= stripe.length) {
+        return false;
+      }
+      if(!(stripe[i+j] && stripe[i+j].syllable.isA(sequence.at(j)))) {
+        cast = false;
+      }
+    }
+    if((i <= indexOnStripe) && (indexOnStripe < i + sequence.getLength())) {
+      return cast;
+    }
+  }
+
+  for(var i = 0; i < stripe.length; i++) {
+    if(matchesStart(i) && matchesSequenceBeginning(i)) {
+      callback(i);
+    }
+  }
+};
+
+Direction = {
+  vertical: true,
+  horizontal: false
+};
 
 var SpellBook = function SpellBook() {};
 
@@ -170,12 +242,29 @@ var SyllableSequence = function SyllableSequence(syllables, ordered) {
   this.syllables = syllables;
   this.ordered = ordered;
 };
+// DEPRECATED: only for ordered sequences
+SyllableSequence.prototype.at = function(index) {
+  if(this.ordered === SyllableSequence.unordered) { throw new Error('Unordered Sequences not supported'); }
+  return this.syllables[index];
+};
+// DEPRECATED: only for fixed-length sequences
+SyllableSequence.prototype.getLength = function() {
+  return this.syllables.length;
+};
+SyllableSequence.ordered = true;
+SyllableSequence.unordered = false;
 
 var Spell = function Spell(name, syllableSequences, effectText, effect) {
   this.name = name;
   this.syllableSequences = syllableSequences;
   this.effectText = effectText;
   this.effect = effect;
+};
+Spell.prototype.getSequences = function() {
+  return this.syllableSequences;
+};
+Spell.prototype.getSequence = function(index) {
+  return this.syllableSequences[index];
 };
 
 /**
