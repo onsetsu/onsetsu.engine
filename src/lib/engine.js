@@ -334,7 +334,7 @@ var Battlefield = function Battlefield() {};
 var Permanent = function Permanent() {};
 
 // wraps a Permanent that is referenced by the Battlefield
-var PermanentWrapper = function PermanentWrapper();
+var PermanentWrapper = function PermanentWrapper() {};
 
 var Battle = function Battle() {};
 
