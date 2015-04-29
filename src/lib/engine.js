@@ -442,7 +442,7 @@ configureGameForTwoPlayers = function() {
     );
   });
 
-  players.forEach(function(player) { game.addPlayer.bind(game); });
+  players.forEach(game.addPlayer.bind(game));
 }
 
 game = new Game();
