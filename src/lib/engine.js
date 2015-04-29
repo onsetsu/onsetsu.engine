@@ -4,7 +4,13 @@ var Player = function Player() {};
 
 var Team = function Team() {};
 
-var Mage = function Mage() {};
+// TODO: separate owner and controller?
+var Mage = function Mage(player, hp, syllableBoard, spellBook) {
+  this.controller = player;
+  this.hp = hp;
+  this.syllableBoard = syllableBoard;
+  this.spellBook = spellBook;
+};
 
 var Gem = function Gem() {};
 
@@ -133,14 +139,14 @@ var SyllableStone = function SyllableStone(syllable) {
   this.syllable = syllable;
   this.disabled = false;
 };
-
+at = 2;
+is = 9;
 var SyllableBoardField = function SyllableBoardField(index) {
   this.index = index;
 };
 
-var SyllableBoard = function SyllableBoard(size, mage) {
+var SyllableBoard = function SyllableBoard(size) {
   this.size = size;
-  this.mage = mage;
 
   // construct field and stone matrix
   this.fields = [];
@@ -228,7 +234,23 @@ Direction = {
   horizontal: {}
 };
 
-var SpellBook = function SpellBook() {};
+var SpellBook = function SpellBook() {
+  this.spells = [];
+};
+SpellBook.prototype.getSpells = function() {
+  return this.spells;
+};
+SpellBook.prototype.addSpell = function(spell) {
+  if(!_(this.spells).contains(spell)) {
+    this.spells.push(spell);
+  }
+};
+SpellBook.prototype.removeSpell = function(spell) {
+  var index = this.spells.indexOf(spell);
+  if(index !== -1) {
+    this.spells.splice(index, 1);
+  }
+};
 
 /**
  * All Spells known to a Mage
@@ -321,6 +343,62 @@ var Timeline = function Timeline() {};
 var Stack = function Stack() {};
 
 var Game = function Game() {};
+Game.prototype.setPlayers = function(players) {
+  this.players = players;
+};
 
 var Engine = function Engine() {};
 
+// --------------------------------------------------------------------------------
+// Variants
+// --------------------------------------------------------------------------------
+
+createTestSpellbook = function() {
+  var Fireball = new Spell(
+    'Fireball',
+    [
+      new SyllableSequence([
+        Syllables.FIRE,
+        Syllables.CHI,
+        Syllables.NIF
+      ], SyllableSequence.ordered),
+    ],
+    'Deal 2 Damage.',
+    function effect() {}
+  );
+
+  var GreatFireball = new Spell(
+    'Great Fireball',
+    [
+      new SyllableSequence([
+        Syllables.FIRE,
+        Syllables.CHI,
+        Syllables.NIF,
+        Syllables.NIF,
+        Syllables.GAM
+      ], SyllableSequence.ordered),
+    ],
+    'Deal 5 Damage.',
+    function effect() {}
+  );
+
+  var spellBook = new SpellBook();
+  [Fireball, GreatFireball].forEach(spellBook.addSpell.bind(spellBook));
+  return spellBook;
+};
+
+createTwoPlayerGame = function() {
+  var players = [new Player(), new Player()];
+  var mages = players.map(function(player) {
+    return new Mage(
+      player,
+      20,
+      new SyllableBoard({ x: 8, y: 8 }),
+      createTestSpellbook()
+    );
+  });
+
+  var game = new Game();
+  game.setPlayers(players);
+  return game;
+}

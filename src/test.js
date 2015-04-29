@@ -54,8 +54,7 @@ test(function() {
     function effect() {}
   );
 
-  var TestMage = new Mage();
-  var TestMageBoard = new SyllableBoard({ x: 8, y: 8 }, TestMage);
+  var TestMageBoard = new SyllableBoard({ x: 8, y: 8 });
   TestMageBoard.placeSyllable({ x: 2, y: 3 }, Syllables.SOL);
   TestMageBoard.placeSyllable({ x: 2, y: 4 }, Syllables.CHI);
   TestMageBoard.placeSyllable({ x: 2, y: 5 }, Syllables.CHI);

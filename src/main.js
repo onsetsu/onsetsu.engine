@@ -1,7 +1,7 @@
 // --------------------------------------------------------------------------------
 // Syllable Board
 // --------------------------------------------------------------------------------
-var engine = new Engine();
+
 
 
 // --------------------------------------------------------------------------------
@@ -13,7 +13,7 @@ var Fireball = new Spell('Fireball', [
 );
 
 var CLord = new Mage();
-var CLordBoard = new SyllableBoard({ x: 8, y: 8 }, CLord);
+var CLordBoard = new SyllableBoard({ x: 8, y: 8 });
 CLordBoard.placeSyllable({ x: 2, y: 3 }, Syllables.SOL);
 CLordBoard.placeSyllable({ x: 2, y: 4 }, Syllables.CHI);
 CLordBoard.placeSyllable({ x: 2, y: 5 }, Syllables.CHI);
@@ -30,3 +30,5 @@ var callback = function(spell, startIndex, direction) {
 
 new SpellChecker().checkForSpell({ x: 2, y: 4 }, CLordBoard, Fireball, callback);
 
+var twoPlayerGame = createTwoPlayerGame();
+var engine = new Engine(twoPlayerGame);
