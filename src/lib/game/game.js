@@ -41,6 +41,11 @@ GUI.Game = ig.Game.extend({
 
         // Initialize Battle Field
 		this.loadLevel(LevelBattle);
+
+		this.spawnEntity(EntitySyllable, 500, 400, { model: Syllables.SOL });
+		this.spawnEntity(EntitySyllable, 532, 400, { model: Syllables.OMNIPOTENCE });
+		this.spawnEntity(EntitySyllable, 564, 400, { model: Syllables['7TH_ELEMENT'] });
+		this.spawnEntity(EntitySyllable, 596, 400, { model: Syllables.CHI });
 	},
 
 	update: function() {

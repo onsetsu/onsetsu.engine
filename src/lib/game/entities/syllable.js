@@ -7,6 +7,143 @@ ig.module(
 )
 .defines(function(){
 
+GUI.SyllableDescriptions = {
+    'CHI': {
+        label: 'CHI',
+        sheetIndex: 92
+             },
+    'MA': {
+        label: 'MA',
+        sheetIndex: 93
+            },
+    'PAI': {
+        label: 'PAI',
+        sheetIndex: 91
+             },
+    'NIF': {
+        label: 'NIF',
+        sheetIndex: 90
+             },
+    'KUN': {
+        label: 'KUN',
+        sheetIndex: 88
+             },
+    'RYO': {
+        label: 'RYO',
+        sheetIndex: 94
+             },
+    'YUN': {
+        label: 'YUN',
+        sheetIndex: 108
+             },
+    'REN': {
+        label: 'REN',
+        sheetIndex: 96
+             },
+    'TO': {
+        label: 'TO',
+        sheetIndex: 97
+            },
+    'GAM': {
+        label: 'GAM',
+        sheetIndex: 89
+             },
+    'XAU': {
+        label: 'XAU',
+        sheetIndex: 108
+             },
+    'EX': {
+        label: 'EX',
+        sheetIndex: 95
+            },
+    '13TH_SYLLABLE': {
+        label: '?',
+        sheetIndex: 78
+                       },
+    '14TH_SYLLABLE': {
+        label: '?',
+        sheetIndex: 79
+                       },
+    '15TH_SYLLABLE': {
+        label: '?',
+        sheetIndex: 86
+                       },
+    '16TH_SYLLABLE': {
+        label: '?',
+        sheetIndex: 87
+                       },
+
+    'FIRE': {
+        label: 'FIRE',
+        sheetIndex: 80
+              },
+    'WATER': {
+        label: 'WATER',
+        sheetIndex: 81
+               },
+    'EARTH': {
+        label: 'EARTH',
+        sheetIndex: 82
+               },
+    'WIND': {
+        label: 'WIND',
+        sheetIndex: 83
+              },
+    'LIGHT': {
+        label: 'LIGHT',
+        sheetIndex: 84
+               },
+    'SHADOW': {
+        label: 'SHADOW',
+        sheetIndex: 85
+                },
+
+    'OMNIPOTENCE': {
+        label: 'OMNIPOTENCE',
+        sheetIndex: 109
+                     },
+
+    'SOL': {
+        label: 'SOL',
+        sheetIndex: 106
+             },
+    'LUNA': {
+        label: 'LUNA',
+        sheetIndex: 107
+              },
+
+    'FIREDUMMY': {
+        label: 'FIREDUMMY',
+        sheetIndex: 100
+                   },
+    'WATERDUMMY': {
+        label: 'WATERDUMMY',
+        sheetIndex: 102
+                    },
+    'EARTHDUMMY': {
+        label: 'EARTHDUMMY',
+        sheetIndex: 103
+                    },
+    'WINDDUMMY': {
+        label: 'WINDDUMMY',
+        sheetIndex: 111
+                   },
+    'LIGHTDUMMY': {
+        label: 'LIGHTDUMMY',
+        sheetIndex: 101
+                    },
+    'SHADOWDUMMY': {
+        label: 'SHADOWDUMMY',
+        sheetIndex: 110
+    },
+
+    default: {
+        label: '-?-',
+        sheetIndex: 108 // sheetIndex of 'Empty'
+    }
+};
+
+/*
 SyllableDescriptions = {
 	__usused1__: {
 		cost: -1,
@@ -201,6 +338,7 @@ SyllableDescriptions = {
 		primitives: ['WindDummy']
 	},
 };
+*/
 
 EntitySyllable = ig.Entity.extend({
 	size: {x:32, y:32},
@@ -211,50 +349,32 @@ EntitySyllable = ig.Entity.extend({
         this.applySettings(settings);
 	},
 	applySettings: function(settings) {
-        this.cost = settings.cost;
-        this.label = settings.label;
-        this.sheetIndex = settings.sheetIndex;
-        this.primitives = settings.primitives;
+        this.model = settings.model;
 
-		this.addAnim(settings.label, 1, [settings.sheetIndex], true);
-		this.currentAnim = this.anims[settings.label];
+		this.addAnim('visible', 1, [0], true);
 	},
 	draw: function() {
+        // get description
+		var description = GUI.SyllableDescriptions[this.model.label];
+		var label = (description || GUI.SyllableDescriptions.default).label;
+		// HACK:
+        this.anims.visible.sequence[0] = (description || GUI.SyllableDescriptions.default).sheetIndex;
+
 		this.parent();
-		
+
 		// draw label
-		var x = this.pos.x + this.animSheet.width / 2;
-		var y = this.pos.y + this.animSheet.height / 4 * 3;
-		GUI.Font.draw(this.label, x, y, ig.Font.ALIGN.CENTER);
+		var x = this.pos.x + this.animSheet.width / 2,
+            y = this.pos.y + this.animSheet.height / 4 * 3;
+		GUI.Font.draw(label, x, y, ig.Font.ALIGN.CENTER);
 
 		// draw cost
+		var cost = this.model.cost;
 		var x = this.pos.x + this.animSheet.width;
-		GUI.Font.draw(this.cost, x, this.pos.y, ig.Font.ALIGN.RIGHT);
-	},
-	matches: function(otherSyllable) {
-        return this.matchesPrimitives(otherSyllable.primitives);
-	},
-	matchesPrimitives: function(primitiveList) {
-        return _(primitiveList).difference(this.primitives).length === 0;
-	},
-	isEmpty: function() {
-	    return this.label == 'Empty' && this.primitives.length == 0;
-	},
-	copy: function() {
-	    return ig.game.spawnEntity(EntitySyllable, this.pos.x, this.pos.y, this.getDescription());
-	},
-	getDescription: function() {
-	    return {
-            cost: this.cost,
-            label: this.label,
-            sheetIndex: this.sheetIndex,
-            primitives: this.primitives.slice()
-	    };
+		GUI.Font.draw(cost, x, this.pos.y, ig.Font.ALIGN.RIGHT);
+	//},
+	//copy: function() {
+	//    return ig.game.spawnEntity(EntitySyllable, this.pos.x, this.pos.y, this.getDescription());
 	}
-});
-
-_.each(SyllableDescriptions, function(value, key) {
-    EntitySyllable['get' + key] = function() { return value; };
 });
 
 });
