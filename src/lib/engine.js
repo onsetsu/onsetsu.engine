@@ -309,6 +309,14 @@ var SuperType = function SuperType() {};
  */
 var SpellType = function SpellType() {};
 
+var Sorcery = function Sorcery() {};
+
+var Familiar = function Familiar() {};
+
+var Enchantment = function Enchantment() {};
+
+var Artifact = function Artifact() {};
+
 /**
  * Every Spell may have one or more SubTypes.
  * E.g. a Familiar may have the "Dwarf" and the "Engineer" SubTypes.
@@ -323,15 +331,10 @@ var Zone = function Zone() {};
 
 var Battlefield = function Battlefield() {};
 
-var Sorcery = function Sorcery() {};
-
 var Permanent = function Permanent() {};
 
-var Familiar = function Familiar() {};
-
-var Enchantment = function Enchantment() {};
-
-var Artifact = function Artifact() {};
+// wraps a Permanent that is referenced by the Battlefield
+var PermanentWrapper = function PermanentWrapper();
 
 var Battle = function Battle() {};
 
