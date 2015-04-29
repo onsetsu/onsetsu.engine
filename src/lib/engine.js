@@ -1,3 +1,7 @@
+// --------------------------------------------------------------------------------
+// General
+// --------------------------------------------------------------------------------
+
 var Circle = function Circle() {};
 
 var Player = function Player() {};
@@ -5,11 +9,12 @@ var Player = function Player() {};
 var Team = function Team() {};
 
 // TODO: separate owner and controller?
-var Mage = function Mage(player, hp, syllableBoard, spellBook) {
+var Mage = function Mage(player, hp, syllableBoard, spellBook, syllablePool) {
   this.controller = player;
   this.hp = hp;
   this.syllableBoard = syllableBoard;
   this.spellBook = spellBook;
+  this.syllablePool = syllablePool;
 };
 
 var Gem = function Gem() {};
@@ -127,7 +132,7 @@ Syllables.LUNA = new Syllable([
  * Contains the Syllables a mage can intonate.
  */
 var SyllablePool = function SyllablePool(syllables) {
-
+  this.syllables = syllables;
 };
 
 /**
@@ -336,15 +341,21 @@ var Battle = function Battle() {};
 
 var Timeline = function Timeline() {};
 
+var Action = function Action() {};
+
 // --------------------------------------------------------------------------------
-// Timeline
+// General
 // --------------------------------------------------------------------------------
 
 var Stack = function Stack() {};
 
-var Game = function Game() {};
-Game.prototype.setPlayers = function(players) {
-  this.players = players;
+var Game = function Game() {
+  this.players = [];
+  this.battlefield = new Battlefield();
+  this.timeline = new Timeline();
+};
+Game.prototype.addPlayer = function(player) {
+  this.players.push(player);
 };
 
 var Engine = function Engine() {};
@@ -352,6 +363,29 @@ var Engine = function Engine() {};
 // --------------------------------------------------------------------------------
 // Variants
 // --------------------------------------------------------------------------------
+
+createStandardSyllablePool = function() {
+  return new SyllablePool([
+    Syllables.CHI,
+    Syllables.MA,
+    Syllables.PAI,
+    Syllables.NIF,
+    Syllables.KUN,
+    Syllables.RYO,
+    Syllables.YUN,
+    Syllables.REN,
+    Syllables.TO,
+    Syllables.GAM,
+    Syllables.XAU,
+    Syllables.EX,
+    Syllables.FIRE,
+    Syllables.WATER,
+    Syllables.EARTH,
+    Syllables.WIND,
+    Syllables.LIGHT,
+    Syllables.SHADOW
+  ]);
+};
 
 createTestSpellbook = function() {
   var Fireball = new Spell(
@@ -387,18 +421,19 @@ createTestSpellbook = function() {
   return spellBook;
 };
 
-createTwoPlayerGame = function() {
+configureGameForTwoPlayers = function() {
   var players = [new Player(), new Player()];
   var mages = players.map(function(player) {
     return new Mage(
       player,
       20,
       new SyllableBoard({ x: 8, y: 8 }),
-      createTestSpellbook()
+      createTestSpellbook(),
+      createStandardSyllablePool()
     );
   });
 
-  var game = new Game();
-  game.setPlayers(players);
-  return game;
+  players.forEach(function(player) { game.addPlayer.bind(game); });
 }
+
+game = new Game();

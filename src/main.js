@@ -30,5 +30,5 @@ var callback = function(spell, startIndex, direction) {
 
 new SpellChecker().checkForSpell({ x: 2, y: 4 }, CLordBoard, Fireball, callback);
 
-var twoPlayerGame = createTwoPlayerGame();
-var engine = new Engine(twoPlayerGame);
+configureGameForTwoPlayers();
+var engine = new Engine();
