@@ -4,13 +4,16 @@
 
 var Circle = function Circle() {};
 
-var Player = function Player() {};
+var Player = function Player() {
+  this.mages = [];
+};
 
 var Team = function Team() {};
 
 // TODO: separate owner and controller?
 var Mage = function Mage(player, hp, syllableBoard, spellBook, syllablePool) {
   this.controller = player;
+  player.mages.push(this);
   this.hp = hp;
   this.syllableBoard = syllableBoard;
   this.spellBook = spellBook;
