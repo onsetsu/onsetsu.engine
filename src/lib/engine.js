@@ -431,8 +431,28 @@ createTestSpellbook = function() {
     function effect() {}
   );
 
+  var KissOfDeath = new Spell(
+     'Kiss of Death',
+     [
+       new SyllableSequence([
+         Syllables.LUNA,
+         Syllables.GAM,
+         Syllables['13TH_SYLLABLE'],
+         Syllables['13TH_SYLLABLE'],
+         Syllables['14TH_SYLLABLE'],
+         Syllables['15TH_SYLLABLE'],
+         Syllables['16TH_SYLLABLE'],
+         Syllables.TO,
+         Syllables.CHI,
+         Syllables.GAM
+       ], SyllableSequence.ordered),
+     ],
+     'Destroy a Mage.',
+     function effect() {}
+   );
+
   var spellBook = new SpellBook();
-  [Fireball, GreatFireball].forEach(spellBook.addSpell.bind(spellBook));
+  [Fireball, GreatFireball, KissOfDeath].forEach(spellBook.addSpell.bind(spellBook));
   return spellBook;
 };
 
