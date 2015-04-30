@@ -11,11 +11,14 @@ var Player = function Player() {
 var Team = function Team() {};
 
 // TODO: separate owner and controller?
-var Mage = function Mage(player, hp, syllableBoard, spellBook, syllablePool) {
+var Mage = function Mage(player, hp, sp, syllableBoard, spellBook, syllablePool) {
   this.controller = player;
   player.mages.push(this);
   this.hp = hp;
+  this.maxSp = sp;
+  this.sp = sp;
   this.syllableBoard = syllableBoard;
+  syllableBoard.mage = this;
   this.spellBook = spellBook;
   this.syllablePool = syllablePool;
 };
@@ -193,6 +196,18 @@ SyllableBoard.prototype.getRow = function(y) {
     row.push(this.getStone({ x: i, y: y }));
   }
   return row;
+};
+SyllableBoard.prototype.checkAndPlaceSyllable = function(index, syllable) {
+  // field already occupied?
+  if(this.getStone(index)) { return false; }
+  // enough SP?
+  if(syllable.cost > this.mage.sp) { return false; }
+
+  this.mage.sp -= syllable.cost;
+  this.placeSyllable(index, syllable);
+
+  console.log("BUMM");
+  return true;
 };
 
 var SpellChecker = function() {};
@@ -522,6 +537,7 @@ configureGameForTwoPlayers = function() {
     return new Mage(
       player,
       20,
+      10,
       new SyllableBoard({ x: 8, y: 8 }),
       createTestSpellbook(),
       createStandardSyllablePool()

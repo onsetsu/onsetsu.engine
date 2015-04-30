@@ -13,8 +13,8 @@ var Fireball = new Spell('Fireball', [
 );
 
 var CLord = new Player();
-var CLordMage = new Mage(CLord);
 var CLordBoard = new SyllableBoard({ x: 8, y: 8 });
+var CLordMage = new Mage(CLord, 20, 5, CLordBoard, undefined, undefined);
 CLordBoard.placeSyllable({ x: 2, y: 3 }, Syllables.SOL);
 CLordBoard.placeSyllable({ x: 2, y: 4 }, Syllables.CHI);
 CLordBoard.placeSyllable({ x: 2, y: 5 }, Syllables.CHI);
