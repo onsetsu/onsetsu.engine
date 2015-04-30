@@ -153,10 +153,10 @@ var SyllableStone = function SyllableStone(syllable) {
   this.syllable = syllable;
   this.disabled = false;
 };
-at = 2;
-is = 9;
+
 var SyllableBoardField = function SyllableBoardField(index) {
   this.index = index;
+  this.type = 'default'
 };
 
 var SyllableBoard = function SyllableBoard(size) {

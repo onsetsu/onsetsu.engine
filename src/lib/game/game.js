@@ -7,6 +7,8 @@ ig.module(
 
     'game.gui.spellbook',
 	'game.gui.syllablepool',
+	'game.gui.syllableboard',
+
     // entities
 	//'game.entities.battle-field',
 	//'game.entities.field',
@@ -48,6 +50,7 @@ GUI.Game = ig.Game.extend({
 
         this.syllablePool = new GUI.SyllablePool();
         this.spellBook = new GUI.SpellBook();
+        this.syllableBoard = new GUI.SyllableBoard();
 	},
 
 	update: function() {
@@ -57,6 +60,7 @@ GUI.Game = ig.Game.extend({
 		// Add your own, additional update code here
         this.syllablePool.update();
         this.spellBook.update();
+        this.syllableBoard.update();
 	},
 
 	draw: function() {
