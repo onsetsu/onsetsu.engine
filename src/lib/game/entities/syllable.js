@@ -351,13 +351,17 @@ EntitySyllable = ig.Entity.extend({
 	applySettings: function(settings) {
         this.model = settings.model;
 
-		this.addAnim('visible', 1, [0], true);
+        // TODO: duplicated code
+        var description = GUI.SyllableDescriptions[this.model.label];
+		this.addAnim('visible', 1, [(description || GUI.SyllableDescriptions.default).sheetIndex], true);
 	},
 	draw: function() {
         // get description
+        // TODO: duplicated code
 		var description = GUI.SyllableDescriptions[this.model.label];
 		var label = (description || GUI.SyllableDescriptions.default).label;
 		// HACK:
+        // TODO: duplicated code
         this.anims.visible.sequence[0] = (description || GUI.SyllableDescriptions.default).sheetIndex;
 
 		this.parent();
@@ -371,9 +375,9 @@ EntitySyllable = ig.Entity.extend({
 		var cost = this.model.cost;
 		var x = this.pos.x + this.animSheet.width;
 		GUI.Font.draw(cost, x, this.pos.y, ig.Font.ALIGN.RIGHT);
-	//},
-	//copy: function() {
-	//    return ig.game.spawnEntity(EntitySyllable, this.pos.x, this.pos.y, this.getDescription());
+	},
+	copy: function() {
+	    return ig.game.spawnEntity(EntitySyllable, this.pos.x, this.pos.y, { model: this.model.copy() });
 	}
 });
 

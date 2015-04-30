@@ -62,7 +62,8 @@ GUI.Game = ig.Game.extend({
         this.spellBook.update();
         this.syllableBoard.update();
 
-        (function() {
+        // start dragging
+        if(ig.input.pressed('leftclick')) {
             function hovered(entity) {
                 if(ig.input.mouse.x < entity.pos.x) return false;
                 if(ig.input.mouse.y < entity.pos.y) return false;
@@ -71,8 +72,15 @@ GUI.Game = ig.Game.extend({
                 return true;
             }
 
+            var hoveredSyllable = _(this.syllablePool.syllables).find(function(entity) { return hovered(entity); });
+            if(hoveredSyllable) {
+                console.log(hoveredSyllable.model.label)
 
-        })();
+                this.dragEntity = hoveredSyllable.copy();
+                this.dragEntity.pos.x = ig.input.mouse.x - dragEntity.size.x / 2;
+                this.dragEntity.pos.y = ig.input.mouse.y - dragEntity.size.y / 2;
+            }
+        }
 	},
 
 	draw: function() {
