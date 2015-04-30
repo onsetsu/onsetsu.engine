@@ -15,6 +15,7 @@ EntitySpell = ig.Entity.extend({
 	init: function(x, y, settings) {
 		this.parent(x, y, settings);
 
+		this.addAnim('visible', 1, [0], true);
         this.applySettings(settings);
 	},
 	applySettings: function(settings) {
@@ -33,6 +34,15 @@ EntitySpell = ig.Entity.extend({
             }, this);
             syllablePadding += this.sequencePadding;
         }, this);
+
+        this.size = {
+            x: Math.max(
+                GUI.Font.widthForString(this.model.name),
+                GUI.Font.widthForString(this.model.effectText)),
+            y: GUI.Font.heightForString(this.model.name) +
+                this.animSheet.height +
+                GUI.Font.heightForString(this.model.effectText)
+        };
 	},
 	draw: function() {
 		// draw name
@@ -43,20 +53,6 @@ EntitySpell = ig.Entity.extend({
 		// draw effect
 		var y = this.pos.y + this.animSheet.height + GUI.Font.heightForString('');
 		GUI.Font.draw(this.model.effectText, this.pos.x, y, ig.Font.ALIGN.LEFT);
-
-	return;
-
-        // get description
-		var description = GUI.SyllableDescriptions[this.model.label];
-		var label = (description || GUI.SyllableDescriptions.default).label;
-		// HACK:
-        this.anims.visible.sequence[0] = (description || GUI.SyllableDescriptions.default).sheetIndex;
-
-		this.parent();
-
-	//},
-	//copy: function() {
-	//    return ig.game.spawnEntity(EntitySyllable, this.pos.x, this.pos.y, this.getDescription());
 	}
 });
 
