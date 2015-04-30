@@ -59,12 +59,7 @@ GUI.Game = ig.Game.extend({
 		// Draw all entities and backgroundMaps
 		this.parent();
 
-
 		// Add your own drawing code here
-		var x = ig.system.width/2,
-			y = ig.system.height/2;
-
-		this.font.draw( 'It Works!', x, y, ig.Font.ALIGN.CENTER );
 	}
 });
 
