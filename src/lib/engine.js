@@ -281,6 +281,9 @@ var SyllableSequence = function SyllableSequence(syllables, ordered) {
   this.syllables = syllables;
   this.ordered = ordered;
 };
+SyllableSequence.prototype.getSyllables = function() {
+  return this.syllables;
+};
 // DEPRECATED: only for ordered sequences
 SyllableSequence.prototype.at = function(index) {
   if(this.ordered === SyllableSequence.unordered) { throw new Error('Unordered Sequences not supported'); }
