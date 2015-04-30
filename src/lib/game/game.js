@@ -5,6 +5,8 @@ ig.module(
 	'impact.game',
 	'impact.font',
 
+    'game.gui.spellbook',
+	'game.gui.syllablepool',
     // entities
 	//'game.entities.battle-field',
 	//'game.entities.field',
@@ -35,6 +37,8 @@ GUI.Game = ig.Game.extend({
 
 
 	init: function() {
+	    GUI.game = this;
+
 		// Initialize your game here; bind keys etc.
 		ig.input.bind(ig.KEY.MOUSE1, 'leftclick');
 		ig.input.bind(ig.KEY.MOUSE2, 'rightclick');
@@ -42,10 +46,8 @@ GUI.Game = ig.Game.extend({
         // Initialize Battle Field
 		this.loadLevel(LevelBattle);
 
-		this.spawnEntity(EntitySyllable, 500, 400, { model: Syllables.SOL });
-		this.spawnEntity(EntitySyllable, 532, 400, { model: Syllables.OMNIPOTENCE });
-		this.spawnEntity(EntitySyllable, 564, 400, { model: Syllables['7TH_ELEMENT'] });
-		this.spawnEntity(EntitySyllable, 596, 400, { model: Syllables.CHI });
+        this.syllablePool = new GUI.SyllablePool();
+        this.spellBook = new GUI.SpellBook();
 	},
 
 	update: function() {
@@ -53,6 +55,8 @@ GUI.Game = ig.Game.extend({
 		this.parent();
 
 		// Add your own, additional update code here
+        this.syllablePool.update();
+        this.spellBook.update();
 	},
 
 	draw: function() {
