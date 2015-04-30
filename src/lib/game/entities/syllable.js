@@ -34,7 +34,7 @@ GUI.SyllableDescriptions = {
              },
     'YUN': {
         label: 'YUN',
-        sheetIndex: 108
+        sheetIndex: 99
              },
     'REN': {
         label: 'REN',
@@ -50,7 +50,7 @@ GUI.SyllableDescriptions = {
              },
     'XAU': {
         label: 'XAU',
-        sheetIndex: 108
+        sheetIndex: 98
              },
     'EX': {
         label: 'EX',
