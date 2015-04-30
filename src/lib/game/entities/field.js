@@ -53,7 +53,7 @@ EntityField = ig.Entity.extend({
 	},
 	draw: function() {
         // get description
-		var description = GUI.SyllableDescriptions[this.model.type];
+		var description = GUI.FieldDescriptions[this.model.type];
 		// HACK:
         this.anims.visible.sequence[0] = (description || GUI.FieldDescriptions.default).sheetIndexStart;
 
