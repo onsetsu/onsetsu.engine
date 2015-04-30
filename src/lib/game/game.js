@@ -62,24 +62,40 @@ GUI.Game = ig.Game.extend({
         this.spellBook.update();
         this.syllableBoard.update();
 
+        function hovered(entity) {
+            if(ig.input.mouse.x < entity.pos.x) return false;
+            if(ig.input.mouse.y < entity.pos.y) return false;
+            if(ig.input.mouse.x > entity.pos.x + entity.size.x) return false;
+            if(ig.input.mouse.y > entity.pos.y + entity.size.y) return false;
+            return true;
+        }
+
         // start dragging
         if(ig.input.pressed('leftclick')) {
-            function hovered(entity) {
-                if(ig.input.mouse.x < entity.pos.x) return false;
-                if(ig.input.mouse.y < entity.pos.y) return false;
-                if(ig.input.mouse.x > entity.pos.x + entity.size.x) return false;
-                if(ig.input.mouse.y > entity.pos.y + entity.size.y) return false;
-                return true;
-            }
-
             var hoveredSyllable = _(this.syllablePool.syllables).find(function(entity) { return hovered(entity); });
             if(hoveredSyllable) {
-                console.log(hoveredSyllable.model.label)
-
                 this.dragEntity = hoveredSyllable.copy();
-                this.dragEntity.pos.x = ig.input.mouse.x - dragEntity.size.x / 2;
-                this.dragEntity.pos.y = ig.input.mouse.y - dragEntity.size.y / 2;
             }
+        }
+
+        // dragging
+        if(this.dragEntity) {
+            this.dragEntity.pos.x = ig.input.mouse.x - this.dragEntity.size.x / 2;
+            this.dragEntity.pos.y = ig.input.mouse.y - this.dragEntity.size.y / 2;
+        }
+
+        // dropping
+        if(this.dragEntity && ig.input.released('leftclick')) {
+            var hoveredField = _(this.syllableBoard.fields).find(function(entity) { return hovered(entity); });
+
+            if(hoveredField) {
+                // TODO: provide this whole activity with checks as part of the engine
+                this.syllableBoard.getModel().placeSyllable(hoveredField.model.index, this.dragEntity.model);
+                // TODO: check for Spells
+            }
+
+            this.dragEntity.kill();
+            this.dragEntity = undefined;
         }
 	},
 

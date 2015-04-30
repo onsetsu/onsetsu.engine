@@ -12,19 +12,22 @@ ig.module(
 
 GUI.SyllableBoard = ig.Class.extend({
 	init: function() {
+	    this.fields = [];
+
 	    var pos = { x: 350, y: 100 };
 
-	    var syllableboard = game.players[0].mages[0].syllableBoard;
+	    var syllableboard = this.getModel();
         syllableboard.fields.forEach(function(stripe, indexX) {
             stripe.forEach(function(field, indexY) {
-                GUI.game.spawnEntity(
+                var field = GUI.game.spawnEntity(
                     EntityField,
                     pos.x + EntityField.prototype.size.x * indexX,
                     pos.y + EntityField.prototype.size.y * indexY,
                     { model: field }
                 );
-            });
-        });
+                this.fields.push(field);
+            }, this);
+        }, this);
 
         syllableboard.syllableStones.forEach(function(column, indexX) {
             column.forEach(function(syllableStone, indexY) {
@@ -38,6 +41,9 @@ GUI.SyllableBoard = ig.Class.extend({
                 }
             });
         });
+	},
+	getModel: function() {
+	    return game.players[0].mages[0].syllableBoard;
 	},
 
 	update: function() {}
