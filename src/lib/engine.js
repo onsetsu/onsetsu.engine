@@ -468,6 +468,13 @@ configureGameForTwoPlayers = function() {
     );
   });
 
+  var sampleBoard = mages[0].syllableBoard;
+  sampleBoard.placeSyllable({ x: 0, y: 3 }, Syllables.FIRE);
+  sampleBoard.placeSyllable({ x: 1, y: 3 }, Syllables.CHI);
+  sampleBoard.placeSyllable({ x: 2, y: 3 }, Syllables.NIF);
+  sampleBoard.placeSyllable({ x: 3, y: 3 }, Syllables.NIF);
+  sampleBoard.placeSyllable({ x: 4, y: 3 }, Syllables.GAM);
+
   players.forEach(game.addPlayer.bind(game));
 }
 
