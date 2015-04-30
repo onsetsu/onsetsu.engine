@@ -451,8 +451,68 @@ createTestSpellbook = function() {
      function effect() {}
    );
 
+  var TurquoiseInferno = new Spell(
+     'Turquoise Inferno',
+     [
+       new SyllableSequence([
+         Syllables['7TH_ELEMENT'],
+         Syllables.GAM,
+         Syllables['13TH_SYLLABLE'],
+         Syllables.EX,
+         Syllables.CHI,
+         Syllables['13TH_SYLLABLE']
+       ], SyllableSequence.ordered),
+     ],
+     'Massive AoE Damage using the 7th Element.',
+     function effect() {}
+   );
+
+  var SwordOfGeminiWings = new Spell(
+     'Sword of Gemini Wings',
+     [
+       new SyllableSequence([
+         Syllables.SOL,
+         Syllables.EARTH,
+         Syllables.GAM,
+         Syllables.TO,
+         Syllables.CHI,
+         Syllables.XAU
+       ], SyllableSequence.ordered),
+     ],
+`4/3 WeaponAngel Familiar
+LightForge.
+If [this] was lightforged: Cast Schild of Gemini Wings.
+Equip to a Light Familiar.
+[this] and the equipped familiar get:
+"If [this] battles an enemy Familiar: reduce its AT by 1."`,
+
+     function effect() {}
+   );
+
+  var ElementCurse = new Spell(
+     'Element Curse',
+     [
+       new SyllableSequence([
+         Syllables.OMNIPOTENCE,
+         Syllables.CHI,
+         Syllables.TO,
+         Syllables.MA
+       ], SyllableSequence.ordered),
+     ],
+`Target opponent disables an Element Syllable.
+You may place a copy of that Syllable.`,
+     function effect() {}
+   );
+
   var spellBook = new SpellBook();
-  [Fireball, GreatFireball, KissOfDeath].forEach(spellBook.addSpell.bind(spellBook));
+  [
+    Fireball,
+    GreatFireball,
+    KissOfDeath,
+    TurquoiseInferno,
+    SwordOfGeminiWings,
+    ElementCurse
+  ].forEach(spellBook.addSpell.bind(spellBook));
   return spellBook;
 };
 

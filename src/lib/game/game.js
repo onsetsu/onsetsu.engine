@@ -61,6 +61,18 @@ GUI.Game = ig.Game.extend({
         this.syllablePool.update();
         this.spellBook.update();
         this.syllableBoard.update();
+
+        (function() {
+            function hovered(entity) {
+                if(ig.input.mouse.x < entity.pos.x) return false;
+                if(ig.input.mouse.y < entity.pos.y) return false;
+                if(ig.input.mouse.x > entity.pos.x + entity.size.x) return false;
+                if(ig.input.mouse.y > entity.pos.y + entity.size.y) return false;
+                return true;
+            }
+
+
+        })();
 	},
 
 	draw: function() {
