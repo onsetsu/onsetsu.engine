@@ -12,7 +12,8 @@ var Fireball = new Spell('Fireball', [
 ], 'Deal 2 Damage.', function effect() {}
 );
 
-var CLord = new Mage();
+var CLord = new Player();
+var CLordMage = new Mage(CLord);
 var CLordBoard = new SyllableBoard({ x: 8, y: 8 });
 CLordBoard.placeSyllable({ x: 2, y: 3 }, Syllables.SOL);
 CLordBoard.placeSyllable({ x: 2, y: 4 }, Syllables.CHI);
