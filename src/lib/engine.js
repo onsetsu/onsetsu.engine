@@ -257,6 +257,7 @@ SpellChecker.prototype.stripeMatchesSpell = function(index, stripe, spell, direc
   }
 };
 
+// TODO: add toString methods
 // Direction enum
 Direction = {
   vertical: {},

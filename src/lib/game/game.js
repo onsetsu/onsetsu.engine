@@ -89,14 +89,18 @@ GUI.Game = ig.Game.extend({
             var hoveredField = _(this.syllableBoard.fields).find(function(entity) { return hovered(entity); });
 
             if(hoveredField) {
-                // TODO: provide this whole activity with checks as part of the engine
-                tryPlaceSyllableAndCastSpells(
-                    hoveredField.model.index,
-                    this.syllableBoard.getModel(),
-                    this.dragEntity.model,
-                    function(spell, startIndex, direction) {
+                var syllableIndex = hoveredField.model.index,
+                    syllableBoard = this.syllableBoard.getModel(),
+                    syllable = this.dragEntity.model,
+                    callback = function(spell, startIndex, direction) {
                         console.log("CAST", spell, startIndex, direction);
-                    }
+                    };
+
+                tryPlaceSyllableAndCastSpells(
+                    syllableIndex,
+                    syllableBoard,
+                    syllable,
+                    callback
                 );
             }
 
