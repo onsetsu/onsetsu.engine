@@ -518,7 +518,7 @@ createTestSpellbook = function() {
          Syllables.XAU
        ], SyllableSequence.ordered),
      ],
-`4/3 WeaponAngel Familiar
+`4/3 WeaponAngel Artifact Familiar
 LightForge.
 If [this] was lightforged: Cast Schild of Gemini Wings.
 Equip to a Light Familiar.
