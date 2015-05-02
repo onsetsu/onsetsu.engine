@@ -206,7 +206,7 @@ SyllableBoard.prototype.checkAndPlaceSyllable = function(index, syllable) {
   this.mage.sp -= syllable.cost;
   this.placeSyllable(index, syllable);
 
-  console.log("BUMM");
+  console.log("PLACE SYLLABLE");
   return true;
 };
 
@@ -389,6 +389,29 @@ Game.prototype.addPlayer = function(player) {
 };
 
 var Engine = function Engine() {};
+
+// --------------------------------------------------------------------------------
+// Utilities
+// --------------------------------------------------------------------------------
+
+tryPlaceSyllableAndCastSpells = function(insertionIndex, syllableBoard, syllable, callback) {
+  var syllablePlaced = syllableBoard.checkAndPlaceSyllable(
+    insertionIndex,
+    syllable
+  );
+  if(syllablePlaced) {
+    var spellChecker = new SpellChecker();
+
+    syllableBoard.mage.spellBook.spells.forEach(function(spell) {
+      spellChecker.checkForSpell(
+        insertionIndex,
+        syllableBoard,
+        spell,
+        callback
+      );
+    });
+  }
+};
 
 // --------------------------------------------------------------------------------
 // Variants

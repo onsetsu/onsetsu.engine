@@ -90,26 +90,14 @@ GUI.Game = ig.Game.extend({
 
             if(hoveredField) {
                 // TODO: provide this whole activity with checks as part of the engine
-                var syllablePlaced = this.syllableBoard.getModel().checkAndPlaceSyllable(
+                tryPlaceSyllableAndCastSpells(
                     hoveredField.model.index,
-                    this.dragEntity.model
+                    this.syllableBoard.getModel(),
+                    this.dragEntity.model,
+                    function(spell, startIndex, direction) {
+                        console.log("CAST", spell, startIndex, direction);
+                    }
                 );
-                if(syllablePlaced) {
-                    var spellChecker = new SpellChecker(),
-                        syllableBoard = this.syllableBoard.getModel();
-
-                    syllableBoard.mage.spellBook.spells.forEach(function(spell) {
-                        spellChecker.checkForSpell(
-                            hoveredField.model.index,
-                            syllableBoard,
-                            spell,
-                            function(spell, index, direction) {
-                                console.log("CAST", spell, index, direction);
-                            }
-                        );
-                    });
-                }
-                // TODO: check for Spells
             }
 
             this.dragEntity.kill();
