@@ -210,6 +210,21 @@ SyllableBoard.prototype.checkAndPlaceSyllable = function(index, syllable) {
   console.log("PLACE SYLLABLE");
   return true;
 };
+SyllableBoard.prototype.switchSyllables = function(index1, index2) {
+  // fields neighbored?
+  //if(this.getStone(index)) { return false; }
+  // enough SP?
+  if(this.mage.sp < 1) { return false; }
+
+  var temp = this.syllableStones[index1.x][index1.y];
+  this.syllableStones[index1.x][index1.y] = this.syllableStones[index2.x][index2.y];
+  this.syllableStones[index2.x][index2.y] = temp;
+
+  this.mage.sp -= 1;
+
+  console.log("SWITCH SYLLABLES");
+  return true;
+};
 
 var SpellChecker = function() {};
 SpellChecker.prototype.checkForSpell = function(index, board, spell, callback) {
@@ -573,8 +588,9 @@ configureGameForTwoPlayers = function() {
   sampleBoard.placeSyllable({ x: 0, y: 3 }, Syllables.FIRE);
   sampleBoard.placeSyllable({ x: 1, y: 3 }, Syllables.CHI);
   sampleBoard.placeSyllable({ x: 2, y: 3 }, Syllables.NIF);
-  sampleBoard.placeSyllable({ x: 3, y: 3 }, Syllables.NIF);
-  sampleBoard.placeSyllable({ x: 4, y: 3 }, Syllables.GAM);
+  sampleBoard.placeSyllable({ x: 4, y: 3 }, Syllables.NIF);
+  sampleBoard.placeSyllable({ x: 3, y: 3 }, Syllables.GAM);
+  sampleBoard.switchSyllables({ x: 4, y: 3 }, { x: 3, y: 3 });
 
   players.forEach(game.addPlayer.bind(game));
 }
