@@ -173,6 +173,7 @@ var SyllableBoard = function SyllableBoard(size) {
     this.syllableStones.push([]);
     for(var j = 0; j < this.size.y; j++) {
       this.fields[i].push(new SyllableBoardField({ x: i, y: j }));
+      this.syllableStones[i].push(undefined);
     }
   }
 };
