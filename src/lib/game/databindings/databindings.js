@@ -1,6 +1,6 @@
 DataBindings = {
   watch: function(obj, attr, callback) {
-    var value = obj.attr;
+    var value = obj[attr];
     Object.defineProperty(obj, attr, {
         get: function() {
           return value;
@@ -12,4 +12,4 @@ DataBindings = {
         }
     });
   }
-}
+};

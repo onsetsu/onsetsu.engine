@@ -13,3 +13,17 @@ test(function() {
   assert(obj.attr === 42);
   assert(obj.check);
 });
+
+test(function() {
+  var arr = [17];
+
+  DataBindings.watch(arr, 0, function() {
+    arr[1] = true;
+  });
+
+  assert(arr[0] === 17);
+  arr[0] = 42;
+  assert(arr[0] === 42);
+  assert(arr[1]);
+});
+
