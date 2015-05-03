@@ -22,6 +22,7 @@ GUI.SyllableBoard = ig.Class.extend({
     },
 	init: function() {
 	    this.fields = [];
+	    this.syllableStones = [];
 
 	    var syllableBoard = this.getModel();
         syllableBoard.fields.forEach(function(stripe, indexX) {
@@ -32,22 +33,23 @@ GUI.SyllableBoard = ig.Class.extend({
         }, this);
 
         syllableBoard.syllableStones.forEach(function(column, indexX) {
+            this.syllableStones.push([]);
             column.forEach(function(syllableStone, indexY) {
-                DataBindings.watch(column, indexY, (function() {
-                    this.spawn(
+                var spawnSyllableStone = (function(syllableModel) {
+                    var syllableEntity = this.spawn(
                         EntitySyllable,
                         indexX,
                         indexY,
-                        column[indexY].syllable
+                        syllableModel
                     );
+                    this.syllableStones[indexX][indexY] = syllableEntity;
+                }).bind(this);
+
+                DataBindings.watch(column, indexY, (function() {
+                    spawnSyllableStone(column[indexY].syllable);
                 }).bind(this));
                 if(syllableStone) {
-                    this.spawn(
-                        EntitySyllable,
-                        indexX,
-                        indexY,
-                        syllableStone.syllable
-                    );
+                    spawnSyllableStone(syllableStone.syllable);
                 }
             }, this);
         }, this);
