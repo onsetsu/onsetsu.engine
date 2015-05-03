@@ -12,38 +12,41 @@ ig.module(
 
 GUI.SyllableBoard = ig.Class.extend({
     pos: { x: 350, y: 100 },
+    spawn: function(entityClass, indexX, indexY, model) {
+        return GUI.game.spawnEntity(
+            entityClass,
+            this.pos.x + entityClass.prototype.size.x * indexX,
+            this.pos.y + entityClass.prototype.size.y * indexY,
+            { model: model }
+        );
+    },
 	init: function() {
 	    this.fields = [];
 
-	    var syllableboard = this.getModel();
-        syllableboard.fields.forEach(function(stripe, indexX) {
+	    var syllableBoard = this.getModel();
+        syllableBoard.fields.forEach(function(stripe, indexX) {
             stripe.forEach(function(field, indexY) {
-                var field = GUI.game.spawnEntity(
-                    EntityField,
-                    this.pos.x + EntityField.prototype.size.x * indexX,
-                    this.pos.y + EntityField.prototype.size.y * indexY,
-                    { model: field }
-                );
-                this.fields.push(field);
+                var fieldEntity = this.spawn(EntityField, indexX, indexY, field);
+                this.fields.push(fieldEntity);
             }, this);
         }, this);
 
-        syllableboard.syllableStones.forEach(function(column, indexX) {
+        syllableBoard.syllableStones.forEach(function(column, indexX) {
             column.forEach(function(syllableStone, indexY) {
                 DataBindings.watch(column, indexY, (function() {
-                    GUI.game.spawnEntity(
+                    this.spawn(
                         EntitySyllable,
-                        this.pos.x + EntitySyllable.prototype.size.x * indexX,
-                        this.pos.y + EntitySyllable.prototype.size.y * indexY,
-                        { model: column[indexY].syllable }
+                        indexX,
+                        indexY,
+                        column[indexY].syllable
                     );
                 }).bind(this));
                 if(syllableStone) {
-                    GUI.game.spawnEntity(
+                    this.spawn(
                         EntitySyllable,
-                        this.pos.x + EntitySyllable.prototype.size.x * indexX,
-                        this.pos.y + EntitySyllable.prototype.size.y * indexY,
-                        { model: syllableStone.syllable }
+                        indexX,
+                        indexY,
+                        syllableStone.syllable
                     );
                 }
             }, this);
