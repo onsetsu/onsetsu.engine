@@ -202,7 +202,7 @@ SyllableBoard.prototype.checkAndPlaceSyllable = function(index, syllable) {
   // field already occupied?
   if(this.getStone(index)) { return false; }
   // not enough SP?
-  if(syllable.cost > this.mage.sp) { return false; }
+  if(this.mage.sp < syllable.cost) { return false; }
 
   this.mage.sp -= syllable.cost;
   this.placeSyllable(index, syllable);
@@ -376,7 +376,13 @@ var SubType = function SubType() {};
 
 var Zone = function Zone() {};
 
-var Battlefield = function Battlefield() {};
+var Battlefield = function Battlefield() {
+  this.mages = [];
+  this.permanents = [];
+};
+Battlefield.prototype.addMage = function(mage) {
+  this.mages.push(mage);
+};
 
 var Permanent = function Permanent() {};
 
@@ -389,9 +395,83 @@ var Battle = function Battle() {};
 // Timeline
 // --------------------------------------------------------------------------------
 
-var Timeline = function Timeline() {};
+var TimelineSlot = function(delay) {
+  this.delay = delay;
+  this.actions = [];
+};
+TimelineSlot.prototype.toString = function() {
+  return 'SLOT ' + this.actions;
+};
+var Timeline = function Timeline() {
+  this.actions = [];
 
-var Action = function Action() {};
+  var zeroTimelineSlot = new TimelineSlot(0);
+  this.negativeTimelineSlots = [zeroTimelineSlot];
+  this.positiveTimelineSlots = [zeroTimelineSlot];
+};
+Timeline.prototype.addAction = function(action) {
+  this.actions.push(action);
+  this.getSlotAt(action.baseDelay).actions.push(action);
+};
+Timeline.prototype.getSlotAt = function(delay) {
+  function getOrCreate(arr, delay) {
+    if(arr[delay]) {
+      return arr[delay];
+    }
+    return arr[delay] = new TimelineSlot(delay);
+  }
+  if(delay < 0) {
+    return getOrCreate(this.negativeTimelineSlots, -delay);
+  } else {
+    return getOrCreate(this.positiveTimelineSlots, delay);
+  }
+};
+Timeline.prototype.nextAction = function() {
+  // search the TimelineSlot with the lowest negative delay that contains an action
+  var action = _.reduceRight(this.negativeTimelineSlots, function(action, timelineSlot) {
+    if(action) { return action; }
+    return timelineSlot.actions.shift();
+  }, undefined);
+  return action;
+};
+// advances all actions by 1 time unit
+Timeline.prototype.advance = function() {
+  var startIndex = -(this.negativeTimelineSlots.length - 1);
+  var endIndex = this.positiveTimelineSlots.length - 1;
+  for(var index = startIndex; index <= endIndex; index += 1) {
+    var slot = this.getSlotAt(index);
+    if(!_.isEmpty(slot.actions)) {
+      var action = undefined,
+          prevSlot = this.getSlotAt(index-1);
+      while(action = slot.actions.shift()) {
+        prevSlot.actions.push(action);
+      }
+    }
+  }
+};
+Timeline.prototype.print = function() {
+  var str = '';
+  var startIndex = this.negativeTimelineSlots.length - 1;
+  var endIndex = this.positiveTimelineSlots.length - 1;
+  for(var index = startIndex; index > 0; index -= 1) {
+    str += '-' + index + ' ' + this.negativeTimelineSlots[index] + ' \n';
+  }
+  for(var index = 0; index <= endIndex; index += 1) {
+    str += '+' + index + ' ' + this.positiveTimelineSlots[index] + ' \n';
+  }
+  console.log(str);
+};
+
+
+var Action = function Action(executable, baseDelay, recurring) {
+  this.executable = executable;
+  this.baseDelay = baseDelay;
+  this.recurring = recurring;
+};
+// TODO: add toString methods
+// Recurring enum
+Action.oneShot = {};
+Action.recurring = {};
 
 // --------------------------------------------------------------------------------
 // General
@@ -406,6 +486,9 @@ var Game = function Game() {
 };
 Game.prototype.addPlayer = function(player) {
   this.players.push(player);
+  player.mages.forEach(function(mage) {
+    this.battlefield.addMage(mage);
+  }, this);
 };
 
 var Engine = function Engine() {};
@@ -562,6 +645,20 @@ You may place a copy of that Syllable.`,
      function effect() {}
    );
 
+  var MeteorStrike = new Spell(
+     'Meteor Strike',
+     [
+       new SyllableSequence([
+         Syllables.FIRE,
+         Syllables.GAM,
+         Syllables.RYO,
+         Syllables.NIF
+       ], SyllableSequence.ordered),
+     ],
+`Delay 5: Deal 4 Damage to a Familiar.`,
+     function effect() {}
+   );
+
   var spellBook = new SpellBook();
   [
     Fireball,
@@ -569,7 +666,8 @@ You may place a copy of that Syllable.`,
     KissOfDeath,
     TurquoiseInferno,
     SwordOfGeminiWings,
-    ElementCurse
+    ElementCurse,
+    MeteorStrike
   ].forEach(spellBook.addSpell.bind(spellBook));
   return spellBook;
 };

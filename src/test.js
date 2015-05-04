@@ -59,5 +59,36 @@ test(function() {
   assert(spellsCasted === 2, "AAAAARGH");
 });
 
+test(function() {
+  var timeline = new Timeline();
+  var firstAction = new Action({ execute: function() {}}, 3, Action.recurring);
+  var oneShotAction = new Action({ execute: function() {}}, 4, Action.oneShot);
+  var secondAction = new Action({ execute: function() {}}, 5, Action.recurring);
 
+  timeline.addAction(firstAction);
+  timeline.addAction(oneShotAction);
+  timeline.addAction(secondAction);
+
+  assert(!timeline.nextAction());
+
+  timeline.advance();
+  timeline.advance();
+  timeline.advance();
+  assert(timeline.nextAction() === firstAction);
+  assert(!timeline.nextAction());
+
+  timeline.advance();
+  assert(timeline.nextAction() === oneShotAction);
+  assert(!timeline.nextAction());
+
+  timeline.advance();
+  assert(timeline.nextAction() === secondAction);
+  assert(!timeline.nextAction());
+
+  timeline.advance();
+  assert(!timeline.nextAction());
+
+//  timeline.advance();
+  //assert(timeline.nextAction() === firstAction);
+});
 
