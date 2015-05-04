@@ -399,9 +399,13 @@ var TimelineSlot = function(delay) {
   this.delay = delay;
   this.actions = [];
 };
+TimelineSlot.prototype.addAction = function(action) {
+  this.actions.push(action);
+};
 TimelineSlot.prototype.toString = function() {
   return 'SLOT ' + this.actions;
 };
+
 var Timeline = function Timeline() {
   this.actions = [];
 
@@ -411,7 +415,7 @@ var Timeline = function Timeline() {
 };
 Timeline.prototype.addAction = function(action) {
   this.actions.push(action);
-  this.getSlotAt(action.baseDelay).actions.push(action);
+  this.getSlotAt(action.baseDelay).addAction(action);
 };
 Timeline.prototype.getSlotAt = function(delay) {
   function getOrCreate(arr, delay) {
@@ -444,10 +448,13 @@ Timeline.prototype.advance = function() {
       var action = undefined,
           prevSlot = this.getSlotAt(index-1);
       while(action = slot.actions.shift()) {
-        prevSlot.actions.push(action);
+        prevSlot.addAction(action);
       }
     }
   }
+};
+Timeline.prototype.resetAction = function(action) {
+  this.getSlotAt(action.baseDelay).addAction(action);
 };
 Timeline.prototype.print = function() {
   var str = '';

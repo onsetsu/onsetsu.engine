@@ -74,8 +74,10 @@ test(function() {
   timeline.advance();
   timeline.advance();
   timeline.advance();
+  timeline.print();
   assert(timeline.nextAction() === firstAction);
   assert(!timeline.nextAction());
+  timeline.resetAction(firstAction);
 
   timeline.advance();
   assert(timeline.nextAction() === oneShotAction);
@@ -84,11 +86,16 @@ test(function() {
   timeline.advance();
   assert(timeline.nextAction() === secondAction);
   assert(!timeline.nextAction());
+  timeline.resetAction(secondAction);
 
   timeline.advance();
+  assert(timeline.nextAction() === firstAction);
   assert(!timeline.nextAction());
 
-//  timeline.advance();
-  //assert(timeline.nextAction() === firstAction);
+  timeline.advance();
+  timeline.advance();
+  timeline.advance();
+  timeline.advance();
+  assert(timeline.nextAction() === secondAction);
 });
 
