@@ -201,7 +201,7 @@ SyllableBoard.prototype.getRow = function(y) {
 SyllableBoard.prototype.checkAndPlaceSyllable = function(index, syllable) {
   // field already occupied?
   if(this.getStone(index)) { return false; }
-  // enough SP?
+  // not enough SP?
   if(syllable.cost > this.mage.sp) { return false; }
 
   this.mage.sp -= syllable.cost;
@@ -211,9 +211,12 @@ SyllableBoard.prototype.checkAndPlaceSyllable = function(index, syllable) {
   return true;
 };
 SyllableBoard.prototype.switchSyllables = function(index1, index2) {
-  // fields neighbored?
-  //if(this.getStone(index)) { return false; }
-  // enough SP?
+  // fields contain no syllables?
+  if(!this.getStone(index1)) { return false; }
+  if(!this.getStone(index2)) { return false; }
+  // fields not neighbored?
+  if(Math.abs(index1.x - index2.x) + Math.abs(index1.y - index2.y) != 1) { return false; }
+  // not enough SP?
   if(this.mage.sp < 1) { return false; }
 
   var temp = this.syllableStones[index1.x][index1.y];
