@@ -112,42 +112,39 @@ GUI.Game = ig.Game.extend({
         // SWITCH SYLLABLES
         // start dragging
         if(ig.input.pressed('leftclick')) {
-            var hoveredSyllable = _.find(_.flatten(this.syllableBoard.syllableStones, true),
-                function(entity) { return entity && hovered(entity); }
-            );
-            if(hoveredSyllable) {
-                this.dragEntity = hoveredSyllable;
+            var hoveredField = _.find(this.syllableBoard.fields, function(field) { return hovered(field); });
+            if(hoveredField) {
+                var hoveredSyllable = this.syllableBoard.syllableStones[hoveredField.index.x][hoveredField.index.y];
+                if(hoveredSyllable) {
+                    this.dragStoneEntity = hoveredSyllable;
+                }
             }
         }
 
         // dragging
-        if(this.dragEntity) {
-            this.dragEntity.pos.x = ig.input.mouse.x - this.dragEntity.size.x / 2;
-            this.dragEntity.pos.y = ig.input.mouse.y - this.dragEntity.size.y / 2;
+        if(this.dragStoneEntity) {
+            this.dragStoneEntity.pos.x = ig.input.mouse.x - this.dragStoneEntity.size.x / 2;
+            this.dragStoneEntity.pos.y = ig.input.mouse.y - this.dragStoneEntity.size.y / 2;
         }
 
         // dropping
-        if(this.dragEntity && ig.input.released('leftclick')) {
+        if(this.dragStoneEntity && ig.input.released('leftclick')) {
             var hoveredField = _(this.syllableBoard.fields).find(function(entity) { return hovered(entity); });
-
             if(hoveredField) {
-                var syllableIndex = hoveredField.model.index,
-                    syllableBoard = this.syllableBoard.getModel(),
-                    syllable = this.dragEntity.model,
-                    callback = function(spell, startIndex, direction) {
-                        console.log("CAST", spell, startIndex, direction);
-                    };
-
-                tryPlaceSyllableAndCastSpells(
-                    syllableIndex,
-                    syllableBoard,
-                    syllable,
-                    callback
-                );
+                var hoveredSyllable = this.syllableBoard.syllableStones[hoveredField.index.x][hoveredField.index.y];
+                if(hoveredSyllable) {
+                    if(this.syllableBoard.getModel().switchSyllables(this.dragStoneEntity.index, hoveredSyllable.index)) {
+                        this.dragStoneEntity.kill();
+                        hoveredSyllable.kill();
+                        var successful = true;
+                    }
+                }
             }
 
-            this.dragEntity.kill();
-            this.dragEntity = undefined;
+            if(!successful) {
+                this.syllableBoard.resetPosition(this.dragStoneEntity);
+            }
+            this.dragStoneEntity = undefined;
         }
 	},
 

@@ -13,12 +13,19 @@ ig.module(
 GUI.SyllableBoard = ig.Class.extend({
     pos: { x: 350, y: 100 },
     spawn: function(entityClass, indexX, indexY, model) {
-        return GUI.game.spawnEntity(
+        var entity = GUI.game.spawnEntity(
             entityClass,
             this.pos.x + entityClass.prototype.size.x * indexX,
             this.pos.y + entityClass.prototype.size.y * indexY,
             { model: model }
         );
+        entity.index = { x: indexX, y: indexY };
+
+        return entity;
+    },
+    resetPosition: function(entity) {
+        entity.pos.x = this.pos.x + entity.size.x * entity.index.x;
+        entity.pos.y = this.pos.y + entity.size.y * entity.index.y;
     },
 	init: function() {
 	    this.fields = [];
