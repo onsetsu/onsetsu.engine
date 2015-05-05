@@ -8,6 +8,7 @@ ig.module(
     'game.gui.spellbook',
 	'game.gui.syllablepool',
 	'game.gui.syllableboard',
+	'game.gui.timeline',
 
     // entities
 	//'game.entities.battle-field',
@@ -51,6 +52,7 @@ GUI.Game = ig.Game.extend({
         this.syllablePool = new GUI.SyllablePool();
         this.spellBook = new GUI.SpellBook();
         this.syllableBoard = new GUI.SyllableBoard();
+        this.timeline = new GUI.Timeline();
 	},
 
 	update: function() {
@@ -61,6 +63,7 @@ GUI.Game = ig.Game.extend({
         this.syllablePool.update();
         this.spellBook.update();
         this.syllableBoard.update();
+        this.timeline.update();
 
         function hovered(entity) {
             if(ig.input.mouse.x < entity.pos.x) return false;
