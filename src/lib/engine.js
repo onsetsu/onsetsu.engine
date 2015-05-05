@@ -401,7 +401,7 @@ var TimelineSlot = function(delay) {
 };
 TimelineSlot.prototype.addAction = function(action) {
   this.actions.push(action);
-  action.timelineSlot = this;
+  //action.timelineSlot = this;
 };
 TimelineSlot.prototype.toString = function() {
   return 'SLOT ' + this.actions.length + ' actions';
@@ -702,7 +702,7 @@ configureGameForTwoPlayers = function() {
 
   players.forEach(game.addPlayer.bind(game));
 
-  game.timeline.addAction(new Action({ execute: function() { console.log('First'); }}, 3, Action.recurring));
+  game.timeline.addAction(new Action({ execute: function() { console.log('First'); }}, 4, Action.recurring));
   game.timeline.addAction(new Action({ execute: function() { console.log('Second'); }}, 4, Action.oneShot));
   game.timeline.addAction(new Action({ execute: function() { console.log('Third'); }}, 5, Action.recurring));
 }
