@@ -401,9 +401,10 @@ var TimelineSlot = function(delay) {
 };
 TimelineSlot.prototype.addAction = function(action) {
   this.actions.push(action);
+  action.timelineSlot = this;
 };
 TimelineSlot.prototype.toString = function() {
-  return 'SLOT ' + this.actions;
+  return 'SLOT ' + this.actions.length + ' actions';
 };
 
 var Timeline = function Timeline() {
@@ -468,7 +469,6 @@ Timeline.prototype.print = function() {
   }
   console.log(str);
 };
-
 
 var Action = function Action(executable, baseDelay, recurring) {
   this.executable = executable;

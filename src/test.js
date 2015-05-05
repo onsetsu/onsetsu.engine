@@ -64,17 +64,18 @@ test(function() {
   var firstAction = new Action({ execute: function() {}}, 3, Action.recurring);
   var oneShotAction = new Action({ execute: function() {}}, 4, Action.oneShot);
   var secondAction = new Action({ execute: function() {}}, 5, Action.recurring);
+  var thirdAction = new Action({ execute: function() {}}, 5, Action.oneShot);
 
   timeline.addAction(firstAction);
   timeline.addAction(oneShotAction);
   timeline.addAction(secondAction);
+  timeline.addAction(thirdAction);
 
   assert(!timeline.nextAction());
 
   timeline.advance();
   timeline.advance();
   timeline.advance();
-  timeline.print();
   assert(timeline.nextAction() === firstAction);
   assert(!timeline.nextAction());
   timeline.resetAction(firstAction);
@@ -85,6 +86,7 @@ test(function() {
 
   timeline.advance();
   assert(timeline.nextAction() === secondAction);
+  assert(timeline.nextAction() === thirdAction);
   assert(!timeline.nextAction());
   timeline.resetAction(secondAction);
 
@@ -97,5 +99,6 @@ test(function() {
   timeline.advance();
   timeline.advance();
   assert(timeline.nextAction() === secondAction);
+  assert(!timeline.nextAction());
 });
 
