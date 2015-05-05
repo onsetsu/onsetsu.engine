@@ -21,12 +21,10 @@ EntityTimelineSlot = ig.Entity.extend({
 		this.addAnim('visible', 1, [1], true);
 	},
 	draw: function() {
-        // get description
-		//var description = GUI.FieldDescriptions[this.model.type];
-		// HACK:
-        //this.anims.visible.sequence[0] = (description || GUI.FieldDescriptions.default).sheetIndexStart;
 		this.parent();
-		GUI.Font.draw(this.model.delay, this.pos.x + this.size.x / 2, this.pos.y, ig.Font.ALIGN.CENTER);
+
+		var delay = this.model.delay;
+		GUI.Font.draw(delay, this.pos.x + this.size.x / 2, this.pos.y, ig.Font.ALIGN.CENTER);
 	}
 });
 
