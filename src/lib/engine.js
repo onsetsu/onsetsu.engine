@@ -701,6 +701,10 @@ configureGameForTwoPlayers = function() {
   sampleBoard.switchSyllables({ x: 4, y: 3 }, { x: 3, y: 3 });
 
   players.forEach(game.addPlayer.bind(game));
+
+  game.timeline.addAction(new Action({ execute: function() { console.log('First'); }}, 3, Action.recurring));
+  game.timeline.addAction(new Action({ execute: function() { console.log('Second'); }}, 4, Action.oneShot));
+  game.timeline.addAction(new Action({ execute: function() { console.log('Third'); }}, 5, Action.recurring));
 }
 
 game = new Game();
