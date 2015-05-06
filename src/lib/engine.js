@@ -419,11 +419,11 @@ Timeline.prototype.addAction = function(action) {
   this.getSlotAt(action.baseDelay).addAction(action);
 };
 Timeline.prototype.getSlotAt = function(delay) {
-  function getOrCreate(arr, delay) {
-    if(arr[delay]) {
-      return arr[delay];
+  function getOrCreate(arr, index) {
+    if(arr[index]) {
+      return arr[index];
     }
-    return arr[delay] = new TimelineSlot(delay);
+    return arr[index] = new TimelineSlot(delay);
   }
   if(delay < 0) {
     return getOrCreate(this.negativeTimelineSlots, -delay);
