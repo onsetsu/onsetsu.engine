@@ -8,11 +8,11 @@ ig.module(
 .defines(function(){
 
 EntityAction = ig.Entity.extend({
-	size: {x:32, y:32},
-	animSheet: new ig.AnimationSheet('media/board.png', 32, 32),
+	size: {x:32, y:16},
+	animSheet: new ig.AnimationSheet('media/timeline.png', 32, 16),
 	init: function(x, y, settings) {
 		this.parent(x, y, settings);
-return;
+
         this.applySettings(settings);
 	},
 	applySettings: function(settings) {
@@ -21,11 +21,6 @@ return;
 		this.addAnim('visible', 1, [0], true);
 	},
 	draw: function() {
-        // get description
-		var description = GUI.FieldDescriptions[this.model.type];
-		// HACK:
-        this.anims.visible.sequence[0] = (description || GUI.FieldDescriptions.default).sheetIndexStart;
-
 		this.parent();
 	}
 });
