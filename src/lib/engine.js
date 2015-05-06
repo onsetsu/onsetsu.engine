@@ -439,6 +439,16 @@ Timeline.prototype.nextAction = function() {
   }, undefined);
   return action;
 };
+Timeline.prototype.getTimelineSlotFor = function(action) {
+  var timelineSlot = _(this.negativeTimelineSlots).find(function(timelineSlot) {
+    if(!timelineSlot) { return false; }
+    return _(timelineSlot.actions).contains(action);
+  }) || _(this.positiveTimelineSlots).find(function(timelineSlot) {
+    if(!timelineSlot) { return false; }
+    return _(timelineSlot.actions).contains(action);
+  });
+  return timelineSlot;
+};
 // advances all actions by 1 time unit
 Timeline.prototype.advance = function() {
   var startIndex = -(this.negativeTimelineSlots.length - 1);
