@@ -159,6 +159,48 @@ GUI.Game = ig.Game.extend({
 	}
 });
 
+var originalUpdate = ig.Entity.prototype.update;
+ig.Entity.inject({
+	move: function(position, time) {
+	    this.tween = {
+	        startPosition: { x: this.pos.x, y: this.pos.y },
+    	    endPosition: position,
+    	    duration: time,
+    	    timeDone: 0
+	    };
+	},
+	update: function() {
+        var returnValue = originalUpdate.apply(this, arguments);
+
+        if(this.tween) {
+            // tween finished?
+            if(this.tween.timeDone >= this.tween.duration) {
+                this.pos.x = this.tween.endPosition.x;
+                this.pos.y = this.tween.endPosition.y;
+                this.tween = undefined;
+                return returnValue;
+            }
+
+            var easeQuarticInOut = function(a) {
+                if((a*=2)<1)
+                    return 0.5*a*a*a*a;
+                return-0.5*((a-=2)*a*a*a-2)
+            };
+            var easeLinear = function(a) { return a; };
+
+            this.tween.timeDone += ig.system.tick;
+            this.pos.x = this.tween.startPosition.x +
+                (this.tween.endPosition.x - this.tween.startPosition.x) *
+                easeQuarticInOut((this.tween.timeDone / this.tween.duration));
+            this.pos.y = this.tween.startPosition.y +
+                (this.tween.endPosition.y - this.tween.startPosition.y) *
+                easeQuarticInOut((this.tween.timeDone / this.tween.duration));
+        }
+
+        return returnValue;
+	}
+});
+
 return;
 
 ig.Entity.inject({
