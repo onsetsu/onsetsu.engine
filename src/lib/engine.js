@@ -374,6 +374,10 @@ var SubType = function SubType() {};
 // Battlefield
 // --------------------------------------------------------------------------------
 
+var FieldSide = function(player) {
+  this.player = player;
+};
+
 var Zone = function Zone() {};
 
 var Battlefield = function Battlefield() {
@@ -513,10 +517,14 @@ Action.oneShot = {};
 Action.recurring = {};
 
 // --------------------------------------------------------------------------------
-// General
+// Stack
 // --------------------------------------------------------------------------------
 
 var Stack = function Stack() {};
+
+// --------------------------------------------------------------------------------
+// General
+// --------------------------------------------------------------------------------
 
 var Game = function Game() {
   this.players = [];
