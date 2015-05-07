@@ -67,6 +67,17 @@ GUI.Timeline = ig.Class.extend({
             return returnValue;
         }).bind(this));
 
+        game.timeline.removeAction = _.wrap(game.timeline.removeAction.bind(game.timeline), (function(original, action) {
+            var returnValue = original(action);
+
+            if(this.entitiesByAction.has(action)) {
+                this.entitiesByAction.get(action).kill();
+                this.entitiesByAction.delete(action);
+            }
+
+            return returnValue;
+        }).bind(this));
+
         game.timeline.advance = _.wrap(game.timeline.advance.bind(game.timeline), (function(original) {
             var returnValue = original();
             this.entitiesByAction.forEach(function(entity, action) {
@@ -81,12 +92,11 @@ GUI.Timeline = ig.Class.extend({
                 var currentAction = game.timeline.nextAction();
                 if(currentAction) {
                     console.log('ACTION', currentAction);
+                    // TODO: Move this to engine
                     if(currentAction.recurring === Action.recurring) {
                         game.timeline.resetAction(currentAction);
                     } else {
                         game.timeline.removeAction(currentAction);
-                        this.entitiesByAction.get(currentAction).kill();
-                        this.entitiesByAction.delete(currentAction);
                     }
                     this.entitiesByAction.forEach(function(entity, action) {
                         entity.move(getEntityActionPosition(action), 1.5);
