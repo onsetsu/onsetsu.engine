@@ -59,12 +59,6 @@ GUI.Game = ig.Game.extend({
 		// Update all entities and backgroundMaps
 		this.parent();
 
-		// Add your own, additional update code here
-        this.syllablePool.update();
-        this.spellBook.update();
-        this.syllableBoard.update();
-        this.timeline.update();
-
         function hovered(entity) {
             if(ig.input.mouse.x < entity.pos.x) return false;
             if(ig.input.mouse.y < entity.pos.y) return false;
@@ -72,6 +66,13 @@ GUI.Game = ig.Game.extend({
             if(ig.input.mouse.y > entity.pos.y + entity.size.y) return false;
             return true;
         }
+        this.hovered = hovered;
+
+		// Add your own, additional update code here
+        this.syllablePool.update();
+        this.spellBook.update();
+        this.syllableBoard.update();
+        this.timeline.update();
 
         // PLACE SYLLABLES
         // start dragging
