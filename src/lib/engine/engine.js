@@ -749,4 +749,4 @@ configureGameForTwoPlayers = function() {
   game.timeline.addAction(new Action({ execute: function() { console.log('Third'); }}, 5, Action.recurring));
 }
 
-game = new Game();
+
