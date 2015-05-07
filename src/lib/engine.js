@@ -403,6 +403,12 @@ TimelineSlot.prototype.addAction = function(action) {
   this.actions.push(action);
   //action.timelineSlot = this;
 };
+TimelineSlot.prototype.removeAction = function(action) {
+  if(action) {
+    var index = this.actions.indexOf(action);
+    this.actions.splice(index, 1);
+  }
+};
 TimelineSlot.prototype.toString = function() {
   return 'SLOT ' + this.actions.length + ' actions';
 };
@@ -437,6 +443,7 @@ Timeline.prototype.nextAction = function() {
     if(action) { return action; }
     return timelineSlot.actions.shift();
   }, undefined);
+  // TODO: duplicated code
   if(action) {
     var index = this.actions.indexOf(action);
     this.actions.splice(index, 1);
@@ -470,6 +477,17 @@ Timeline.prototype.advance = function() {
 };
 Timeline.prototype.resetAction = function(action) {
   this.getSlotAt(action.baseDelay).addAction(action);
+};
+Timeline.prototype.removeAction = function(action) {
+  var timelineSlot = this.getTimelineSlotFor(action);
+  if(timelineSlot) {
+    timelineSlot.removeAction(action);
+  }
+  // TODO: duplicated code
+  if(action) {
+    var index = this.actions.indexOf(action);
+    this.actions.splice(index, 1);
+  }
 };
 Timeline.prototype.print = function() {
   var str = '';

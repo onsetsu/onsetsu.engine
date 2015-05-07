@@ -29,7 +29,7 @@ GUI.Timeline = ig.Class.extend({
         }, this);
 
         var getEntityActionPosition = (function(action) {
-            var timelineSlot = game.timeline.getTimelineSlotFor(action) || game.timeline.getSlotAt(-5);
+            var timelineSlot = game.timeline.getTimelineSlotFor(action);
             var indexInTimelineSlot = timelineSlot.actions.indexOf(action);
             return {
                 x: position.x
@@ -75,19 +75,25 @@ GUI.Timeline = ig.Class.extend({
             return returnValue;
         }).bind(this));
 
+        // TODO: HACK: move this method to GUI.Timeline.prototype
         this.update =  function() {
             if(ig.input.pressed('leftclick') && GUI.game.hovered(this.timelineSlots[0])) {
                 var currentAction = game.timeline.nextAction();
                 if(currentAction) {
                     console.log('ACTION', currentAction);
-                    game.timeline.resetAction(currentAction);
-                    this.entitiesByAction.forEach(function(entity, action) {
-                        entity.move(getEntityActionPosition(action), 2);
-                    }, this);
+                    if(currentAction.recurring === Action.recurring) {
+                        game.timeline.resetAction(currentAction);
+                        this.entitiesByAction.forEach(function(entity, action) {
+                            entity.move(getEntityActionPosition(action), 2);
+                        }, this);
+                    } else {
+                        game.timeline.removeAction(currentAction);
+                        this.entitiesByAction.get(currentAction).kill();
+                        this.entitiesByAction.delete(currentAction);
+                    }
                 } else {
                     game.timeline.advance();
                 }
-                //timeline.resetAction(firstAction);
             }
         }
 	},
