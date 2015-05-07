@@ -83,14 +83,14 @@ GUI.Timeline = ig.Class.extend({
                     console.log('ACTION', currentAction);
                     if(currentAction.recurring === Action.recurring) {
                         game.timeline.resetAction(currentAction);
-                        this.entitiesByAction.forEach(function(entity, action) {
-                            entity.move(getEntityActionPosition(action), 2);
-                        }, this);
                     } else {
                         game.timeline.removeAction(currentAction);
                         this.entitiesByAction.get(currentAction).kill();
                         this.entitiesByAction.delete(currentAction);
                     }
+                    this.entitiesByAction.forEach(function(entity, action) {
+                        entity.move(getEntityActionPosition(action), 1.5);
+                    }, this);
                 } else {
                     game.timeline.advance();
                 }
