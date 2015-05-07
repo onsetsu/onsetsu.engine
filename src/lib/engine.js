@@ -437,6 +437,10 @@ Timeline.prototype.nextAction = function() {
     if(action) { return action; }
     return timelineSlot.actions.shift();
   }, undefined);
+  if(action) {
+    var index = this.actions.indexOf(action);
+    this.actions.splice(index, 1);
+  }
   return action;
 };
 Timeline.prototype.getTimelineSlotFor = function(action) {
@@ -712,7 +716,9 @@ configureGameForTwoPlayers = function() {
 
   players.forEach(game.addPlayer.bind(game));
 
-  game.timeline.addAction(new Action({ execute: function() { console.log('First'); }}, 4, Action.recurring));
+  game.timeline.addAction(new Action({ execute: function() { console.log('First'); }}, 2, Action.recurring));
+  game.timeline.addAction(new Action({ execute: function() { console.log('Second'); }}, 3, Action.oneShot));
+  game.timeline.addAction(new Action({ execute: function() { console.log('Second'); }}, 4, Action.recurring));
   game.timeline.addAction(new Action({ execute: function() { console.log('Second'); }}, 4, Action.oneShot));
   game.timeline.addAction(new Action({ execute: function() { console.log('Third'); }}, 5, Action.recurring));
 }
