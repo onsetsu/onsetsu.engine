@@ -22,6 +22,11 @@ EntityAction = ig.Entity.extend({
 	},
 	draw: function() {
 		this.parent();
+
+        var label = this.model.baseDelay + ': ' + (this.model.recurring === Action.recurring ? 'recu' : 'once'),
+            x = this.pos.x + this.animSheet.width / 2,
+            y = this.pos.y + this.animSheet.height / 4;
+        GUI.Font.draw(label, x, y, ig.Font.ALIGN.CENTER);
 	}
 });
 
