@@ -108,7 +108,6 @@ If [this] was lightforged: Cast Schild of Gemini Wings.
 Equip to a Light Familiar.
 [this] and the equipped familiar get:
 "If [this] battles an enemy Familiar: reduce its AT by 1."`,
-
      function effect() {}
    );
 
@@ -141,6 +140,21 @@ You may place a copy of that Syllable.`,
      function effect() {}
    );
 
+  var Brocky = new Spell(
+     'Brocky',
+     [
+       new SyllableSequence([
+         Syllables.EARTH,
+         //Syllables.GAM,
+         //Syllables.CHI,
+         //Syllables.XAU,
+         Syllables.EX
+       ], SyllableSequence.ordered),
+     ],
+`2/5 Golem Artifact Familiar`,
+     function effect() {}
+   );
+
   var spellBook = new SpellBook();
   [
     Fireball,
@@ -149,7 +163,8 @@ You may place a copy of that Syllable.`,
     TurquoiseInferno,
     SwordOfGeminiWings,
     ElementCurse,
-    MeteorStrike
+    MeteorStrike,
+    Brocky
   ].forEach(spellBook.addSpell.bind(spellBook));
   return spellBook;
 };
@@ -160,7 +175,7 @@ configureGameForTwoPlayers = function() {
     return new Mage(
       player,
       20,
-      10,
+      30,
       new SyllableBoard({ x: 8, y: 8 }),
       createTestSpellbook(),
       createStandardSyllablePool()
@@ -176,6 +191,12 @@ configureGameForTwoPlayers = function() {
   sampleBoard.switchSyllables({ x: 4, y: 3 }, { x: 3, y: 3 });
 
   players.forEach(game.addPlayer.bind(game));
+  mages.forEach(game.battlefield.addMage.bind(game.battlefield));
+  game.battlefield.addPermanent(new Permanent({
+    spellTypes: [SpellType.Artifact, SpellType.Familiar],
+    hp: 5,
+    at: 2
+  }), mages[0]);
 
   game.timeline.addAction(new Action({ execute: function() { console.log('First'); }}, 2, Action.recurring));
   game.timeline.addAction(new Action({ execute: function() { console.log('Second'); }}, 3, Action.oneShot));

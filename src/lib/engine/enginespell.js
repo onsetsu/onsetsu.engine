@@ -46,13 +46,11 @@ var SuperType = function SuperType() {};
  */
 var SpellType = function SpellType() {};
 
-var Sorcery = function Sorcery() {};
-
-var Familiar = function Familiar() {};
-
-var Enchantment = function Enchantment() {};
-
-var Artifact = function Artifact() {};
+SpellType.Sorcery = function Sorcery() {};
+SpellType.Familiar = function Familiar() {};
+SpellType.Enchantment = function Enchantment() {};
+SpellType.Artifact = function Artifact() {};
+SpellType.Mage = function Mage() {};
 
 /**
  * Every Spell may have one or more SubTypes.
