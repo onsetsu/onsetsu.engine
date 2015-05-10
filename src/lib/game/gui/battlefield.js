@@ -5,13 +5,14 @@ ig.module(
 	'impact.impact',
 	'impact.font',
 
-	'game.entities.spell'
+	'game.entities.mage'
 )
 .defines(function(){
 
 GUI.Battlefield = ig.Class.extend({
     paddingBetweenSpells: 4,
 	init: function() {
+	    GUI.game.spawnEntity(EntityMage, 800, 400, { model: undefined });
 	    return;
 	    var spellPadding = 0;
         game.players[0].mages[0].spellBook.getSpells().forEach(function(spell, index) {
