@@ -9,6 +9,7 @@ ig.module(
 	'game.gui.syllablepool',
 	'game.gui.syllableboard',
 	'game.gui.timeline',
+	'game.gui.battlefield',
 
     // entities
 	//'game.entities.battle-field',
@@ -53,12 +54,14 @@ GUI.Game = ig.Game.extend({
         this.spellBook = new GUI.SpellBook();
         this.syllableBoard = new GUI.SyllableBoard();
         this.timeline = new GUI.Timeline();
+        this.battlefield = new GUI.Battlefield();
 	},
 
 	update: function() {
 		// Update all entities and backgroundMaps
 		this.parent();
 
+        // TODO: move to ig.Input.prototype
         function hovered(entity) {
             if(ig.input.mouse.x < entity.pos.x) return false;
             if(ig.input.mouse.y < entity.pos.y) return false;
@@ -73,6 +76,7 @@ GUI.Game = ig.Game.extend({
         this.spellBook.update();
         this.syllableBoard.update();
         this.timeline.update();
+        this.battlefield.update();
 
         // PLACE SYLLABLES
         // start dragging
