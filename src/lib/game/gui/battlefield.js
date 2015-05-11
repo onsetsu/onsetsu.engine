@@ -13,7 +13,7 @@ GUI.Battlefield = ig.Class.extend({
     paddingBetweenSpells: 4,
 	init: function() {
         var upperPosition = { x: 700, y: 100 },
-            lowerPosition = { x: 600, y: 300 },
+            lowerPosition = { x: 700, y: 300 },
             upperSidesPadding = 0,
             lowerSidesPadding = 0;
 

@@ -50,6 +50,8 @@ GUI.Game = ig.Game.extend({
         // Initialize Battle Field
 		this.loadLevel(LevelBattle);
 
+        this.visualizedMainPlayer = game.players[0];
+
         this.syllablePool = new GUI.SyllablePool();
         this.spellBook = new GUI.SpellBook();
         this.syllableBoard = new GUI.SyllableBoard();
@@ -72,7 +74,6 @@ GUI.Game = ig.Game.extend({
         this.hovered = hovered;
 
 		// Add your own, additional update code here
-        this.visualizedMainPlayer = game.players[0];
         this.syllablePool.update();
         this.spellBook.update();
         this.syllableBoard.update();
