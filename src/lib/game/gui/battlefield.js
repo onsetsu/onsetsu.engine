@@ -5,20 +5,32 @@ ig.module(
 	'impact.impact',
 	'impact.font',
 
-	'game.entities.mage'
+	'game.entities.fieldside'
 )
 .defines(function(){
 
 GUI.Battlefield = ig.Class.extend({
     paddingBetweenSpells: 4,
 	init: function() {
-	    GUI.game.spawnEntity(EntityMage, 800, 400, { model: undefined });
-	    return;
-	    var spellPadding = 0;
-        game.players[0].mages[0].spellBook.getSpells().forEach(function(spell, index) {
-            var entitySpell = GUI.game.spawnEntity(EntitySpell, 2, 2 + spellPadding, { model: spell });
-            spellPadding += entitySpell.size.y + this.paddingBetweenSpells;
-        }, this);
+        var upperPosition = { x: 700, y: 100 },
+            lowerPosition = { x: 600, y: 300 },
+            upperSidesPadding = 0,
+            lowerSidesPadding = 0;
+
+	    game.battlefield.sides.forEach(function(side, player) {
+	        var isAllied = allied(player, GUI.game.visualizedMainPlayer);
+    	    GUI.game.spawnEntity(
+    	        EntityFieldSide,
+    	        (isAllied ? lowerPosition : upperPosition).x,
+    	        (isAllied ? lowerPosition : upperPosition).y
+    	            + (isAllied ? lowerSidesPadding : upperSidesPadding)
+    	    ).applySettings({
+    	        model: side
+    	    });
+            isAllied ?
+                lowerSidesPadding += EntityFieldSide.prototype.size.x :
+                upperSidesPadding += EntityFieldSide.prototype.size.x;
+	    });
 	},
 
 	update: function() {}
