@@ -20,3 +20,8 @@ tryPlaceSyllableAndCastSpells = function(insertionIndex, syllableBoard, syllable
     });
   }
 };
+
+// HACK: only you are your ally
+allied = function(player1, player2) {
+  return player1 === player2;
+};
