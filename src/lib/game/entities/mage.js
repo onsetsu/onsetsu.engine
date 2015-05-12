@@ -26,6 +26,7 @@ EntityMage = ig.Entity.extend({
 		this.parent();
 
         // draw hp
+        // TODO: split into currentHP and maxHP
         var hp = this.model.hp;
         var x = this.pos.x + this.animSheet.width;
         GUI.Font.draw(hp, x, this.pos.y, ig.Font.ALIGN.RIGHT);

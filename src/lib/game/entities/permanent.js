@@ -26,6 +26,7 @@ EntityPermanent = ig.Entity.extend({
 		this.parent();
 
         // draw hp if present
+        // TODO: split into currentHP and maxHP
         if(this.model.hp) {
             var hp = this.model.hp.toString(),
                 x = this.pos.x + this.animSheet.width,
@@ -34,6 +35,7 @@ EntityPermanent = ig.Entity.extend({
         }
 
         // draw at if present
+        // TODO: for model: split into currentAT and baseAT
         if(this.model.at) {
             var at = this.model.at.toString(),
                 y = this.pos.y + this.animSheet.height - GUI.Font.heightForString(hp);
