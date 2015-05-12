@@ -89,7 +89,8 @@ GUI.Game = ig.Game.extend({
                 }
         	}
         });
-        this.spawnEntity(EntityDebug, 250, 50, {
+
+        this.spawnEntity(EntityDebug, 236, 50, {
             label: 'Add Player',
             onclick: function() {
                 var player = new Player(),
@@ -103,6 +104,28 @@ GUI.Game = ig.Game.extend({
                     );
                 game.addPlayer(player);
                 game.battlefield.addMage(mage);
+            }
+        });
+        this.spawnEntity(EntityDebug, 300, 50, {
+            label: 'Add Mage',
+            onclick: function() {
+                var mage = new Mage(
+                        game.players[0],
+                        17,
+                        42,
+                        new SyllableBoard({ x: 3, y: 3 }),
+                        createTestSpellbook(),
+                        createStandardSyllablePool()
+                    );
+                game.battlefield.addMage(mage);
+            }
+        });
+        this.spawnEntity(EntityDebug, 364, 50, {
+            label: 'Remove Mage',
+            onclick: function() {
+                var mages = game.battlefield.sides.get(game.players[0]).mages
+                var mageToRemove = mages[mages.length - 1];
+                game.battlefield.removeMage(mageToRemove);
             }
         });
 	},
