@@ -22,15 +22,16 @@ EntityFieldSide = ig.Entity.extend({
 	applySettings: function(settings) {
         var side = this.model = settings.model,
             isAllied = allied(side.player, GUI.game.visualizedMainPlayer),
+            thirdOfHeight = this.size.y / 3,
             upperY = this.pos.y
-                + this.size.y * 1 / 4
-                - EntityMage.prototype.size.y / 2,
+                + thirdOfHeight / 2
+                - EntityPermanent.prototype.size.y / 2,
             middleY = this.pos.y
-                + this.size.y / 2
-                - EntityMage.prototype.size.y / 2,
+                + thirdOfHeight * 3 / 2
+                - EntityPermanent.prototype.size.y / 2,
             lowerY = this.pos.y
-                + this.size.y * 3 / 4
-                - EntityMage.prototype.size.y / 2;
+                + thirdOfHeight * 5 / 2
+                - EntityPermanent.prototype.size.y / 2;
 
         this.familiarsLine = { x: this.pos.x + this.size.x / 2, y: isAllied ? upperY : lowerY };
         this.othersLine = { x: this.pos.x + this.size.x / 2, y: middleY };
@@ -43,8 +44,7 @@ EntityFieldSide = ig.Entity.extend({
             numberOfFamiliars = side.permanents.filter(isFamiliar).length,
             numberOfOthers = side.permanents.length - numberOfFamiliars;
 
-
-        var familiarPadding = 4;
+        var familiarPadding = 8;
         side.permanents.filter(isFamiliar).forEach(function(familiar, index) {
             GUI.game.spawnEntity(
                 EntityPermanent,
