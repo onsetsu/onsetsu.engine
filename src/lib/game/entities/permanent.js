@@ -25,10 +25,20 @@ EntityPermanent = ig.Entity.extend({
 	draw: function() {
 		this.parent();
 
-        //var label = this.model.baseDelay + ': ' + (this.model.recurring === Action.recurring ? 'recu' : 'once'),
-        //    x = this.pos.x + this.animSheet.width / 2,
-        //    y = this.pos.y + this.animSheet.height / 4;
-        //GUI.Font.draw(label, x, y, ig.Font.ALIGN.CENTER);
+        // draw hp if present
+        if(this.model.hp) {
+            var hp = this.model.hp.toString(),
+                x = this.pos.x + this.animSheet.width,
+                y = this.pos.y + this.animSheet.height - GUI.Font.heightForString(hp);
+            GUI.Font.draw(hp, x, y, ig.Font.ALIGN.RIGHT);
+        }
+
+        // draw at if present
+        if(this.model.at) {
+            var at = this.model.at.toString(),
+                y = this.pos.y + this.animSheet.height - GUI.Font.heightForString(hp);
+            GUI.Font.draw(at, this.pos.x, y, ig.Font.ALIGN.LEFT);
+        }
 	}
 });
 
