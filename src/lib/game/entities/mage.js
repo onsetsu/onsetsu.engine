@@ -13,12 +13,14 @@ EntityMage = ig.Entity.extend({
 	init: function(x, y, settings) {
 		this.parent(x, y, settings);
 
-        this.applySettings(settings);
+        //this.applySettings(settings);
 	},
 	applySettings: function(settings) {
         this.model = settings.model;
 
 		this.addAnim('visible', 1, [0], true);
+
+		return this;
 	},
 	draw: function() {
 		this.parent();
