@@ -32,9 +32,15 @@ EntityFieldSide = ig.Entity.extend({
                 + this.size.y * 3 / 4
                 - EntityMage.prototype.size.y / 2;
 
-        this.familiarsLine = { x: this.pos.x + 100, y: isAllied ? upperY : lowerY };
-        this.othersLine = { x: this.pos.x + 50, y: middleY };
-        this.magesLine = { x: this.pos.x, y: isAllied ? lowerY : upperY };
+        this.familiarsLine = { x: this.pos.x + this.size.x / 2, y: isAllied ? upperY : lowerY };
+        this.othersLine = { x: this.pos.x + this.size.x / 2, y: middleY };
+        this.magesLine = { x: this.pos.x + this.size.x / 2, y: isAllied ? lowerY : upperY };
+
+        var numberOfMages = side.mages.length,
+            numberOfFamiliars = side.permanents.filter(function(permanent) {
+                return _(permanent.spellTypes).include(SpellType.Familiar);
+            }).length,
+            numberOfOthers = side.permanents.length - numberOfFamiliars;
 
         GUI.game.spawnEntity(
             EntityPermanent,
@@ -43,6 +49,7 @@ EntityFieldSide = ig.Entity.extend({
         ).applySettings({
             model: side.mages[0]
         });
+
         GUI.game.spawnEntity(
             EntityPermanent,
             this.othersLine.x,
@@ -50,13 +57,18 @@ EntityFieldSide = ig.Entity.extend({
         ).applySettings({
             model: side.mages[0]
         });
-        GUI.game.spawnEntity(
-            EntityMage,
-            this.magesLine.x,
-            this.magesLine.y
-        ).applySettings({
-            model: side.mages[0]
-        });
+
+
+        side.mages.forEach(function(mage, index) {
+            GUI.game.spawnEntity(
+                EntityMage,
+                this.magesLine.x + EntityMage.prototype.size.x * (index - numberOfMages / 2),
+                this.magesLine.y
+            ).applySettings({
+                model: mage
+            });
+        }, this);
+
         return this;
 
         var syllablePadding = 0;
