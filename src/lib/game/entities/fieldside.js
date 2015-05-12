@@ -35,7 +35,7 @@ EntityFieldSide = ig.Entity.extend({
 
         this.familiarsLine = { x: this.pos.x + this.size.x / 2, y: isAllied ? upperY : lowerY };
         this.othersLine = { x: this.pos.x + this.size.x / 2, y: middleY };
-        this.magesLine = { x: this.pos.x + this.size.x / 2, y: isAllied ? lowerY : upperY };
+        var magesLine = { x: this.pos.x + this.size.x / 2, y: isAllied ? lowerY : upperY };
 
         var isFamiliar = function(permanent) {
             return _(permanent.spellTypes).include(SpellType.Familiar);
@@ -66,16 +66,55 @@ EntityFieldSide = ig.Entity.extend({
             });
         }, this);
 
+        var entitiesByMage = new Map();
         var magePadding = 4;
-        side.mages.forEach(function(mage, index) {
-            GUI.game.spawnEntity(
-                EntityMage,
-                this.magesLine.x + (EntityMage.prototype.size.x + magePadding) * (index - numberOfMages / 2),
-                this.magesLine.y
-            ).applySettings({
-                model: mage
+        var adjustMages = function() {
+            var numberOfMages = side.mages.length;
+            side.mages.forEach(function(mage, index) {
+                if(entitiesByMage.has(mage)) {
+                    var entity = entitiesByMage.get(mage);
+                    entity.move({
+                        x: magesLine.x + (EntityMage.prototype.size.x + magePadding) * (index - numberOfMages / 2),
+                        y: magesLine.y
+                    }, 1.2);
+                } else {
+                    var entity = GUI.game.spawnEntity(
+                        EntityMage,
+                        magesLine.x + (EntityMage.prototype.size.x + magePadding) * (index - numberOfMages / 2),
+                        magesLine.y
+                    ).applySettings({
+                        model: mage
+                    });
+
+                    entitiesByMage.set(mage, entity);
+                }
+            }, this);
+
+            entitiesByMage.forEach(function(entity, mage) {
+                if(!_(side.mages).contains(mage)) {
+                    entity.kill();
+                    entitiesByMage.delete(mage);
+                }
             });
-        }, this);
+        }
+
+        adjustMages();
+
+        game.battlefield.addMage = _.wrap(game.battlefield.addMage.bind(game.battlefield), (function(original, mage) {
+            var returnValue = original(mage);
+
+            adjustMages();
+
+            return returnValue;
+        }).bind(this));
+
+        game.battlefield.removeMage = _.wrap(game.battlefield.removeMage.bind(game.battlefield), (function(original, mage) {
+            var returnValue = original(mage);
+
+            adjustMages();
+
+            return returnValue;
+        }).bind(this));
 
         return this;
 	},
