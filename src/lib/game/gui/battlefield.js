@@ -33,7 +33,9 @@ GUI.Battlefield = ig.Class.extend({
 	    });
 	},
 
-	update: function() {}
+	update: function() {
+	    // TODO: check for changes of FieldSides on Battlefield
+	}
 });
 
 });
