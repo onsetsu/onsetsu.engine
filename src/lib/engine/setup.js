@@ -197,6 +197,22 @@ configureGameForTwoPlayers = function() {
     hp: 5,
     at: 2
   }), mages[0]);
+  game.battlefield.addPermanent(new Permanent({
+    spellTypes: [SpellType.Familiar],
+    hp: 2,
+    at: 4
+  }), mages[0]);
+  game.battlefield.addPermanent(new Permanent({
+    spellTypes: [SpellType.Enchantment, SpellType.Familiar],
+    hp: 7,
+    at: 1
+  }), mages[1]);
+  game.battlefield.addPermanent(new Permanent({
+    spellTypes: [SpellType.Enchantment]
+  }), mages[1]);
+  game.battlefield.addPermanent(new Permanent({
+    spellTypes: [SpellType.Artifact]
+  }), mages[1]);
 
   game.timeline.addAction(new Action({ execute: function() { console.log('First'); }}, 2, Action.recurring));
   game.timeline.addAction(new Action({ execute: function() { console.log('Second'); }}, 3, Action.oneShot));
