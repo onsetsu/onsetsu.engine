@@ -44,31 +44,33 @@ EntityFieldSide = ig.Entity.extend({
             numberOfOthers = side.permanents.length - numberOfFamiliars;
 
 
+        var familiarPadding = 4;
         side.permanents.filter(isFamiliar).forEach(function(familiar, index) {
             GUI.game.spawnEntity(
                 EntityPermanent,
-                this.familiarsLine.x + EntityPermanent.prototype.size.x * (index - numberOfFamiliars / 2),
+                this.familiarsLine.x + (EntityPermanent.prototype.size.x + familiarPadding) * (index - numberOfFamiliars / 2),
                 this.familiarsLine.y
             ).applySettings({
                 model: familiar
             });
         }, this);
 
+        var otherPadding = 4;
         side.permanents.filter(function(permanent) { return !isFamiliar(permanent); }).forEach(function(other, index) {
             GUI.game.spawnEntity(
                 EntityPermanent,
-                this.othersLine.x + EntityPermanent.prototype.size.x * (index - numberOfOthers / 2),
+                this.othersLine.x + (EntityPermanent.prototype.size.x + otherPadding) * (index - numberOfOthers / 2),
                 this.othersLine.y
             ).applySettings({
                 model: other
             });
         }, this);
 
-        // TODO: include padding
+        var magePadding = 4;
         side.mages.forEach(function(mage, index) {
             GUI.game.spawnEntity(
                 EntityMage,
-                this.magesLine.x + EntityMage.prototype.size.x * (index - numberOfMages / 2),
+                this.magesLine.x + (EntityMage.prototype.size.x + magePadding) * (index - numberOfMages / 2),
                 this.magesLine.y
             ).applySettings({
                 model: mage
