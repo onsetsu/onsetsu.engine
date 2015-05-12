@@ -12,25 +12,35 @@ ig.module(
 GUI.Battlefield = ig.Class.extend({
     paddingBetweenSpells: 4,
 	init: function() {
-        var upperPosition = { x: 700, y: 100 },
-            lowerPosition = { x: 700, y: 300 },
+        var upperPosition = { x: 600, y: 100 },
+            lowerPosition = { x: 600, y: 300 },
             upperSidesPadding = 0,
             lowerSidesPadding = 0;
 
-	    game.battlefield.sides.forEach(function(side, player) {
-	        var isAllied = allied(player, GUI.game.visualizedMainPlayer);
-    	    GUI.game.spawnEntity(
-    	        EntityFieldSide,
-    	        (isAllied ? lowerPosition : upperPosition).x,
-    	        (isAllied ? lowerPosition : upperPosition).y
-    	            + (isAllied ? lowerSidesPadding : upperSidesPadding)
-    	    ).applySettings({
-    	        model: side
-    	    });
+        var spawnSide = function(side, player) {
+            var isAllied = allied(player, GUI.game.visualizedMainPlayer);
+            GUI.game.spawnEntity(
+                EntityFieldSide,
+                (isAllied ? lowerPosition : upperPosition).x
+                    + (isAllied ? lowerSidesPadding : upperSidesPadding),
+                (isAllied ? lowerPosition : upperPosition).y
+            ).applySettings({
+                model: side
+            });
             isAllied ?
                 lowerSidesPadding += EntityFieldSide.prototype.size.x :
                 upperSidesPadding += EntityFieldSide.prototype.size.x;
-	    });
+        };
+
+	    game.battlefield.sides.forEach(spawnSide);
+
+        game.battlefield.addPlayer = _.wrap(game.battlefield.addPlayer.bind(game.battlefield), (function(original, player) {
+            var returnValue = original(player);
+
+            spawnSide(game.battlefield.sides.get(player), player);
+
+            return returnValue;
+        }).bind(this));
 	},
 
 	update: function() {
