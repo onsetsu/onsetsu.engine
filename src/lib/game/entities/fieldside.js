@@ -16,7 +16,7 @@ EntityFieldSide = ig.Entity.extend({
 	init: function(x, y, settings) {
 		this.parent(x, y, settings);
 
-		this.addAnim('visible', 1, [0], true);
+		//this.addAnim('visible', 1, [0], true);
         //this.applySettings(settings);
 	},
 	applySettings: function(settings) {
@@ -36,29 +36,35 @@ EntityFieldSide = ig.Entity.extend({
         this.othersLine = { x: this.pos.x + this.size.x / 2, y: middleY };
         this.magesLine = { x: this.pos.x + this.size.x / 2, y: isAllied ? lowerY : upperY };
 
+        var isFamiliar = function(permanent) {
+            return _(permanent.spellTypes).include(SpellType.Familiar);
+        }
         var numberOfMages = side.mages.length,
-            numberOfFamiliars = side.permanents.filter(function(permanent) {
-                return _(permanent.spellTypes).include(SpellType.Familiar);
-            }).length,
+            numberOfFamiliars = side.permanents.filter(isFamiliar).length,
             numberOfOthers = side.permanents.length - numberOfFamiliars;
 
-        GUI.game.spawnEntity(
-            EntityPermanent,
-            this.familiarsLine.x,
-            this.familiarsLine.y
-        ).applySettings({
-            model: side.mages[0]
-        });
 
-        GUI.game.spawnEntity(
-            EntityPermanent,
-            this.othersLine.x,
-            this.othersLine.y
-        ).applySettings({
-            model: side.mages[0]
-        });
+        side.permanents.filter(isFamiliar).forEach(function(familiar, index) {
+            GUI.game.spawnEntity(
+                EntityPermanent,
+                this.familiarsLine.x + EntityPermanent.prototype.size.x * (index - numberOfFamiliars / 2),
+                this.familiarsLine.y
+            ).applySettings({
+                model: familiar
+            });
+        }, this);
 
+        side.permanents.filter(function(permanent) { return !isFamiliar(permanent); }).forEach(function(other, index) {
+            GUI.game.spawnEntity(
+                EntityPermanent,
+                this.othersLine.x + EntityPermanent.prototype.size.x * (index - numberOfOthers / 2),
+                this.othersLine.y
+            ).applySettings({
+                model: other
+            });
+        }, this);
 
+        // TODO: include padding
         side.mages.forEach(function(mage, index) {
             GUI.game.spawnEntity(
                 EntityMage,
@@ -70,29 +76,6 @@ EntityFieldSide = ig.Entity.extend({
         }, this);
 
         return this;
-
-        var syllablePadding = 0;
-        spell.getSequences().forEach(function(sequence, sequenceIndex) {
-            sequence.getSyllables().forEach(function(syllable, syllableIndex) {
-                GUI.game.spawnEntity(
-                    EntitySyllable,
-                    this.pos.x + syllablePadding,
-                    this.pos.y + GUI.Font.heightForString(''),
-                    { model: syllable }
-                );
-                syllablePadding += this.animSheet.width;
-            }, this);
-            syllablePadding += this.sequencePadding;
-        }, this);
-
-        this.size = {
-            x: Math.max(
-                GUI.Font.widthForString(this.model.name),
-                GUI.Font.widthForString(this.model.effectText)),
-            y: GUI.Font.heightForString(this.model.name) +
-                this.animSheet.height +
-                GUI.Font.heightForString(this.model.effectText)
-        };
 	},
 	draw: function() {
 		this.parent();
