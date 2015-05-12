@@ -25,10 +25,19 @@ EntityMage = ig.Entity.extend({
 	draw: function() {
 		this.parent();
 
-        //var label = this.model.baseDelay + ': ' + (this.model.recurring === Action.recurring ? 'recu' : 'once'),
-        //    x = this.pos.x + this.animSheet.width / 2,
-        //    y = this.pos.y + this.animSheet.height / 4;
-        //GUI.Font.draw(label, x, y, ig.Font.ALIGN.CENTER);
+        // draw hp
+        var hp = this.model.hp;
+        var x = this.pos.x + this.animSheet.width;
+        GUI.Font.draw(hp, x, this.pos.y, ig.Font.ALIGN.RIGHT);
+
+        // draw sp
+        // TODO: split into currentSP and maxSP
+        var sp = this.model.sp.toString(),
+            x = this.pos.x + this.animSheet.width,
+            y = this.pos.y + this.animSheet.height - GUI.Font.heightForString(sp);
+        GUI.Font.draw(sp, x, y, ig.Font.ALIGN.RIGHT);
+
+        // TODO: draw Attack value if present
 	}
 });
 
