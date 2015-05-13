@@ -153,6 +153,15 @@ GUI.Game = ig.Game.extend({
                 game.battlefield.removePermanent(permanent, mage);
             }
         });
+        // TODO: works, but does not trigger rerendering yet
+        EntityDebug.spawn({
+            label: 'Become Artifact',
+            onclick: function() {
+                var side = game.battlefield.sides.get(game.players[0])
+                    permanent = _.sample(side.permanents);
+                permanent.spellTypes = [SpellType.Artifact];
+            }
+        });
 	},
 
 	update: function() {
