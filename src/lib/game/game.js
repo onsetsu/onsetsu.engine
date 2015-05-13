@@ -89,8 +89,13 @@ GUI.Game = ig.Game.extend({
                 }
         	}
         });
+        EntityDebug.pos = { x: 200, y: 10 };
+        EntityDebug.spawn = function(settings) {
+            GUI.game.spawnEntity(EntityDebug, EntityDebug.pos.x, EntityDebug.pos.y, settings);
+                EntityDebug.pos.x += 66;
+        };
 
-        this.spawnEntity(EntityDebug, 236, 50, {
+        EntityDebug.spawn({
             label: 'Add Player',
             onclick: function() {
                 var player = new Player(),
@@ -106,7 +111,7 @@ GUI.Game = ig.Game.extend({
                 game.battlefield.addMage(mage);
             }
         });
-        this.spawnEntity(EntityDebug, 300, 50, {
+        EntityDebug.spawn({
             label: 'Add Mage',
             onclick: function() {
                 var mage = new Mage(
@@ -120,7 +125,7 @@ GUI.Game = ig.Game.extend({
                 game.battlefield.addMage(mage);
             }
         });
-        this.spawnEntity(EntityDebug, 364, 50, {
+        EntityDebug.spawn({
             label: 'Remove Mage',
             onclick: function() {
                 var mages = game.battlefield.sides.get(game.players[0]).mages
