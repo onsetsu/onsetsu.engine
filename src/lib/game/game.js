@@ -75,7 +75,7 @@ GUI.Game = ig.Game.extend({
 
                 if(this.settings.onclick && ig.input.pressed('leftclick') && GUI.game.hovered(this)) {
                     console.log(this.settings.label);
-                    this.settings.onclick();
+                    this.settings.onclick.call(this);
                 }
         	},
         	draw: function() {
@@ -160,6 +160,12 @@ GUI.Game = ig.Game.extend({
                 var side = game.battlefield.sides.get(game.players[0])
                     permanent = _.sample(side.permanents);
                 permanent.spellTypes = [SpellType.Artifact];
+            }
+        });
+        EntityDebug.spawn({
+            label: 'Selectable',
+            onclick: function() {
+                this.visualizeSelectable(!this.shouldVisualizeSelectable);
             }
         });
 	},
@@ -271,7 +277,6 @@ GUI.Game = ig.Game.extend({
 	}
 });
 
-var originalUpdate = ig.Entity.prototype.update;
 ig.Entity.inject({
 	move: function(position, time) {
 	    this.tween = {
@@ -282,7 +287,7 @@ ig.Entity.inject({
 	    };
 	},
 	update: function() {
-        var returnValue = originalUpdate.apply(this, arguments);
+        var returnValue = this.parent();
 
         if(this.tween) {
             // tween finished?
@@ -310,8 +315,35 @@ ig.Entity.inject({
         }
 
         return returnValue;
+	},
+	visualizeSelectable: function(value) {
+	    this.shouldVisualizeSelectable = value;
+	    this.dashOffset = 0;
+	    this.dashOffsetSpeed = 40;
+	},
+	draw: function() {
+	    this.parent();
+
+        if(this.shouldVisualizeSelectable) {
+            ig.system.context.save()
+            ig.system.context.strokeStyle = this.colors.selectable;
+            ig.system.context.setLineDash([4,4]);
+            this.dashOffset += this.dashOffsetSpeed * ig.system.tick;
+            while(this.dashOffset > 16) { this.dashOffset -= 16; }
+            ig.system.context.lineDashOffset = -this.dashOffset;
+            ig.system.context.lineWidth = 2.0;
+            ig.system.context.strokeRect(
+                ig.system.getDrawPos(this.pos.x.round() - ig.game.screen.x) - 0.5,
+                ig.system.getDrawPos(this.pos.y.round() - ig.game.screen.y) - 0.5,
+                this.size.x * ig.system.scale,
+                this.size.y * ig.system.scale
+            );
+            ig.system.context.restore();
+        }
 	}
 });
+
+ig.Entity.prototype.colors.selectable = '#ff0'
 
 return;
 
