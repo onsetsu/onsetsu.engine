@@ -133,6 +133,26 @@ GUI.Game = ig.Game.extend({
                 game.battlefield.removeMage(mageToRemove);
             }
         });
+        EntityDebug.spawn({
+            label: 'Add Familiar',
+            onclick: function() {
+                var mage = game.battlefield.sides.get(game.players[0]).mages[0];
+                game.battlefield.addPermanent(new Permanent({
+                    spellTypes: [SpellType.Familiar],
+                    hp: 2,
+                    at: 3
+                }), mage);
+            }
+        });
+        EntityDebug.spawn({
+            label: 'Remove Familiar',
+            onclick: function() {
+                var side = game.battlefield.sides.get(game.players[0])
+                    mage = side.mages[0],
+                    permanent = side.permanents[0];
+                game.battlefield.removePermanent(permanent, mage);
+            }
+        });
 	},
 
 	update: function() {
