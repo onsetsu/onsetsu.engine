@@ -40,31 +40,73 @@ EntityFieldSide = ig.Entity.extend({
         var isFamiliar = function(permanent) {
             return _(permanent.spellTypes).include(SpellType.Familiar);
         }
-        var numberOfMages = side.mages.length,
-            numberOfFamiliars = side.permanents.filter(isFamiliar).length,
-            numberOfOthers = side.permanents.length - numberOfFamiliars;
 
+        var entitiesByPermanent = new Map();
         var familiarPadding = 8;
-        side.permanents.filter(isFamiliar).forEach(function(familiar, index) {
-            GUI.game.spawnEntity(
-                EntityPermanent,
-                this.familiarsLine.x + (EntityPermanent.prototype.size.x + familiarPadding) * (index - numberOfFamiliars / 2),
-                this.familiarsLine.y
-            ).applySettings({
-                model: familiar
-            });
-        }, this);
-
         var otherPadding = 4;
-        side.permanents.filter(function(permanent) { return !isFamiliar(permanent); }).forEach(function(other, index) {
-            GUI.game.spawnEntity(
-                EntityPermanent,
-                this.othersLine.x + (EntityPermanent.prototype.size.x + otherPadding) * (index - numberOfOthers / 2),
-                this.othersLine.y
-            ).applySettings({
-                model: other
+        var adjustPermanents = (function() {
+            var numberOfFamiliars = side.permanents.filter(isFamiliar).length,
+                numberOfOthers = side.permanents.length - numberOfFamiliars,
+                familiarIndex = 0,
+                otherIndex = 0;
+            side.permanents.forEach(function(permanent, index) {
+                var permanentIsFamiliar = isFamiliar(permanent),
+                    posX = permanentIsFamiliar ?
+                        this.familiarsLine.x + (EntityPermanent.prototype.size.x + familiarPadding) * (familiarIndex - numberOfFamiliars / 2) :
+                        this.othersLine.x + (EntityPermanent.prototype.size.x + otherPadding) * (otherIndex - numberOfOthers / 2),
+                    posY = permanentIsFamiliar ?
+                        this.familiarsLine.y :
+                        this.othersLine.y;
+                if(permanentIsFamiliar) {
+                    familiarIndex += 1;
+                } else {
+                    otherIndex += 1;
+                }
+                if(entitiesByPermanent.has(permanent)) {
+                    var entity = entitiesByPermanent.get(permanent);
+                    entity.move({
+                        x: posX,
+                        y: posY
+                    }, 1.2);
+                } else {
+                    var entity = GUI.game.spawnEntity(
+                        EntityPermanent,
+                        posX,
+                        posY
+                    ).applySettings({
+                        model: permanent
+                    });
+
+                    entitiesByPermanent.set(permanent, entity);
+                }
+            }, this);
+
+            // remove unused entities
+            entitiesByPermanent.forEach(function(entity, permanent) {
+                if(!_(side.permanents).contains(permanent)) {
+                    entity.kill();
+                    entitiesByPermanent.delete(permanent);
+                }
             });
-        }, this);
+        }).bind(this);
+
+        adjustPermanents();
+
+        game.battlefield.addPermanent = _.wrap(game.battlefield.addPermanent.bind(game.battlefield), (function(original, permanent, mage) {
+            var returnValue = original(permanent, mage);
+
+            adjustPermanents();
+
+            return returnValue;
+        }).bind(this));
+
+        game.battlefield.removePermanent = _.wrap(game.battlefield.removePermanent.bind(game.battlefield), (function(original, permanent, mage) {
+            var returnValue = original(permanent, mage);
+
+            adjustPermanents();
+
+            return returnValue;
+        }).bind(this));
 
         var entitiesByMage = new Map();
         var magePadding = 4;
