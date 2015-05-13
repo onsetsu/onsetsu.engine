@@ -91,7 +91,7 @@ GUI.Timeline = ig.Class.extend({
         // TODO: HACK: move this method to GUI.Timeline.prototype
         // use DebugEntities for this
         this.update =  function() {
-            if(ig.input.pressed('leftclick') && GUI.game.hovered(this.timelineSlots[0])) {
+            if(ig.input.pressed('leftclick') && ig.input.hover(this.timelineSlots[0])) {
                 var currentAction = game.timeline.nextAction();
                 if(currentAction) {
                     console.log('ACTION', currentAction);
