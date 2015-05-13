@@ -89,7 +89,7 @@ GUI.Game = ig.Game.extend({
                 }
         	}
         });
-        EntityDebug.pos = { x: 200, y: 10 };
+        EntityDebug.pos = { x: 200, y: 600 };
         EntityDebug.spawn = function(settings) {
             GUI.game.spawnEntity(EntityDebug, EntityDebug.pos.x, EntityDebug.pos.y, settings);
                 EntityDebug.pos.x += 66;
