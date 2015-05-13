@@ -10,6 +10,10 @@ var FieldSide = function(player) {
 FieldSide.prototype.addPermanent = function(permanent) {
   this.permanents.push(permanent);
 };
+FieldSide.prototype.removePermanent = function(permanent) {
+  var index = this.permanents.indexOf(permanent);
+  this.permanents.splice(index, 1);
+};
 FieldSide.prototype.addMage = function(mage) {
   this.mages.push(mage);
 };
@@ -29,6 +33,9 @@ Battlefield.prototype.addPlayer = function(player) {
 // TODO: remove player has to remove all associated permanents and effects (the complete FieldSide)
 Battlefield.prototype.addPermanent = function(permanent, mage) {
   this.sides.get(mage.controller).addPermanent(permanent);
+};
+Battlefield.prototype.removePermanent = function(permanent, mage) {
+  this.sides.get(mage.controller).removePermanent(permanent);
 };
 Battlefield.prototype.addMage = function(mage) {
   this.sides.get(mage.controller).addMage(mage);
