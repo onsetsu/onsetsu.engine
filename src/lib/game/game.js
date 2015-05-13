@@ -284,7 +284,7 @@ ig.Entity.inject({
 	    };
 	},
 	update: function() {
-        var returnValue = this.parent();
+        this.parent();
 
         if(this.tween) {
             // tween finished?
@@ -292,7 +292,7 @@ ig.Entity.inject({
                 this.pos.x = this.tween.endPosition.x;
                 this.pos.y = this.tween.endPosition.y;
                 this.tween = undefined;
-                return returnValue;
+                return;
             }
 
             var easeQuarticInOut = function(a) {
@@ -310,8 +310,6 @@ ig.Entity.inject({
                 (this.tween.endPosition.y - this.tween.startPosition.y) *
                 easeQuarticInOut((this.tween.timeDone / this.tween.duration));
         }
-
-        return returnValue;
 	},
 	visualizeSelectable: function(value) {
 	    this.shouldVisualizeSelectable = value;
