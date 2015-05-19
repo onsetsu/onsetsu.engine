@@ -252,8 +252,8 @@ SpellChecker.prototype.stripeMatchesSpell = function(index, stripe, spell, direc
 // TODO: add toString methods
 // Direction enum
 Direction = {
-  vertical: {},
-  horizontal: {}
+  vertical: { toString: function() { return 'Direction.vertical'; }},
+  horizontal: { toString: function() { return 'Direction.horizontal'; }}
 };
 
 var SpellBook = function SpellBook() {
