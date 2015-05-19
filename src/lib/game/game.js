@@ -200,9 +200,9 @@ GUI.Game = ig.Game.extend({
                 var syllableIndex = hoveredField.model.index,
                     syllableBoard = this.syllableBoard.getModel(),
                     syllable = this.dragEntity.model,
-                    callback = function(spell, startIndex, direction) {
-                        console.log("CAST on Stack", spell, startIndex, direction);
-                        game.stack.push(spell);
+                    callback = function(ConcreteSpell, startIndex, direction) {
+                        console.log("CAST on Stack", ConcreteSpell, startIndex, direction);
+                        game.stack.push(new ConcreteSpell());
                     };
 
                 tryPlaceSyllableAndCastSpells(

@@ -26,7 +26,7 @@ createStandardSyllablePool = function() {
 };
 
 createTestSpellbook = function() {
-  var Fireball = new Spell(
+  var Fireball = Spell.createSpell(
     'Fireball',
     [
       new SyllableSequence([
@@ -35,11 +35,10 @@ createTestSpellbook = function() {
         Syllables.NIF
       ], SyllableSequence.ordered),
     ],
-    'Deal 2 Damage.',
-    function effect() {}
+    'Deal 2 Damage.'
   );
 
-  var GreatFireball = new Spell(
+  var GreatFireball = Spell.createSpell(
     'Great Fireball',
     [
       new SyllableSequence([
@@ -50,11 +49,10 @@ createTestSpellbook = function() {
         Syllables.GAM
       ], SyllableSequence.ordered),
     ],
-    'Deal 5 Damage.',
-    function effect() {}
+    'Deal 5 Damage.'
   );
 
-  var KissOfDeath = new Spell(
+  var KissOfDeath = Spell.createSpell(
      'Kiss of Death',
      [
        new SyllableSequence([
@@ -70,11 +68,10 @@ createTestSpellbook = function() {
          Syllables.GAM
        ], SyllableSequence.ordered),
      ],
-     'Destroy a Mage.',
-     function effect() {}
+     'Destroy a Mage.'
    );
 
-  var TurquoiseInferno = new Spell(
+  var TurquoiseInferno = Spell.createSpell(
      'Turquoise Inferno',
      [
        new SyllableSequence([
@@ -86,11 +83,10 @@ createTestSpellbook = function() {
          Syllables['13TH_SYLLABLE']
        ], SyllableSequence.ordered),
      ],
-     'Massive AoE Damage using the 7th Element.',
-     function effect() {}
+     'Massive AoE Damage using the 7th Element.'
    );
 
-  var SwordOfGeminiWings = new Spell(
+  var SwordOfGeminiWings = Spell.createSpell(
      'Sword of Gemini Wings',
      [
        new SyllableSequence([
@@ -107,11 +103,10 @@ LightForge.
 If [this] was lightforged: Cast Schild of Gemini Wings.
 Equip to a Light Familiar.
 [this] and the equipped familiar get:
-"If [this] battles an enemy Familiar: reduce its AT by 1."`,
-     function effect() {}
+"If [this] battles an enemy Familiar: reduce its AT by 1."`
    );
 
-  var ElementCurse = new Spell(
+  var ElementCurse = Spell.createSpell(
      'Element Curse',
      [
        new SyllableSequence([
@@ -122,11 +117,10 @@ Equip to a Light Familiar.
        ], SyllableSequence.ordered),
      ],
 `Target opponent disables an Element Syllable.
-You may place a copy of that Syllable.`,
-     function effect() {}
+You may place a copy of that Syllable.`
    );
 
-  var MeteorStrike = new Spell(
+  var MeteorStrike = Spell.createSpell(
      'Meteor Strike',
      [
        new SyllableSequence([
@@ -136,11 +130,10 @@ You may place a copy of that Syllable.`,
          Syllables.NIF
        ], SyllableSequence.ordered),
      ],
-`Delay 5: Deal 4 Damage to a Familiar.`,
-     function effect() {}
+`Delay 5: Deal 4 Damage to a Familiar.`
    );
 
-  var Brocky = new Spell(
+  var Brocky = Spell.createSpell(
      'Brocky',
      [
        new SyllableSequence([
@@ -151,8 +144,7 @@ You may place a copy of that Syllable.`,
          Syllables.EX
        ], SyllableSequence.ordered),
      ],
-`2/5 Golem Artifact Familiar`,
-     function effect() {}
+`2/5 Golem Artifact Familiar`
    );
 
   var spellBook = new SpellBook();

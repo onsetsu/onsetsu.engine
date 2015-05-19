@@ -21,17 +21,25 @@ SyllableSequence.prototype.getLength = function() {
 SyllableSequence.ordered = true;
 SyllableSequence.unordered = false;
 
-var Spell = function Spell(name, syllableSequences, effectText, effect) {
-  this.name = name;
-  this.syllableSequences = syllableSequences;
-  this.effectText = effectText;
-  this.effect = effect;
-};
-Spell.prototype.getSequences = function() {
-  return this.syllableSequences;
-};
-Spell.prototype.getSequence = function(index) {
-  return this.syllableSequences[index];
+var Spell = function() {};
+
+// factory method to create new concrete Spells
+Spell.createSpell = function(name, syllableSequences, effectText) {
+
+  var ConcreteSpellClass = function() {};
+
+  ConcreteSpellClass.spellName = name;
+
+  ConcreteSpellClass.effectText = effectText;
+
+  ConcreteSpellClass.getBaseSequences = function() {
+    return syllableSequences;
+  };
+  ConcreteSpellClass.getBaseSequence = function(index) {
+    return syllableSequences[index];
+  };
+
+  return ConcreteSpellClass;
 };
 
 /**

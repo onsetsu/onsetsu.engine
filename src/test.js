@@ -23,7 +23,7 @@ test(function() {
 
 test(function() {
   var spellsCasted = 0;
-  var TestSkill = new Spell(
+  var TestSkill = Spell.createSpell(
     'TestSkill',
     [
       new SyllableSequence([
@@ -33,8 +33,7 @@ test(function() {
         Syllables.NIF
       ], SyllableSequence.ordered),
     ],
-    'Test description.',
-    function effect() {}
+    'Test description.'
   );
 
   var TestMageBoard = new SyllableBoard({ x: 8, y: 8 });

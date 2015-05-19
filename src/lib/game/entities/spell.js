@@ -22,7 +22,7 @@ EntitySpell = ig.Entity.extend({
         var spell = this.model = settings.model;
 
         var syllablePadding = 0;
-        spell.getSequences().forEach(function(sequence, sequenceIndex) {
+        spell.getBaseSequences().forEach(function(sequence, sequenceIndex) {
             sequence.getSyllables().forEach(function(syllable, syllableIndex) {
                 GUI.game.spawnEntity(
                     EntitySyllable,
@@ -37,9 +37,9 @@ EntitySpell = ig.Entity.extend({
 
         this.size = {
             x: Math.max(
-                GUI.Font.widthForString(this.model.name),
+                GUI.Font.widthForString(this.model.spellName),
                 GUI.Font.widthForString(this.model.effectText)),
-            y: GUI.Font.heightForString(this.model.name) +
+            y: GUI.Font.heightForString(this.model.spellName) +
                 this.animSheet.height +
                 GUI.Font.heightForString(this.model.effectText)
         };
@@ -48,7 +48,7 @@ EntitySpell = ig.Entity.extend({
 		// draw name
 		var x = this.pos.x,
             y = this.pos.y;
-		GUI.Font.draw(this.model.name, x, y, ig.Font.ALIGN.LEFT);
+		GUI.Font.draw(this.model.spellName, x, y, ig.Font.ALIGN.LEFT);
 
 		// draw effect
 		var y = this.pos.y + this.animSheet.height + GUI.Font.heightForString('');

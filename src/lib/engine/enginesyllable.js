@@ -213,10 +213,10 @@ SpellChecker.prototype.checkForSpell = function(index, board, spell, callback) {
 // does only support a single sequence so far
 // does only support ordered sequences so far
 SpellChecker.prototype.stripeMatchesSpell = function(index, stripe, spell, direction, callback) {
-  var sequence = spell.getSequence(0),
+  var sequence = spell.getBaseSequence(0),
       indexOnStripe = direction === Direction.vertical ? index.y : index.x;
 
-  if(spell.getSequences().length !== 1) { throw new Error('Multiple Sequences not supported'); }
+  if(spell.getBaseSequences().length !== 1) { throw new Error('Multiple Sequences not supported'); }
   if(sequence.ordered === SyllableSequence.unordered) { throw new Error('Unordered Sequences not supported'); }
 
   function matchesStart(i) {
