@@ -53,7 +53,7 @@ GUI.Timeline = ig.Class.extend({
             return entity;
         }).bind(this);
 
-        var moveAllActions = (function() {
+        var moveAllActions = this.moveAllActions = (function() {
             this.entitiesByAction.forEach(function(entity, action) {
                 entity.move(getEntityActionPosition(action), 1.5);
             });
@@ -87,28 +87,8 @@ GUI.Timeline = ig.Class.extend({
             moveAllActions();
             return returnValue;
         }).bind(this));
-
-        // TODO: HACK: move this method to GUI.Timeline.prototype
-        // use DebugEntities for this
-        this.update =  function() {
-            if(ig.input.pressed('leftclick') && ig.input.hover(this.timelineSlots[0])) {
-                var currentAction = game.timeline.nextAction();
-                if(currentAction) {
-                    console.log('ACTION', currentAction);
-                    // TODO: Move this to engine
-                    if(currentAction.recurring === Action.recurring) {
-                        game.timeline.resetAction(currentAction);
-                    } else {
-                        game.timeline.removeAction(currentAction);
-                    }
-                    moveAllActions();
-                } else {
-                    game.timeline.advance();
-                }
-            }
-        }
 	},
-
+    update: function() {}
 });
 
 });

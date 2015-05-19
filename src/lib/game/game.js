@@ -164,6 +164,24 @@ GUI.Game = ig.Game.extend({
                 this.visualizeSelectable(!this.shouldVisualizeSelectable);
             }
         });
+        EntityDebug.spawn({
+            label: 'Advance Time',
+            onclick: function() {
+                var currentAction = game.timeline.nextAction();
+                if(currentAction) {
+                    console.log('ACTION', currentAction);
+
+                    if(currentAction.recurring === Action.recurring) {
+                        game.timeline.resetAction(currentAction);
+                    } else {
+                        game.timeline.removeAction(currentAction);
+                    }
+                    GUI.game.timeline.moveAllActions();
+                } else {
+                    game.timeline.advance();
+                }
+            }
+        });
 	},
 
 	update: function() {
