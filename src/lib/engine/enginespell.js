@@ -26,7 +26,9 @@ var Spell = function() {};
 // factory method to create new concrete Spells
 Spell.createSpell = function(name, syllableSequences, effectText) {
 
-  var ConcreteSpellClass = function() {};
+  var ConcreteSpellClass = function() {
+    this.SpellClass = ConcreteSpellClass;
+  };
 
   ConcreteSpellClass.spellName = name;
 
