@@ -182,6 +182,43 @@ GUI.Game = ig.Game.extend({
                 }
             }
         });
+        EntityDebug.spawn({
+            label: 'Battle Test',
+            onclick: function() {
+                var side1 = game.battlefield.sides.get(game.players[0]),
+                    combatant1 = _(side1.permanents).find(function(perm) {
+                        return _(perm.spellTypes).contains(SpellType.Familiar);
+                    }),
+                    combatant1Entity = GUI.game.battlefield.entitiesBySide
+                        .get(side1)
+                        .entitiesByPermanent.get(combatant1);
+                var side2 = game.battlefield.sides.get(game.players[1]),
+                    combatant2 = _(side2.permanents).find(function(perm) {
+                        return _(perm.spellTypes).contains(SpellType.Familiar);
+                    }),
+                    combatant2Entity = GUI.game.battlefield.entitiesBySide
+                        .get(side2)
+                        .entitiesByPermanent.get(combatant2);
+
+                combatant1Entity.drawBattleLine({
+                    target: combatant2Entity,
+                    duration: 2,
+                    then: function() {
+                        function battle(combatant1, combatant2) {
+                            function attack(attacker, defender) {
+                                if(_.isNumber(attacker.at)) {
+                                    defender.hp -= attacker.at
+                                }
+                            };
+                            attack(combatant1, combatant2);
+                            attack(combatant2, combatant1);
+                        };
+                        battle(combatant1, combatant2);
+                        console.log("battle ended");
+                    }
+                });
+            }
+        });
 	},
 
 	update: function() {
@@ -219,7 +256,7 @@ GUI.Game = ig.Game.extend({
                     syllableBoard = this.syllableBoard.getModel(),
                     syllable = this.dragEntity.model,
                     callback = function(ConcreteSpell, startIndex, direction) {
-                        console.log("CAST on Stack", ConcreteSpell, startIndex, direction);
+                        console.log('CAST on Stack', ConcreteSpell, startIndex, ''+direction);
                         game.stack.push(new ConcreteSpell());
                     };
 
@@ -229,6 +266,16 @@ GUI.Game = ig.Game.extend({
                     syllable,
                     callback
                 );
+
+                if(!game.stack.empty()) {
+                    console.log('Process stack');
+
+                    var spell = game.stack.pop();
+                    while(spell) {
+                        console.log('Resolve', spell);
+                        spell = game.stack.pop();
+                    }
+                }
             }
 
             this.dragEntity.kill();
@@ -334,6 +381,11 @@ ig.Entity.inject({
 	    this.dashOffset = 0;
 	    this.dashOffsetSpeed = 40;
 	},
+	drawBattleLine: function(options) {
+	    this.battleLineDrawing = options;
+        this.battleLineTargetDashOffset = 0;
+        this.battleLineTargetDashOffsetSpeed = 80;
+	},
 	draw: function() {
 	    this.parent();
 
@@ -353,9 +405,39 @@ ig.Entity.inject({
             );
             ig.system.context.restore();
         }
-	}
+
+        if(this.battleLineDrawing) {
+            ig.system.context.save()
+            ig.system.context.strokeStyle = this.colors.battleLine;
+            ig.system.context.setLineDash([16,16]);
+            this.battleLineTargetDashOffset += this.battleLineTargetDashOffsetSpeed * ig.system.tick;
+            while(this.battleLineTargetDashOffset > 64) { this.battleLineTargetDashOffset -= 64; }
+            ig.system.context.lineDashOffset = -this.battleLineTargetDashOffset;
+            ig.system.context.lineWidth = 4.0;
+            ig.system.context.beginPath();
+            ig.system.context.moveTo(
+                this.pos.x + this.size.x / 2,
+                this.pos.y + this.size.y / 2
+            );
+            ig.system.context.lineTo(
+                this.battleLineDrawing.target.pos.x + this.battleLineDrawing.target.size.x / 2,
+                this.battleLineDrawing.target.pos.y + this.battleLineDrawing.target.size.y / 2
+            );
+            ig.system.context.stroke();
+            ig.system.context.restore();
+
+            this.battleLineDrawing.duration -= ig.system.tick;
+            if(this.battleLineDrawing.duration <= 0) {
+                var then = this.battleLineDrawing.then;
+                this.battleLineDrawing = undefined;
+                then.call(this);
+            }
+        }
+
+    }
 });
 
-ig.Entity.prototype.colors.selectable = '#ff0'
+ig.Entity.prototype.colors.selectable = '#ff0';
+ig.Entity.prototype.colors.battleLine = '#f00';
 
 });
