@@ -17,9 +17,10 @@ GUI.Battlefield = ig.Class.extend({
             upperSidesPadding = 0,
             lowerSidesPadding = 0;
 
-        var spawnSide = function(side, player) {
+        this.entitiesBySide = new Map();
+        var spawnSide = (function(side, player) {
             var isAllied = allied(player, GUI.game.visualizedMainPlayer);
-            GUI.game.spawnEntity(
+            var entity = GUI.game.spawnEntity(
                 EntityFieldSide,
                 (isAllied ? lowerPosition : upperPosition).x
                     + (isAllied ? lowerSidesPadding : upperSidesPadding),
@@ -27,10 +28,11 @@ GUI.Battlefield = ig.Class.extend({
             ).applySettings({
                 model: side
             });
+            this.entitiesBySide.set(side, entity);
             isAllied ?
                 lowerSidesPadding += EntityFieldSide.prototype.size.x :
                 upperSidesPadding += EntityFieldSide.prototype.size.x;
-        };
+        }).bind(this);
 
 	    game.battlefield.sides.forEach(spawnSide);
 

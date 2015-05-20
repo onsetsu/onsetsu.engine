@@ -41,7 +41,7 @@ EntityFieldSide = ig.Entity.extend({
             return _(permanent.spellTypes).include(SpellType.Familiar);
         }
 
-        var entitiesByPermanent = new Map();
+        var entitiesByPermanent = this.entitiesByPermanent = new Map();
         var familiarPadding = 8;
         var otherPadding = 4;
         var adjustPermanents = (function() {
