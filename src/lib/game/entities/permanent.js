@@ -27,16 +27,16 @@ EntityPermanent = ig.Entity.extend({
 
         // draw hp if present
         // TODO: split into currentHP and maxHP
-        if(this.model.hp) {
+        if(_.isNumber(this.model.hp)) {
             var hp = this.model.hp.toString(),
                 x = this.pos.x + this.animSheet.width,
                 y = this.pos.y + this.animSheet.height - GUI.Font.heightForString(hp);
             GUI.Font.draw(hp, x, y, ig.Font.ALIGN.RIGHT);
         }
 
-        // draw at if present
+        // draw at if at and hp present
         // TODO: for model: split into currentAT and baseAT
-        if(this.model.at) {
+        if(_.isNumber(this.model.at) && _.isNumber(this.model.hp)) {
             var at = this.model.at.toString(),
                 y = this.pos.y + this.animSheet.height - GUI.Font.heightForString(hp);
             GUI.Font.draw(at, this.pos.x, y, ig.Font.ALIGN.LEFT);
