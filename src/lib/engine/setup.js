@@ -26,6 +26,9 @@ createStandardSyllablePool = function() {
 };
 
 createTestSpellbook = function() {
+  /*
+   * Currently used Spells
+   */
   var Fireball = Spell.createSpell(
     'Fireball',
     [
@@ -35,7 +38,7 @@ createTestSpellbook = function() {
         Syllables.NIF
       ], SyllableSequence.ordered),
     ],
-    'Deal 2 Damage.'
+`Deal 1 Damage.`
   );
 
   var GreatFireball = Spell.createSpell(
@@ -49,7 +52,131 @@ createTestSpellbook = function() {
         Syllables.GAM
       ], SyllableSequence.ordered),
     ],
-    'Deal 5 Damage.'
+`Deal 5 Damage.`
+  );
+
+  var MeteorStrike = Spell.createSpell(
+     'Meteor Strike',
+     [
+       new SyllableSequence([
+         Syllables.FIRE,
+         Syllables.CHI,
+         Syllables.NIF,
+         Syllables.RYO,
+         Syllables.GAM
+       ], SyllableSequence.ordered),
+     ],
+`Delay 5: Deal 4 Damage to a Familiar.`
+  );
+
+  var Melting = Spell.createSpell(
+     'Melting',
+     [
+       new SyllableSequence([
+         Syllables.FIRE,
+         Syllables.GAM,
+         Syllables.CHI,
+         Syllables.TO,
+         Syllables.RYO,
+       ], SyllableSequence.ordered),
+     ],
+`Delay 4: Destroy target Artifact.`
+  );
+
+  var Brocky = Spell.createSpell(
+     `Brocky, Cynthia's Guardian`,
+     [
+       new SyllableSequence([
+         Syllables.EARTH,
+         Syllables.GAM,
+         Syllables.NIF,
+         Syllables.XAU,
+         Syllables.EX
+       ], SyllableSequence.ordered),
+     ],
+`2/5 Golem Artifact Familiar
+[this] receives 1 Damage less in Battle.`
+  );
+
+  var MonumentOfConsecration = Spell.createSpell(
+     'Monument of Consecration',
+     [
+       new SyllableSequence([
+         Syllables.EARTH,
+         Syllables.LIGHT,
+         Syllables.GAM,
+         Syllables.MA,
+         Syllables.CHI,
+       ], SyllableSequence.ordered),
+     ],
+`Artifact
+Your Familiars deal 1 more Damage in Battle.`
+  );
+
+  var HealingWave = Spell.createSpell(
+     'Healing Wave',
+     [
+       new SyllableSequence([
+         Syllables.LIGHT,
+         Syllables.MA,
+         Syllables.EX,
+       ], SyllableSequence.ordered),
+     ],
+`Heal 2 HP of all friendly Characters.`
+  );
+
+  var WildPyromancer = Spell.createSpell(
+     'Wild Pyromancer',
+     [
+       new SyllableSequence([
+         Syllables.FIRE,
+         Syllables.XAU,
+         Syllables.CHI,
+         Syllables.NIF,
+       ], SyllableSequence.ordered),
+     ],
+`4/2 Goblin Shaman Familiar
+Battlecry: Cast Fireball.`
+  );
+
+  var LightOfBlessing = Spell.createSpell(
+     'Light of Blessing',
+     [
+       new SyllableSequence([
+         Syllables.LIGHT,
+         Syllables.MA,
+         Syllables.MA,
+       ], SyllableSequence.ordered),
+     ],
+`Target Familiar gets +1/+1.`
+  );
+
+  var LightWeaver = Spell.createSpell(
+     'Light Weaver',
+     [
+       new SyllableSequence([
+         Syllables.LIGHT,
+         Syllables.XAU,
+         Syllables.MA,
+         Syllables.RYO,
+       ], SyllableSequence.ordered),
+     ],
+`1/3 Human Priest Familiar
+At the start of your turn: Get 1 SP.`
+  );
+
+  var ApprenticeOfTheSilverFang = Spell.createSpell(
+     'Apprentice of the Silver Fang',
+     [
+       new SyllableSequence([
+         Syllables.LIGHT,
+         Syllables.GAM,
+         Syllables.MA,
+         Syllables.XAU,
+       ], SyllableSequence.ordered),
+     ],
+`2/2 Human Knight Familiar
+Delay 8: [this] gets +3/+3.`
   );
 
   var KissOfDeath = Spell.createSpell(
@@ -69,7 +196,7 @@ createTestSpellbook = function() {
        ], SyllableSequence.ordered),
      ],
      'Destroy a Mage.'
-   );
+  );
 
   var TurquoiseInferno = Spell.createSpell(
      'Turquoise Inferno',
@@ -84,7 +211,7 @@ createTestSpellbook = function() {
        ], SyllableSequence.ordered),
      ],
      'Massive AoE Damage using the 7th Element.'
-   );
+  );
 
   var SwordOfGeminiWings = Spell.createSpell(
      'Sword of Gemini Wings',
@@ -104,7 +231,7 @@ If [this] was lightforged: Cast Schild of Gemini Wings.
 Equip to a Light Familiar.
 [this] and the equipped familiar get:
 "If [this] battles an enemy Familiar: reduce its AT by 1."`
-   );
+  );
 
   var ElementCurse = Spell.createSpell(
      'Element Curse',
@@ -118,45 +245,29 @@ Equip to a Light Familiar.
      ],
 `Target opponent disables an Element Syllable.
 You may place a copy of that Syllable.`
-   );
-
-  var MeteorStrike = Spell.createSpell(
-     'Meteor Strike',
-     [
-       new SyllableSequence([
-         Syllables.FIRE,
-         Syllables.GAM,
-         Syllables.RYO,
-         Syllables.NIF
-       ], SyllableSequence.ordered),
-     ],
-`Delay 5: Deal 4 Damage to a Familiar.`
-   );
-
-  var Brocky = Spell.createSpell(
-     'Brocky',
-     [
-       new SyllableSequence([
-         Syllables.EARTH,
-         //Syllables.GAM,
-         //Syllables.CHI,
-         //Syllables.XAU,
-         Syllables.EX
-       ], SyllableSequence.ordered),
-     ],
-`2/5 Golem Artifact Familiar`
-   );
+  );
 
   var spellBook = new SpellBook();
   [
     Fireball,
-    GreatFireball,
-    KissOfDeath,
-    TurquoiseInferno,
-    SwordOfGeminiWings,
-    ElementCurse,
     MeteorStrike,
-    Brocky
+    WildPyromancer,
+    Melting,
+
+    Brocky,
+    MonumentOfConsecration,
+
+    HealingWave,
+    LightOfBlessing,
+    LightWeaver,
+    ApprenticeOfTheSilverFang,
+
+    //GreatFireball,
+
+    //KissOfDeath,
+    //TurquoiseInferno,
+    //SwordOfGeminiWings,
+    //ElementCurse,
   ].forEach(spellBook.addSpell.bind(spellBook));
   return spellBook;
 };
