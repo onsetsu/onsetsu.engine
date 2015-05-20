@@ -200,10 +200,8 @@ GUI.Game = ig.Game.extend({
                         .get(side2)
                         .entitiesByPermanent.get(combatant2);
 
-                combatant1Entity.drawBattleLine({
-                    target: combatant2Entity,
-                    duration: 2,
-                    then: function() {
+                combatant1Entity.drawBattleLine(combatant2Entity, 2)
+                    .then(function() {
                         function battle(combatant1, combatant2) {
                             function attack(attacker, defender) {
                                 if(_.isNumber(attacker.at)) {
@@ -215,8 +213,7 @@ GUI.Game = ig.Game.extend({
                         };
                         battle(combatant1, combatant2);
                         console.log("battle ended");
-                    }
-                });
+                    });
             }
         });
 	},
@@ -381,15 +378,22 @@ ig.Entity.inject({
 	    this.dashOffset = 0;
 	    this.dashOffsetSpeed = 40;
 	},
-	drawBattleLine: function(options) {
-	    this.battleLineDrawing = options;
-        this.battleLineTargetDashOffset = 0;
-        this.battleLineTargetDashOffsetSpeed = 80;
+	drawBattleLine: function(target, duration) {
+	    var battleLine = this.battleLine = {
+	        target: target,
+	        duration: duration,
+            dashOffset: 0,
+            dashOffsetSpeed: 80
+	    };
+        return new Promise(function(resolve, reject) {
+            battleLine.resolve = resolve;
+        });
 	},
 	draw: function() {
 	    this.parent();
 
         if(this.shouldVisualizeSelectable) {
+            // TODO: duplicated logic
             ig.system.context.save()
             ig.system.context.strokeStyle = this.colors.selectable;
             ig.system.context.setLineDash([4,4]);
@@ -406,13 +410,14 @@ ig.Entity.inject({
             ig.system.context.restore();
         }
 
-        if(this.battleLineDrawing) {
+        if(this.battleLine) {
+            // TODO: duplicated logic
             ig.system.context.save()
             ig.system.context.strokeStyle = this.colors.battleLine;
             ig.system.context.setLineDash([16,16]);
-            this.battleLineTargetDashOffset += this.battleLineTargetDashOffsetSpeed * ig.system.tick;
-            while(this.battleLineTargetDashOffset > 64) { this.battleLineTargetDashOffset -= 64; }
-            ig.system.context.lineDashOffset = -this.battleLineTargetDashOffset;
+            this.battleLine.dashOffset += this.battleLine.dashOffsetSpeed * ig.system.tick;
+            while(this.battleLine.dashOffset > 64) { this.battleLine.dashOffset -= 64; }
+            ig.system.context.lineDashOffset = -this.battleLine.dashOffset;
             ig.system.context.lineWidth = 4.0;
             ig.system.context.beginPath();
             ig.system.context.moveTo(
@@ -420,17 +425,17 @@ ig.Entity.inject({
                 this.pos.y + this.size.y / 2
             );
             ig.system.context.lineTo(
-                this.battleLineDrawing.target.pos.x + this.battleLineDrawing.target.size.x / 2,
-                this.battleLineDrawing.target.pos.y + this.battleLineDrawing.target.size.y / 2
+                this.battleLine.target.pos.x + this.battleLine.target.size.x / 2,
+                this.battleLine.target.pos.y + this.battleLine.target.size.y / 2
             );
             ig.system.context.stroke();
             ig.system.context.restore();
 
-            this.battleLineDrawing.duration -= ig.system.tick;
-            if(this.battleLineDrawing.duration <= 0) {
-                var then = this.battleLineDrawing.then;
-                this.battleLineDrawing = undefined;
-                then.call(this);
+            this.battleLine.duration -= ig.system.tick;
+            if(this.battleLine.duration <= 0) {
+                var resolve = this.battleLine.resolve;
+                this.battleLine = undefined;
+                resolve();
             }
         }
 
