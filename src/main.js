@@ -4,29 +4,28 @@
 
 var game, engine, GUI;
 
-window.onload = function() {
+GUI = {};
+
+ig.module(
+  'init.game'
+)
+.requires(
+  'game.game'
+)
+.defines(function(){
+
   var temp = {
-    main: function() {
+    startGame: function() {
+      datGui.destroy();
+
       game = new Game();
       configureGameForTwoPlayers();
       engine = new Engine();
 
-      GUI = {};
-
-      ig.module(
-      	'???'
-      )
-      .requires(
-      	'game.game'
-      )
-      .defines(function(){
-
-        ig.main( '#canvas', GUI.Game, 60, 1138, 640, 1 );
-
-      });
+      ig.main( '#canvas', GUI.Game, 60, 1138, 640, 1 );
     }
   }
 
   datGui = new dat.GUI();
-  datGui.add(temp, 'main');
-}
+  datGui.add(temp, 'startGame');
+});
