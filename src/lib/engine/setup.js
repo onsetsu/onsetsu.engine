@@ -345,14 +345,6 @@ configureGameForTwoPlayers = function() {
       createStandardSyllablePool()
     );
   });
-  var sidekick = new Mage(
-    players[0],
-    10,
-    5,
-    new SyllableBoard({ x: 4, y: 4 }),
-    createTestSpellbook(),
-    createStandardSyllablePool()
-  );
 
   var sampleBoard = mages[0].syllableBoard;
   sampleBoard.placeSyllable({ x: 0, y: 3 }, Syllables.FIRE);
@@ -364,7 +356,6 @@ configureGameForTwoPlayers = function() {
 
   players.forEach(game.addPlayer.bind(game));
   mages.forEach(game.battlefield.addMage.bind(game.battlefield));
-  game.battlefield.addMage(sidekick);
   game.battlefield.addPermanent(new Permanent({
     spellTypes: [SpellType.Artifact, SpellType.Familiar],
     hp: 5,
