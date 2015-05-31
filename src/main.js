@@ -14,7 +14,7 @@ ig.module(
   'game.game'
 )
 .defines(function(){
-  var runMain = function() {
+  var runMain = function(isHost) {
     game = new Game();
     configureGameForTwoPlayers();
     engine = new Engine();

@@ -36,9 +36,10 @@ var setupNetworking = function(callback) {
       peer.on('disconnected', function() {
         console.log('peer disconnected');
         disconnectDatGui.remove(discon);
+        disconnectDatGui.destroy();
       });
       peer.on('close', function() {
-        console.log('peer destroyed');
+        console.log('peer disconnected and destroyed');
         disconnectDatGui.destroy();
       });
 
@@ -57,10 +58,9 @@ var setupNetworking = function(callback) {
         conn.on('open', function() {
           prepareOpenedConnection();
           peer.disconnect();
-          callback();
-        });
-        conn.on('error', function(err) {
-          console.log(err);
+          var isHost = false;
+          chat('Hello Mr. Host');
+          callback(isHost);
         });
       },
       init: function() {
@@ -86,9 +86,10 @@ var setupNetworking = function(callback) {
           conn.on('open', function() {
             hostIdDatGui.destroy();
             prepareOpenedConnection();
-            chat('Hi, Client');
+            chat('Hi client');
             peer.disconnect();
-            callback();
+            var isHost = true;
+            callback(isHost);
           });
         });
       }
