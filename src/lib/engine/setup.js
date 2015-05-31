@@ -69,6 +69,20 @@ createTestSpellbook = function() {
 `Delay 5: Deal 4 Damage to a Familiar.`
   );
 
+  var WildPyromancer = Spell.createSpell(
+     'Wild Pyromancer',
+     [
+       new SyllableSequence([
+         Syllables.FIRE,
+         Syllables.XAU,
+         Syllables.CHI,
+         Syllables.NIF,
+       ], SyllableSequence.ordered),
+     ],
+`3/2 (5) Goblin Shaman Familiar
+Battlecry: Cast Fireball.`
+  );
+
   var Melting = Spell.createSpell(
      'Melting',
      [
@@ -83,18 +97,46 @@ createTestSpellbook = function() {
 `Delay 4: Destroy target Artifact.`
   );
 
+  var GoblinAttackSquad = Spell.createSpell(
+     'Goblin Attack Squad',
+     [
+       new SyllableSequence([
+         Syllables.FIRE,
+         Syllables.XAU,
+         Syllables.CHI,
+         Syllables.REN,
+         Syllables.CHI,
+       ], SyllableSequence.ordered),
+     ],
+`Summon 3 1/1 (3) Goblin Familiars.`
+  );
+
+  var RaidLeader = Spell.createSpell(
+     'Raid Leader',
+     [
+       new SyllableSequence([
+         Syllables.FIRE,
+         Syllables.XAU,
+         Syllables.MA,
+         Syllables.EX,
+       ], SyllableSequence.ordered),
+     ],
+`1/3 (4) Goblin Familiar
+Your other Goblin Familiars enter the battlefield with +1/+1.`
+  );
+
   var Brocky = Spell.createSpell(
      `Brocky, Cynthia's Guardian`,
      [
        new SyllableSequence([
          Syllables.EARTH,
          Syllables.GAM,
-         Syllables.NIF,
+         Syllables.KUN,
+         Syllables.KUN,
          Syllables.XAU,
-         Syllables.EX
        ], SyllableSequence.ordered),
      ],
-`2/5 Golem Artifact Familiar
+`2/5 (7) Golem Artifact Familiar
 [this] receives 1 Damage less in Battle.`
   );
 
@@ -125,20 +167,6 @@ Your Familiars deal 1 more Damage in Battle.`
 `Heal 2 HP of all friendly Characters.`
   );
 
-  var WildPyromancer = Spell.createSpell(
-     'Wild Pyromancer',
-     [
-       new SyllableSequence([
-         Syllables.FIRE,
-         Syllables.XAU,
-         Syllables.CHI,
-         Syllables.NIF,
-       ], SyllableSequence.ordered),
-     ],
-`4/2 Goblin Shaman Familiar
-Battlecry: Cast Fireball.`
-  );
-
   var LightOfBlessing = Spell.createSpell(
      'Light of Blessing',
      [
@@ -149,6 +177,21 @@ Battlecry: Cast Fireball.`
        ], SyllableSequence.ordered),
      ],
 `Target Familiar gets +1/+1.`
+  );
+
+  var SunlitEidolon = Spell.createSpell(
+     'Sunlit Eidolon',
+     [
+       new SyllableSequence([
+         Syllables.LIGHT,
+         Syllables.KUN,
+         Syllables.MA,
+         Syllables.REN,
+         Syllables.XAU,
+       ], SyllableSequence.ordered),
+     ],
+`2/X (4) Spirit Enchantment Familiar
+Battlecry: X becomes the number of your Light Syllables.`
   );
 
   var LightWeaver = Spell.createSpell(
@@ -165,8 +208,8 @@ Battlecry: Cast Fireball.`
 At the start of your turn: Get 1 SP.`
   );
 
-  var ApprenticeOfTheSilverFang = Spell.createSpell(
-     'Apprentice of the Silver Fang',
+  var AdlezTheSilverFang = Spell.createSpell(
+     'Adlez, the Silver Fang',
      [
        new SyllableSequence([
          Syllables.LIGHT,
@@ -175,8 +218,22 @@ At the start of your turn: Get 1 SP.`
          Syllables.XAU,
        ], SyllableSequence.ordered),
      ],
-`2/2 Human Knight Familiar
-Delay 8: [this] gets +3/+3.`
+`2/3 Human Knight Familiar
+At the start of its turn: Gain 1 AT.`
+  );
+
+  var ChainLightning = Spell.createSpell(
+     'Chain Lightning',
+     [
+       new SyllableSequence([
+         Syllables.LIGHT,
+         Syllables.GAM,
+         Syllables.CHI,
+         Syllables.NIF,
+         Syllables.REN,
+       ], SyllableSequence.ordered),
+     ],
+`Deal X Damage to a Familiar. X is the number of your Light Syllables.`
   );
 
   var KissOfDeath = Spell.createSpell(
@@ -250,17 +307,21 @@ You may place a copy of that Syllable.`
   var spellBook = new SpellBook();
   [
     Fireball,
-    MeteorStrike,
+    //MeteorStrike,
     WildPyromancer,
-    Melting,
+    //Melting,
+    GoblinAttackSquad,
+    RaidLeader,
 
     Brocky,
-    MonumentOfConsecration,
+    //MonumentOfConsecration,
 
     HealingWave,
-    LightOfBlessing,
+    SunlitEidolon,
+    //LightOfBlessing,
     LightWeaver,
-    ApprenticeOfTheSilverFang,
+    ChainLightning,
+    AdlezTheSilverFang,
 
     //GreatFireball,
 
