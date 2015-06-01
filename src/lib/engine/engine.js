@@ -9,16 +9,30 @@ var Player = function Player() {};
 var Team = function Team() {};
 
 // TODO: separate owner and controller?
-var Mage = function Mage(player, hp, sp, syllableBoard, spellBook, syllablePool) {
+var Mage = function Mage(player, hp, sp, delay, syllableBoard, spellBook, syllablePool) {
   this.controller = player;
   this.maxHp = hp;
   this.hp = hp;
   this.maxSp = sp;
   this.sp = sp;
+  this.delay = delay;
   this.syllableBoard = syllableBoard;
   syllableBoard.mage = this;
   this.spellBook = spellBook;
   this.syllablePool = syllablePool;
+
+  this.action = new Action({
+    execute: this.takeTurn.bind(this)
+  }, this.delay, Action.recurring, this);
+};
+
+Mage.prototype.putOntoBattlefield = function() {
+  game.battlefield.addMage(this);
+  game.timeline.addAction(this.action);
+};
+
+Mage.prototype.takeTurn = function() {
+  console.log('MAGE TURN!');
 };
 
 var Gem = function Gem() {};

@@ -65,7 +65,7 @@ Permanent.prototype.putOntoBattlefield = function() {
 };
 
 Permanent.prototype.takeTurn = function() {
-  console.log(`I'm on turn.'`, this);
+  console.log('Familiar on turn.', this);
 };
 
 // wraps a Permanent that is referenced by the Battlefield

@@ -99,6 +99,7 @@ GUI.Game = ig.Game.extend({
                         player,
                         15,
                         5,
+                        9,
                         new SyllableBoard({ x: 6, y: 6 }),
                         createTestSpellbook(),
                         createStandardSyllablePool()
@@ -114,6 +115,7 @@ GUI.Game = ig.Game.extend({
                         GUI.game.visualizedMainPlayer,
                         17,
                         42,
+                        5,
                         new SyllableBoard({ x: 3, y: 3 }),
                         createTestSpellbook(),
                         createStandardSyllablePool()

@@ -340,6 +340,7 @@ configureGameForTwoPlayers = function() {
       players[0],
       20,
       30,
+      6,
       new SyllableBoard({ x: 8, y: 8 }),
       createTestSpellbook(),
       createStandardSyllablePool()
@@ -348,6 +349,7 @@ configureGameForTwoPlayers = function() {
       players[1],
       50,
       10,
+      6,
       new SyllableBoard({ x: 7, y: 7 }),
       createTestSpellbook(),
       createStandardSyllablePool()
@@ -363,7 +365,13 @@ configureGameForTwoPlayers = function() {
   sampleBoard.switchSyllables({ x: 4, y: 3 }, { x: 3, y: 3 });
 
   players.forEach(game.addPlayer.bind(game));
-  mages.forEach(game.battlefield.addMage.bind(game.battlefield));
+
+  mages[0].putOntoBattlefield();
+  game.timeline.advance();
+  game.timeline.advance();
+  game.timeline.advance();
+  mages[1].putOntoBattlefield();
+
   (new Permanent({
     spellTypes: [SpellType.Artifact, SpellType.Familiar],
     hp: 5,
