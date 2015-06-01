@@ -105,22 +105,21 @@ GUI.Game = ig.Game.extend({
                         createStandardSyllablePool()
                     );
                 game.addPlayer(player);
-                game.battlefield.addMage(mage);
+                mage.putOntoBattlefield();
             }
         });
         EntityDebug.spawn({
             label: 'Add Mage',
             onclick: function() {
-                var mage = new Mage(
-                        GUI.game.visualizedMainPlayer,
-                        17,
-                        42,
-                        5,
-                        new SyllableBoard({ x: 3, y: 3 }),
-                        createTestSpellbook(),
-                        createStandardSyllablePool()
-                    );
-                game.battlefield.addMage(mage);
+                new Mage(
+                    GUI.game.visualizedMainPlayer,
+                    17,
+                    42,
+                    5,
+                    new SyllableBoard({ x: 3, y: 3 }),
+                    createTestSpellbook(),
+                    createStandardSyllablePool()
+                ).putOntoBattlefield();
             }
         });
         EntityDebug.spawn({
