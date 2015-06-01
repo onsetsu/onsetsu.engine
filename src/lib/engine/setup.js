@@ -335,16 +335,24 @@ You may place a copy of that Syllable.`
 
 configureGameForTwoPlayers = function() {
   var players = [new Player(), new Player()];
-  var mages = players.map(function(player) {
-    return new Mage(
-      player,
+  var mages = [
+    new Mage(
+      players[0],
       20,
       30,
       new SyllableBoard({ x: 8, y: 8 }),
       createTestSpellbook(),
       createStandardSyllablePool()
-    );
-  });
+    ),
+    new Mage(
+      players[1],
+      50,
+      10,
+      new SyllableBoard({ x: 7, y: 7 }),
+      createTestSpellbook(),
+      createStandardSyllablePool()
+    )
+  ];
 
   var sampleBoard = mages[0].syllableBoard;
   sampleBoard.placeSyllable({ x: 0, y: 3 }, Syllables.FIRE);
