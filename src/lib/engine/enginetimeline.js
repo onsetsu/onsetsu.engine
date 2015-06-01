@@ -109,11 +109,13 @@ Timeline.prototype.print = function() {
   console.log(str);
 };
 
-var Action = function Action(executable, baseDelay, recurring) {
+var Action = function Action(executable, baseDelay, recurring, character) {
   this.executable = executable;
   this.baseDelay = baseDelay;
   this.recurring = recurring;
+  this.character = character;
 };
+
 // TODO: add toString methods
 // Recurring enum
 Action.oneShot = {};

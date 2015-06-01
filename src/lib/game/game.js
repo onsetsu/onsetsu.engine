@@ -137,7 +137,7 @@ GUI.Game = ig.Game.extend({
                     spellTypes: [SpellType.Familiar],
                     hp: 2,
                     at: 3
-                }), mage);
+                }, mage), mage);
             }
         });
         EntityDebug.spawn({

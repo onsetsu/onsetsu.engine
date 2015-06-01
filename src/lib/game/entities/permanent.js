@@ -12,8 +12,6 @@ EntityPermanent = ig.Entity.extend({
 	animSheet: new ig.AnimationSheet('media/permanents.png', 32, 48),
 	init: function(x, y, settings) {
 		this.parent(x, y, settings);
-
-        //this.applySettings(settings);
 	},
 	applySettings: function(settings) {
         this.model = settings.model;

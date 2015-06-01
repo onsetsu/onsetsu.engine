@@ -45,16 +45,26 @@ Battlefield.prototype.removeMage = function(mage) {
   this.sides.get(mage.controller).removeMage(mage);
 };
 
-var Permanent = function Permanent(settings) {
+var Permanent = function Permanent(settings, mage) {
   this.spellTypes = settings.spellTypes;
   this.hp = settings.hp;
   this.maxHp = settings.hp;
   this.at = settings.at;
   this.baseAt = settings.at;
+
+  this.mage = mage;
+  this.action = new Action({
+    execute: function() { console.log('First'); }
+  }, 2, Action.recurring, this);
+};
+
+Permanent.prototype.putOntoBattlefield = function() {
+  game.battlefield.addPermanent(this, this.mage);
+  game.timeline.addAction(this.action);
+
 };
 
 // wraps a Permanent that is referenced by the Battlefield
 var PermanentWrapper = function PermanentWrapper() {};
 
 var Battle = function Battle() {};
-

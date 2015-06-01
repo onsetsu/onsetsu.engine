@@ -364,33 +364,27 @@ configureGameForTwoPlayers = function() {
 
   players.forEach(game.addPlayer.bind(game));
   mages.forEach(game.battlefield.addMage.bind(game.battlefield));
-  game.battlefield.addPermanent(new Permanent({
+  (new Permanent({
     spellTypes: [SpellType.Artifact, SpellType.Familiar],
     hp: 5,
     at: 2
-  }), mages[0]);
-  game.battlefield.addPermanent(new Permanent({
+  }, mages[0])).putOntoBattlefield();
+  (new Permanent({
     spellTypes: [SpellType.Familiar],
     hp: 2,
     at: 4
-  }), mages[0]);
-  game.battlefield.addPermanent(new Permanent({
+  }, mages[0])).putOntoBattlefield();
+  (new Permanent({
     spellTypes: [SpellType.Enchantment, SpellType.Familiar],
     hp: 7,
     at: 1
-  }), mages[1]);
-  game.battlefield.addPermanent(new Permanent({
+  }, mages[1])).putOntoBattlefield();
+  (new Permanent({
     spellTypes: [SpellType.Enchantment]
-  }), mages[1]);
-  game.battlefield.addPermanent(new Permanent({
+  }, mages[1])).putOntoBattlefield();
+  (new Permanent({
     spellTypes: [SpellType.Artifact]
-  }), mages[1]);
-
-  game.timeline.addAction(new Action({ execute: function() { console.log('First'); }}, 2, Action.recurring));
-  game.timeline.addAction(new Action({ execute: function() { console.log('Second'); }}, 3, Action.oneShot));
-  game.timeline.addAction(new Action({ execute: function() { console.log('Second'); }}, 4, Action.recurring));
-  game.timeline.addAction(new Action({ execute: function() { console.log('Second'); }}, 4, Action.oneShot));
-  game.timeline.addAction(new Action({ execute: function() { console.log('Third'); }}, 5, Action.recurring));
+  }, mages[1])).putOntoBattlefield();
 }
 
 game = new Game();
