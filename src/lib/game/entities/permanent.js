@@ -26,20 +26,20 @@ EntityPermanent = ig.Entity.extend({
 		this.parent();
 
         // draw hp if present
-        // TODO: split into currentHP and maxHP
-        if(_.isNumber(this.model.hp)) {
+        if(_.isNumber(this.model.hp) && _.isNumber(this.model.maxHp)) {
             var hp = this.model.hp.toString(),
-                x = this.pos.x + this.animSheet.width,
-                y = this.pos.y + this.animSheet.height - GUI.Font.heightForString(hp);
-            GUI.Font.draw(hp, x, y, ig.Font.ALIGN.RIGHT);
+                maxHp = this.model.maxHp.toString(),
+                x = this.pos.x + this.animSheet.width;
+            GUI.Font.draw(hp + '/' + maxHp + ' HP', x, this.pos.y, ig.Font.ALIGN.RIGHT);
         }
 
         // draw at if at and hp present
-        // TODO: for model: split into currentAT and baseAT
-        if(_.isNumber(this.model.at) && _.isNumber(this.model.hp)) {
+        // TODO: for model: split into at (current) and baseAt
+        if(_.isNumber(this.model.at)) {
             var at = this.model.at.toString(),
-                y = this.pos.y + this.animSheet.height - GUI.Font.heightForString(hp);
-            GUI.Font.draw(at, this.pos.x, y, ig.Font.ALIGN.LEFT);
+                x = this.pos.x + this.animSheet.width,
+                y = this.pos.y + this.animSheet.height - GUI.Font.heightForString(at);
+            GUI.Font.draw(at + ' AT', x, y, ig.Font.ALIGN.RIGHT);
         }
 	}
 });

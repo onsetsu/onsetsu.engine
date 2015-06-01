@@ -48,7 +48,9 @@ Battlefield.prototype.removeMage = function(mage) {
 var Permanent = function Permanent(settings) {
   this.spellTypes = settings.spellTypes;
   this.hp = settings.hp;
+  this.maxHp = settings.hp;
   this.at = settings.at;
+  this.baseAt = settings.at;
 };
 
 // wraps a Permanent that is referenced by the Battlefield

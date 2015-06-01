@@ -11,6 +11,7 @@ var Team = function Team() {};
 // TODO: separate owner and controller?
 var Mage = function Mage(player, hp, sp, syllableBoard, spellBook, syllablePool) {
   this.controller = player;
+  this.maxHp = hp;
   this.hp = hp;
   this.maxSp = sp;
   this.sp = sp;
