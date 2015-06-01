@@ -5,7 +5,8 @@
 var game,
     engine,
     env = {},
-    GUI = {};
+    GUI = {},
+    isHost;
 
 ig.module(
   'init.game'
@@ -14,10 +15,11 @@ ig.module(
   'game.game'
 )
 .defines(function(){
-  var runMain = function(isHost) {
+  var runMain = function(host) {
     game = new Game();
     configureGameForTwoPlayers();
     engine = new Engine();
+    isHost = host;
 
     ig.main( '#canvas', GUI.Game, 60, 1138, 640, 1 );
   };

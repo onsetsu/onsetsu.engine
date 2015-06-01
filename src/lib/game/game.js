@@ -46,7 +46,7 @@ GUI.Game = ig.Game.extend({
         // Initialize Battle Field
 		this.loadLevel(LevelBattle);
 
-        this.visualizedMainPlayer = game.players[0];
+        this.visualizedMainPlayer = game.players[isHost ? 0 : 1];
 
         this.syllablePool = new GUI.SyllablePool();
         this.spellBook = new GUI.SpellBook();
@@ -111,7 +111,7 @@ GUI.Game = ig.Game.extend({
             label: 'Add Mage',
             onclick: function() {
                 var mage = new Mage(
-                        game.players[0],
+                        GUI.game.visualizedMainPlayer,
                         17,
                         42,
                         new SyllableBoard({ x: 3, y: 3 }),
@@ -124,7 +124,7 @@ GUI.Game = ig.Game.extend({
         EntityDebug.spawn({
             label: 'Remove Mage',
             onclick: function() {
-                var mages = game.battlefield.sides.get(game.players[0]).mages
+                var mages = game.battlefield.sides.get(GUI.game.visualizedMainPlayer).mages
                 var mageToRemove = mages[mages.length - 1];
                 game.battlefield.removeMage(mageToRemove);
             }
@@ -132,7 +132,7 @@ GUI.Game = ig.Game.extend({
         EntityDebug.spawn({
             label: 'Add Familiar',
             onclick: function() {
-                var mage = game.battlefield.sides.get(game.players[0]).mages[0];
+                var mage = game.battlefield.sides.get(GUI.game.visualizedMainPlayer).mages[0];
                 game.battlefield.addPermanent(new Permanent({
                     spellTypes: [SpellType.Familiar],
                     hp: 2,
@@ -143,7 +143,7 @@ GUI.Game = ig.Game.extend({
         EntityDebug.spawn({
             label: 'Remove Familiar',
             onclick: function() {
-                var side = game.battlefield.sides.get(game.players[0])
+                var side = game.battlefield.sides.get(GUI.game.visualizedMainPlayer),
                     mage = side.mages[0],
                     permanent = side.permanents[0];
                 game.battlefield.removePermanent(permanent, mage);
@@ -153,7 +153,7 @@ GUI.Game = ig.Game.extend({
         EntityDebug.spawn({
             label: 'Become Artifact',
             onclick: function() {
-                var side = game.battlefield.sides.get(game.players[0])
+                var side = game.battlefield.sides.get(GUI.game.visualizedMainPlayer)
                     permanent = _.sample(side.permanents);
                 permanent.spellTypes = [SpellType.Artifact];
             }
@@ -185,14 +185,16 @@ GUI.Game = ig.Game.extend({
         EntityDebug.spawn({
             label: 'Battle Test',
             onclick: function() {
-                var side1 = game.battlefield.sides.get(game.players[0]),
+                var side1 = game.battlefield.sides.get(GUI.game.visualizedMainPlayer),
                     combatant1 = _(side1.permanents).find(function(perm) {
                         return _(perm.spellTypes).contains(SpellType.Familiar);
                     }),
                     combatant1Entity = GUI.game.battlefield.entitiesBySide
                         .get(side1)
                         .entitiesByPermanent.get(combatant1);
-                var side2 = game.battlefield.sides.get(game.players[1]),
+                var side2 = game.battlefield.sides.get(_(game.players).find(function(player) {
+                        return player !== GUI.game.visualizedMainPlayer;
+                    })),
                     combatant2 = _(side2.permanents).find(function(perm) {
                         return _(perm.spellTypes).contains(SpellType.Familiar);
                     }),

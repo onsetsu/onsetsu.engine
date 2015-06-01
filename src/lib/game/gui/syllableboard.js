@@ -62,7 +62,7 @@ GUI.SyllableBoard = ig.Class.extend({
         }, this);
 	},
 	getModel: function() {
-	    return game.battlefield.sides.get(game.players[0]).mages[0].syllableBoard;
+	    return game.battlefield.sides.get(GUI.game.visualizedMainPlayer).mages[0].syllableBoard;
 	},
 
 	update: function() {}
