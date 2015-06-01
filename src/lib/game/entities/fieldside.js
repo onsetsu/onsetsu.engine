@@ -108,7 +108,7 @@ EntityFieldSide = ig.Entity.extend({
             return returnValue;
         }).bind(this));
 
-        var entitiesByMage = new Map();
+        var entitiesByMage = this.entitiesByMage = new Map();
         var magePadding = 4;
         var adjustMages = function() {
             var numberOfMages = side.mages.length;

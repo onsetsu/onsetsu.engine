@@ -422,16 +422,7 @@ ig.Entity.inject({
             while(this.battleLine.dashOffset > 64) { this.battleLine.dashOffset -= 64; }
             ig.system.context.lineDashOffset = -this.battleLine.dashOffset;
             ig.system.context.lineWidth = 4.0;
-            ig.system.context.beginPath();
-            ig.system.context.moveTo(
-                this.pos.x + this.size.x / 2,
-                this.pos.y + this.size.y / 2
-            );
-            ig.system.context.lineTo(
-                this.battleLine.target.pos.x + this.battleLine.target.size.x / 2,
-                this.battleLine.target.pos.y + this.battleLine.target.size.y / 2
-            );
-            ig.system.context.stroke();
+            this.drawLineTo(this.battleLine.target);
             ig.system.context.restore();
 
             this.battleLine.duration -= ig.system.tick;
@@ -442,10 +433,32 @@ ig.Entity.inject({
             }
         }
 
+    },
+    drawRelatedTo: function(entity) {
+        ig.system.context.save();
+        ig.system.context.strokeStyle = this.colors.related;
+        ig.system.context.lineWidth = 4.0;
+
+        this.drawLineTo(entity);
+
+        ig.system.context.restore();
+	},
+	drawLineTo: function(entity) {
+        ig.system.context.beginPath();
+        ig.system.context.moveTo(
+            this.pos.x + this.size.x / 2,
+            this.pos.y + this.size.y / 2
+        );
+        ig.system.context.lineTo(
+            entity.pos.x + entity.size.x / 2,
+            entity.pos.y + entity.size.y / 2
+        );
+        ig.system.context.stroke();
     }
 });
 
 ig.Entity.prototype.colors.selectable = '#ff0';
 ig.Entity.prototype.colors.battleLine = '#f00';
+ig.Entity.prototype.colors.related = '#0f0';
 
 });
