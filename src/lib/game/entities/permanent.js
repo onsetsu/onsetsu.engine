@@ -39,6 +39,15 @@ EntityPermanent = ig.Entity.extend({
                 y = this.pos.y + this.animSheet.height - GUI.Font.heightForString(at);
             GUI.Font.draw(at + ' AT', x, y, ig.Font.ALIGN.RIGHT);
         }
+
+        // TODO: duplicated with EntityMage
+        if(ig.input.hover(this)) {
+            for(var action of GUI.game.timeline.entitiesByAction.keys()) {
+                if(this.model.action === action) {
+                    this.drawRelatedTo(GUI.game.timeline.entitiesByAction.get(action));
+                }
+            };
+        }
 	}
 });
 

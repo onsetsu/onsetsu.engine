@@ -41,6 +41,15 @@ EntityMage = ig.Entity.extend({
         GUI.Font.draw(sp + '/' + maxSp + ' SP', x, y, ig.Font.ALIGN.RIGHT);
 
         // TODO: draw Attack value if present
+
+        // TODO: duplicated with EntityPermanent
+        if(ig.input.hover(this)) {
+            for(var action of GUI.game.timeline.entitiesByAction.keys()) {
+                if(this.model.action === action) {
+                    this.drawRelatedTo(GUI.game.timeline.entitiesByAction.get(action));
+                }
+            };
+        }
 	}
 });
 
