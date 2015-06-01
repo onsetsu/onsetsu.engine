@@ -23,23 +23,25 @@ EntityAction = ig.Entity.extend({
 	draw: function() {
 		this.parent();
 
+        if(ig.input.hover(this)) {
+            for(var fieldSide of GUI.game.battlefield.entitiesBySide.values()) {
+                for(var permanent of fieldSide.entitiesByPermanent.keys()) {
+                    if(this.model.character === permanent) {
+                        this.drawRelatedTo(fieldSide.entitiesByPermanent.get(permanent));
+                    }
+                };
+                for(var mage of fieldSide.entitiesByMage.keys()) {
+                    if(this.model.character === mage) {
+                        this.drawRelatedTo(fieldSide.entitiesByMage.get(mage));
+                    }
+                };
+            };
+        }
+
         var label = this.model.baseDelay + ': ' + (this.model.recurring === Action.recurring ? 'recu' : 'once'),
             x = this.pos.x + this.animSheet.width / 2,
             y = this.pos.y + this.animSheet.height / 4;
         GUI.Font.draw(label, x, y, ig.Font.ALIGN.CENTER);
-
-        for(var fieldSide of GUI.game.battlefield.entitiesBySide.values()) {
-            for(var permanent of fieldSide.entitiesByPermanent.keys()) {
-                if(this.model.character === permanent) {
-                    this.drawRelatedTo(fieldSide.entitiesByPermanent.get(permanent));
-                }
-            };
-            for(var mage of fieldSide.entitiesByMage.keys()) {
-                if(this.model.character === mage) {
-                    this.drawRelatedTo(fieldSide.entitiesByMage.get(mage));
-                }
-            };
-        };
 	}
 });
 
