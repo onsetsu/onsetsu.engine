@@ -127,7 +127,7 @@ GUI.Game = ig.Game.extend({
             onclick: function() {
                 var mages = game.battlefield.sides.get(GUI.game.visualizedMainPlayer).mages
                 var mageToRemove = mages[mages.length - 1];
-                game.battlefield.removeMage(mageToRemove);
+                mageToRemove.removeFromBattlefield();
             }
         });
         EntityDebug.spawn({

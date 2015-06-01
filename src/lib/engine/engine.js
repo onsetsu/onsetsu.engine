@@ -31,6 +31,11 @@ Mage.prototype.putOntoBattlefield = function() {
   game.timeline.addAction(this.action);
 };
 
+Mage.prototype.removeFromBattlefield = function() {
+  game.timeline.removeAction(this.action);
+  game.battlefield.removeMage(this);
+};
+
 Mage.prototype.takeTurn = function() {
   console.log('MAGE TURN!');
 };

@@ -75,6 +75,7 @@ GUI.Timeline = ig.Class.extend({
             if(this.entitiesByAction.has(action)) {
                 this.entitiesByAction.get(action).kill();
                 this.entitiesByAction.delete(action);
+                moveAllActions();
             }
 
             return returnValue;
