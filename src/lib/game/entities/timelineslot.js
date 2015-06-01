@@ -12,13 +12,13 @@ EntityTimelineSlot = ig.Entity.extend({
 	animSheet: new ig.AnimationSheet('media/timeline.png', 48, 48),
 	init: function(x, y, settings) {
 		this.parent(x, y, settings);
-
-        this.applySettings(settings);
 	},
 	applySettings: function(settings) {
         this.model = settings.model;
 
 		this.addAnim('visible', 1, [1], true);
+
+		return this;
 	},
 	draw: function() {
 		this.parent();

@@ -23,9 +23,8 @@ GUI.Timeline = ig.Class.extend({
             return GUI.game.spawnEntity(
                 EntityTimelineSlot,
                 position.x + delay * (EntityTimelineSlot.prototype.size.x + + this.paddingBetweenTimelineSlots),
-                position.y,
-                { model: model }
-            );
+                position.y
+            ).applySettings({ model: model });
         }, this);
 
         var getEntityActionPosition = (function(action) {
@@ -46,9 +45,8 @@ GUI.Timeline = ig.Class.extend({
             var entity = GUI.game.spawnEntity(
                 EntityAction,
                 entityPosition.x,
-                entityPosition.y,
-                { model: action }
-            );
+                entityPosition.y
+            ).applySettings({ model: action });
             this.entitiesByAction.set(action, entity);
             return entity;
         }).bind(this);
