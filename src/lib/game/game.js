@@ -146,9 +146,8 @@ GUI.Game = ig.Game.extend({
             label: 'Remove Familiar',
             onclick: function() {
                 var side = game.battlefield.sides.get(GUI.game.visualizedMainPlayer),
-                    mage = side.mages[0],
                     permanent = side.permanents[0];
-                game.battlefield.removePermanent(permanent, mage);
+                permanent.removeFromBattlefield();
             }
         });
         // TODO: works, but does not trigger rerendering yet

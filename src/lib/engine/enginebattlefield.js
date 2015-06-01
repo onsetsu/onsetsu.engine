@@ -64,6 +64,11 @@ Permanent.prototype.putOntoBattlefield = function() {
   game.timeline.addAction(this.action);
 };
 
+Permanent.prototype.removeFromBattlefield = function() {
+  game.timeline.removeAction(this.action);
+  game.battlefield.removePermanent(this, this.mage);
+};
+
 Permanent.prototype.takeTurn = function() {
   console.log('Familiar on turn.', this);
 };
