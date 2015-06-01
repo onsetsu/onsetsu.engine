@@ -51,17 +51,21 @@ var Permanent = function Permanent(settings, mage) {
   this.maxHp = settings.hp;
   this.at = settings.at;
   this.baseAt = settings.at;
+  this.delay = settings.delay;
 
   this.mage = mage;
   this.action = new Action({
-    execute: function() { console.log('First'); }
-  }, 2, Action.recurring, this);
+    execute: this.takeTurn.bind(this)
+  }, this.delay, Action.recurring, this);
 };
 
 Permanent.prototype.putOntoBattlefield = function() {
   game.battlefield.addPermanent(this, this.mage);
   game.timeline.addAction(this.action);
+};
 
+Permanent.prototype.takeTurn = function() {
+  console.log(`I'm on turn.'`, this);
 };
 
 // wraps a Permanent that is referenced by the Battlefield

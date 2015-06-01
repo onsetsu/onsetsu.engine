@@ -133,11 +133,12 @@ GUI.Game = ig.Game.extend({
             label: 'Add Familiar',
             onclick: function() {
                 var mage = game.battlefield.sides.get(GUI.game.visualizedMainPlayer).mages[0];
-                game.battlefield.addPermanent(new Permanent({
+                (new Permanent({
                     spellTypes: [SpellType.Familiar],
                     hp: 2,
-                    at: 3
-                }, mage), mage);
+                    at: 3,
+                    delay: 3
+                }, mage)).putOntoBattlefield();
             }
         });
         EntityDebug.spawn({
