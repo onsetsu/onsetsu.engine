@@ -269,18 +269,8 @@ GUI.Game = ig.Game.extend({
                     callback
                 );
 
-                // Stack Processing
-                if(!game.stack.empty()) {
-                    console.log('Process stack');
-
-                    var spell = game.stack.pop();
-                    while(spell) {
-                        console.log('Resolve', spell);
-                        spell.effect(spell.mage, function() { console.log('DONE'); });
-
-                        spell = game.stack.pop();
-                    }
-                }
+                game.stack.process()
+                    .then(function() { console.log('DONE PROCESSING STACK'); });
             }
 
             this.dragEntity.kill();

@@ -81,14 +81,17 @@ createTestSpellbook = function() {
     ],
 `3/2 (5) Goblin Shaman Familiar
 Battlecry: Cast Fireball.`,
-    function resolve(mage, then) {
-      (new Permanent({
-        spellTypes: [SpellType.Familiar],
-        hp: 2,
-        at: 3,
-        delay: 5
-      }, mage)).putOntoBattlefield();
-      then();
+    function resolve(mage) {
+      return new Promise(function(resolve, reject) {
+        (new Permanent({
+          spellTypes: [SpellType.Familiar],
+          hp: 2,
+          at: 3,
+          delay: 5
+        }, mage)).putOntoBattlefield();
+
+        resolve();
+      });
     }
   );
 
@@ -117,7 +120,19 @@ Battlecry: Cast Fireball.`,
          Syllables.CHI,
        ], SyllableSequence.ordered),
      ],
-`Summon 3 1/1 (3) Goblin Familiars.`
+`Summon 3 1/1 (3) Goblin Familiars.`,
+    function resolve(mage) {
+      _(3).times(function() {
+        new Permanent({
+          spellTypes: [SpellType.Familiar],
+          hp: 1,
+          at: 1,
+          delay: 3
+        }, mage).putOntoBattlefield();
+      });
+
+      return Promise.resolve();
+    }
   );
 
   var RaidLeader = Spell.createSpell(
