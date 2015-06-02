@@ -52,7 +52,7 @@ GUI.Game = ig.Game.extend({
         this.syllablePool = new GUI.SyllablePool();
         this.spellBook = new GUI.SpellBook();
         this.syllableBoard = new GUI.SyllableBoard(this.visualizedMainPlayer);
-        this.syllableBoard = new GUI.SyllableBoard(this.opponentPlayer);
+        this.opponentSyllableBoard = new GUI.SyllableBoard(this.opponentPlayer);
         this.timeline = new GUI.Timeline();
         this.battlefield = new GUI.Battlefield();
 

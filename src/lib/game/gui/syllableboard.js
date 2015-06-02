@@ -28,7 +28,7 @@ GUI.SyllableBoard = ig.Class.extend({
         entity.pos.y = this.pos.y + entity.size.y * entity.index.y;
     },
 	init: function(player) {
-	    if(player !== GUI.game.visualizedMainPlayer) {
+	    if(player === GUI.game.opponentPlayer) {
 	        this.pos = { x: 800, y: 100 }
 	    }
 
@@ -66,7 +66,7 @@ GUI.SyllableBoard = ig.Class.extend({
         }, this);
 	},
 	getModel: function(player) {
-	    return game.battlefield.sides.get(player).mages[0].syllableBoard;
+	    return this.model || (this.model = game.battlefield.sides.get(player).mages[0].syllableBoard);
 	},
 
 	update: function() {}
