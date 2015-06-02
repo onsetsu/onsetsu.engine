@@ -257,7 +257,9 @@ GUI.Game = ig.Game.extend({
                     syllable = this.dragEntity.model,
                     callback = function(ConcreteSpell, startIndex, direction) {
                         console.log('CAST on Stack', ConcreteSpell, startIndex, ''+direction);
-                        game.stack.push(new ConcreteSpell());
+                        var spell = new ConcreteSpell();
+                        spell.mage = syllableBoard.mage
+                        game.stack.push(spell);
                     };
 
                 tryPlaceSyllableAndCastSpells(
@@ -267,12 +269,15 @@ GUI.Game = ig.Game.extend({
                     callback
                 );
 
+                // Stack Processing
                 if(!game.stack.empty()) {
                     console.log('Process stack');
 
                     var spell = game.stack.pop();
                     while(spell) {
                         console.log('Resolve', spell);
+                        spell.effect(spell.mage, function() { console.log('DONE'); });
+
                         spell = game.stack.pop();
                     }
                 }

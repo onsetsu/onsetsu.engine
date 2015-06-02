@@ -70,17 +70,26 @@ createTestSpellbook = function() {
   );
 
   var WildPyromancer = Spell.createSpell(
-     'Wild Pyromancer',
-     [
-       new SyllableSequence([
-         Syllables.FIRE,
-         Syllables.XAU,
-         Syllables.CHI,
-         Syllables.NIF,
-       ], SyllableSequence.ordered),
-     ],
+    'Wild Pyromancer',
+    [
+      new SyllableSequence([
+        Syllables.FIRE,
+        Syllables.XAU,
+        Syllables.CHI,
+        Syllables.NIF,
+      ], SyllableSequence.ordered),
+    ],
 `3/2 (5) Goblin Shaman Familiar
-Battlecry: Cast Fireball.`
+Battlecry: Cast Fireball.`,
+    function resolve(mage, then) {
+      (new Permanent({
+        spellTypes: [SpellType.Familiar],
+        hp: 2,
+        at: 3,
+        delay: 5
+      }, mage)).putOntoBattlefield();
+      then();
+    }
   );
 
   var Melting = Spell.createSpell(
@@ -358,11 +367,9 @@ configureGameForTwoPlayers = function() {
 
   var sampleBoard = mages[0].syllableBoard;
   sampleBoard.placeSyllable({ x: 0, y: 3 }, Syllables.FIRE);
+  sampleBoard.placeSyllable({ x: 2, y: 3 }, Syllables.XAU);
   sampleBoard.placeSyllable({ x: 1, y: 3 }, Syllables.CHI);
-  sampleBoard.placeSyllable({ x: 2, y: 3 }, Syllables.NIF);
-  sampleBoard.placeSyllable({ x: 4, y: 3 }, Syllables.NIF);
-  sampleBoard.placeSyllable({ x: 3, y: 3 }, Syllables.GAM);
-  sampleBoard.switchSyllables({ x: 4, y: 3 }, { x: 3, y: 3 });
+  sampleBoard.switchSyllables({ x: 2, y: 3 }, { x: 1, y: 3 });
 
   players.forEach(game.addPlayer.bind(game));
 

@@ -24,7 +24,7 @@ SyllableSequence.unordered = false;
 var Spell = function() {};
 
 // factory method to create new concrete Spells
-Spell.createSpell = function(name, syllableSequences, effectText) {
+Spell.createSpell = function(name, syllableSequences, effectText, effect) {
 
   var ConcreteSpellClass = function() {
     this.SpellClass = ConcreteSpellClass;
@@ -33,6 +33,9 @@ Spell.createSpell = function(name, syllableSequences, effectText) {
   ConcreteSpellClass.spellName = name;
 
   ConcreteSpellClass.effectText = effectText;
+
+  ConcreteSpellClass.effect = effect;
+  ConcreteSpellClass.prototype.effect = effect;
 
   ConcreteSpellClass.getBaseSequences = function() {
     return syllableSequences;
