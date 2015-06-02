@@ -26,6 +26,9 @@ ig.module(
     // maps
 	'game.levels.battle',
 
+	// handler
+	'game.handler.selecttarget',
+
 	'impact.debug.debug'
 )
 .defines(function(){
@@ -48,6 +51,8 @@ GUI.Game = ig.Game.extend({
 
         this.visualizedMainPlayer = game.players[isHost ? 0 : 1];
         this.opponentPlayer = game.players[isHost ? 1 : 0];
+        this.visualizedMainPlayer.opponent = this.opponentPlayer;
+        this.opponentPlayer.opponent = this.visualizedMainPlayer;
 
         this.syllablePool = new GUI.SyllablePool();
         this.spellBook = new GUI.SpellBook();
@@ -188,6 +193,8 @@ GUI.Game = ig.Game.extend({
         EntityDebug.spawn({
             label: 'Battle Test',
             onclick: function() {
+                // Simulate a whole battle
+
                 var side1 = game.battlefield.sides.get(GUI.game.visualizedMainPlayer),
                     combatant1 = _(side1.permanents).find(function(perm) {
                         return _(perm.spellTypes).contains(SpellType.Familiar);
@@ -195,21 +202,38 @@ GUI.Game = ig.Game.extend({
                     combatant1Entity = GUI.game.battlefield.entitiesBySide
                         .get(side1)
                         .entitiesByPermanent.get(combatant1);
-                var side2 = game.battlefield.sides.get(GUI.game.opponentPlayer),
-                    combatant2 = _(side2.permanents).find(function(perm) {
-                        return _(perm.spellTypes).contains(SpellType.Familiar);
-                    }),
-                    combatant2Entity = GUI.game.battlefield.entitiesBySide
-                        .get(side2)
-                        .entitiesByPermanent.get(combatant2);
 
-                combatant1Entity.drawBattleLine(combatant2Entity, 2)
-                    .then(function() {
-                        new Battle(combatant1, combatant2);
-                        console.log("battle ended");
+                // Get possible targets
+                var side2 = game.battlefield.sides.get(combatant1.mage.controller.opponent);
+                var targets = _(side2.permanents).filter(function(permanent) {
+                    return _(permanent.spellTypes).contains(SpellType.Familiar);
+                });
 
-                        game.battlefield.removeDefeatedPermanents();
+                targets.push(side2.mages[0]);
+
+                var GUIside2 = GUI.game.battlefield.entitiesBySide.get(side2);
+                targets.forEach(function(target) {
+                    var targetEntity = GUIside2.entitiesByPermanent.get(target) || GUIside2.entitiesByMage.get(target);
+                    targetEntity.visualizeSelectable(true);
+                });
+
+                // TODO: select target instead
+                GUI.game.selectTarget = new GUI.SelectTarget(targets, GUIside2, function(combatant2) {
+                    targets.forEach(function(target) {
+                        var targetEntity = GUIside2.entitiesByPermanent.get(target) || GUIside2.entitiesByMage.get(target);
+                        targetEntity.visualizeSelectable(false);
                     });
+
+                     var combatant2Entity = GUIside2.entitiesByPermanent.get(combatant2) || GUIside2.entitiesByMage.get(combatant2);
+
+                    combatant1Entity.drawBattleLine(combatant2Entity, 2)
+                        .then(function() {
+                            new Battle(combatant1, combatant2);
+                            console.log("battle ended");
+
+                            game.battlefield.removeDefeatedPermanents();
+                        });
+                });
             }
         });
 	},
@@ -306,6 +330,11 @@ GUI.Game = ig.Game.extend({
                 this.syllableBoard.resetPosition(this.dragStoneEntity);
             }
             this.dragStoneEntity = undefined;
+        }
+
+        // select target
+        if(this.selectTarget) {
+            this.selectTarget.doIt();
         }
 	},
 
