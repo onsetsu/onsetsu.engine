@@ -45,6 +45,16 @@ Battlefield.prototype.removeMage = function(mage) {
   this.sides.get(mage.controller).removeMage(mage);
 };
 
+Battlefield.prototype.removeDefeatedPermanents = function() {
+  this.sides.forEach(function(side) {
+    side.permanents.forEach(function(permanent) {
+      if(permanent.hp <= 0) {
+        permanent.removeFromBattlefield();
+      }
+    });
+  });
+};
+
 var Permanent = function Permanent(settings, mage) {
   this.spellTypes = settings.spellTypes;
   this.hp = settings.hp;

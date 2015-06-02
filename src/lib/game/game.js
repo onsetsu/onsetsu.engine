@@ -216,6 +216,8 @@ GUI.Game = ig.Game.extend({
                         };
                         battle(combatant1, combatant2);
                         console.log("battle ended");
+
+                        game.battlefield.removeDefeatedPermanents();
                     });
             }
         });
