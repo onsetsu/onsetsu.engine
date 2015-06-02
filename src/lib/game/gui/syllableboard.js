@@ -11,7 +11,7 @@ ig.module(
 .defines(function(){
 
 GUI.SyllableBoard = ig.Class.extend({
-    pos: { x: 350, y: 100 },
+    pos: { x: 350, y: 200 },
     spawn: function(entityClass, indexX, indexY, model) {
         var entity = GUI.game.spawnEntity(
             entityClass,
@@ -27,11 +27,15 @@ GUI.SyllableBoard = ig.Class.extend({
         entity.pos.x = this.pos.x + entity.size.x * entity.index.x;
         entity.pos.y = this.pos.y + entity.size.y * entity.index.y;
     },
-	init: function() {
+	init: function(player) {
+	    if(player !== GUI.game.visualizedMainPlayer) {
+	        this.pos = { x: 800, y: 100 }
+	    }
+
 	    this.fields = [];
 	    this.syllableStones = [];
 
-	    var syllableBoard = this.getModel();
+	    var syllableBoard = this.getModel(player);
         syllableBoard.fields.forEach(function(stripe, indexX) {
             stripe.forEach(function(field, indexY) {
                 var fieldEntity = this.spawn(EntityField, indexX, indexY, field);
@@ -61,8 +65,8 @@ GUI.SyllableBoard = ig.Class.extend({
             }, this);
         }, this);
 	},
-	getModel: function() {
-	    return game.battlefield.sides.get(game.players[0]).mages[0].syllableBoard;
+	getModel: function(player) {
+	    return game.battlefield.sides.get(player).mages[0].syllableBoard;
 	},
 
 	update: function() {}

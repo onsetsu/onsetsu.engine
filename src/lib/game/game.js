@@ -47,10 +47,12 @@ GUI.Game = ig.Game.extend({
 		this.loadLevel(LevelBattle);
 
         this.visualizedMainPlayer = game.players[isHost ? 0 : 1];
+        this.opponentPlayer = game.players[isHost ? 1 : 0];
 
         this.syllablePool = new GUI.SyllablePool();
         this.spellBook = new GUI.SpellBook();
-        this.syllableBoard = new GUI.SyllableBoard();
+        this.syllableBoard = new GUI.SyllableBoard(this.visualizedMainPlayer);
+        this.syllableBoard = new GUI.SyllableBoard(this.opponentPlayer);
         this.timeline = new GUI.Timeline();
         this.battlefield = new GUI.Battlefield();
 
@@ -193,9 +195,7 @@ GUI.Game = ig.Game.extend({
                     combatant1Entity = GUI.game.battlefield.entitiesBySide
                         .get(side1)
                         .entitiesByPermanent.get(combatant1);
-                var side2 = game.battlefield.sides.get(_(game.players).find(function(player) {
-                        return player !== GUI.game.visualizedMainPlayer;
-                    })),
+                var side2 = game.battlefield.sides.get(GUI.game.opponentPlayer),
                     combatant2 = _(side2.permanents).find(function(perm) {
                         return _(perm.spellTypes).contains(SpellType.Familiar);
                     }),
