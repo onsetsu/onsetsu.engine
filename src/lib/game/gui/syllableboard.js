@@ -35,7 +35,8 @@ GUI.SyllableBoard = ig.Class.extend({
 	    this.fields = [];
 	    this.syllableStones = [];
 
-	    var syllableBoard = this.getModel(player);
+        this.setModel(player);
+	    var syllableBoard = this.getModel();
         syllableBoard.fields.forEach(function(stripe, indexX) {
             stripe.forEach(function(field, indexY) {
                 var fieldEntity = this.spawn(EntityField, indexX, indexY, field);
@@ -65,8 +66,11 @@ GUI.SyllableBoard = ig.Class.extend({
             }, this);
         }, this);
 	},
-	getModel: function(player) {
-	    return this.model || (this.model = game.battlefield.sides.get(player).mages[0].syllableBoard);
+	setModel: function(player) {
+	    return this.model = game.battlefield.sides.get(player).mages[0].syllableBoard;
+	},
+	getModel: function() {
+	    return this.model;
 	},
 
 	update: function() {}
