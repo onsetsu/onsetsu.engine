@@ -205,16 +205,7 @@ GUI.Game = ig.Game.extend({
 
                 combatant1Entity.drawBattleLine(combatant2Entity, 2)
                     .then(function() {
-                        function battle(combatant1, combatant2) {
-                            function attack(attacker, defender) {
-                                if(_.isNumber(attacker.at)) {
-                                    defender.hp -= attacker.at
-                                }
-                            };
-                            attack(combatant1, combatant2);
-                            attack(combatant2, combatant1);
-                        };
-                        battle(combatant1, combatant2);
+                        new Battle(combatant1, combatant2);
                         console.log("battle ended");
 
                         game.battlefield.removeDefeatedPermanents();

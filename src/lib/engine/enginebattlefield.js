@@ -83,7 +83,14 @@ Permanent.prototype.takeTurn = function() {
   console.log('Familiar on turn.', this);
 };
 
-// wraps a Permanent that is referenced by the Battlefield
-var PermanentWrapper = function PermanentWrapper() {};
+var Battle = function Battle(combatant1, combatant2) {
+  function attack(attacker, defender) {
+    // check whether the attacker has an attack value
+    if(_.isNumber(attacker.at)) {
+      defender.hp -= attacker.at
+    }
+  };
 
-var Battle = function Battle() {};
+  attack(combatant1, combatant2);
+  attack(combatant2, combatant1);
+};
