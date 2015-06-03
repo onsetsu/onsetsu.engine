@@ -24,5 +24,5 @@ ig.module(
     ig.main( '#canvas', GUI.Game, 60, 1138, 640, 1 );
   };
 
-  setupNetworking(runMain);
+  Networking.setup(runMain);
 });
