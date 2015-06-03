@@ -63,7 +63,7 @@ GUI.Game = ig.Game.extend({
         this.timeline = new GUI.Timeline();
         this.battlefield = new GUI.Battlefield();
 
-        EntityDebug = ig.Entity.extend({
+        EntityDebug = window.EntityDebug = ig.Entity.extend({
         	size: {x:64, y:32},
         	animSheet: new ig.AnimationSheet('media/debug.png', 64, 32),
         	init: function(x, y, settings) {
@@ -241,14 +241,20 @@ GUI.Game = ig.Game.extend({
             label: 'Advance Til Next',
             onclick: function() {
                 GUI.game.advanceTimeToNextAction()
-                    .then(function(action) {
-                        console.log('Advanced to:', action);
-                        return action;
-                    }).delay(1500).then(function(currentAction) {
+                    .delay(1500).then(function(action) {
+                        return new Promise(function(resolve, reject) {
+                            console.log('Advanced to:', action);
+                            GUI.game.spawnEntity(EntityDebug, 200, 200, {
+                                label: 'End Turn',
+                                onclick: function() {
+                                    this.kill();
+                                    resolve(action);
+                                }
+                            });
+                        });
+                    }).then(function resetAction(currentAction) {
                         // TODO: what if the associated Permanent was defeated in battle?
                         if(currentAction) {
-                            console.log('ACTION', currentAction);
-
                             if(currentAction.recurring === Action.recurring) {
                                 game.timeline.resetAction(currentAction);
                             } else {
