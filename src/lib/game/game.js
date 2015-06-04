@@ -268,7 +268,10 @@ GUI.Game = ig.Game.extend({
                     combatant1 = _(side1.permanents).find(function(perm) {
                         return _(perm.spellTypes).contains(SpellType.Familiar);
                     });
-                GUI.game.startBattle(combatant1);
+                GUI.game.startBattle(combatant1)
+                    .then(function() {
+                        console.log('ENTITYDEBUG_BATTLE_TEST_FINISHED');
+                    });
             }
         });
         EntityDebug.spawn({
@@ -319,6 +322,11 @@ GUI.Game = ig.Game.extend({
             targetEntity.visualizeSelectable(true);
         });
 
+        var promiseProxy = {};
+        promiseProxy.promise = new Promise(function(resolve, reject) {
+            promiseProxy.resolve = resolve;
+        });
+
         GUI.game.selectTarget = new GUI.SelectTarget(targets, GUIside2, function(combatant2) {
             targets.forEach(function(target) {
                 var targetEntity = GUIside2.entitiesByPermanent.get(target) || GUIside2.entitiesByMage.get(target);
@@ -334,8 +342,12 @@ GUI.Game = ig.Game.extend({
 
                     game.battlefield.removeDefeatedPermanents();
                     console.log('removed defeated permanents');
-                });
+                })
+                .delay(2000)
+                .then(promiseProxy.resolve);
         });
+
+        return promiseProxy.promise;
 	},
 
 	advanceAndProcessTurn: function() {
