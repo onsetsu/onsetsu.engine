@@ -62,7 +62,6 @@ var Networking = {
             prepareOpenedConnection();
             peer.disconnect();
             var isHost = false;
-            chat('Hello Mr. Host');
             callback(isHost);
           });
         },
@@ -89,7 +88,6 @@ var Networking = {
             conn.on('open', function() {
               hostIdDatGui.destroy();
               prepareOpenedConnection();
-              chat('Hi client');
               peer.disconnect();
               var isHost = true;
               callback(isHost);
