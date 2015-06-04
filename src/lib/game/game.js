@@ -47,7 +47,7 @@ Turn = ig.Class.extend({
             console.log('Main Player');
             return new Promise(function(resolve, reject) {
                 console.log('Advanced to:', action);
-                GUI.game.spawnEntity(EntityDebug, 200, 200, {
+                var endTurnEntity = GUI.game.spawnEntity(EntityDebug, 200, 200, {
                     label: 'End Turn',
                     onclick: function() {
                         this.kill();
@@ -58,6 +58,10 @@ Turn = ig.Class.extend({
                     }
                 });
             });
+
+            if(action.character instanceof Permanent) {
+                console.log('Turn of Familiar');
+            };
         } else {
             console.log('Not-visualized Player');
             return new Promise(function(resolve, reject) {
@@ -66,13 +70,33 @@ Turn = ig.Class.extend({
                 });
                 waitEntity.update = function() {
                     var message = Networking.inbox.shift();
-                    while(message) {
-                        if(message.command === 'endTurn') {
+                    if(message) {
+                        switch (message.command) {
+                          case 'endTurn':
                             this.kill();
                             resolve(action);
                             return;
+                            break;
+                          case 'battle':
+                            // Anweisungen werden ausgeführt,
+                            // falls expression mit value2 übereinstimmt
+                            break;
+                          case 'switchSyllables':
+                            // Anweisungen werden ausgeführt,
+                            // falls expression mit valueN übereinstimmt
+                            break;
+                          case 'placeSyllable':
+                            // Anweisungen werden ausgeführt,
+                            // falls expression mit valueN übereinstimmt
+                            break;
+                          case 'selectTarget':
+                            // Anweisungen werden ausgeführt,
+                            // falls expression mit valueN übereinstimmt
+                            break;
+                          default:
+                            throw new Error('Non matching message received', message);
+                            break;
                         }
-                        message = Networking.inbox.shift();
                     }
                 };
             });
@@ -240,46 +264,11 @@ GUI.Game = ig.Game.extend({
         EntityDebug.spawn({
             label: 'Battle Test',
             onclick: function() {
-                // Simulate a whole battle
-
                 var side1 = game.battlefield.sides.get(GUI.game.visualizedMainPlayer),
                     combatant1 = _(side1.permanents).find(function(perm) {
                         return _(perm.spellTypes).contains(SpellType.Familiar);
-                    }),
-                    combatant1Entity = GUI.game.battlefield.entitiesBySide
-                        .get(side1)
-                        .entitiesByPermanent.get(combatant1);
-
-                // Get possible targets
-                var side2 = game.battlefield.sides.get(combatant1.mage.controller.opponent);
-                var targets = _(side2.permanents).filter(function(permanent) {
-                    return _(permanent.spellTypes).contains(SpellType.Familiar);
-                });
-
-                targets.push(side2.mages[0]);
-
-                var GUIside2 = GUI.game.battlefield.entitiesBySide.get(side2);
-                targets.forEach(function(target) {
-                    var targetEntity = GUIside2.entitiesByPermanent.get(target) || GUIside2.entitiesByMage.get(target);
-                    targetEntity.visualizeSelectable(true);
-                });
-
-                GUI.game.selectTarget = new GUI.SelectTarget(targets, GUIside2, function(combatant2) {
-                    targets.forEach(function(target) {
-                        var targetEntity = GUIside2.entitiesByPermanent.get(target) || GUIside2.entitiesByMage.get(target);
-                        targetEntity.visualizeSelectable(false);
                     });
-
-                     var combatant2Entity = GUIside2.entitiesByPermanent.get(combatant2) || GUIside2.entitiesByMage.get(combatant2);
-
-                    combatant1Entity.drawBattleLine(combatant2Entity, 2)
-                        .then(function() {
-                            new Battle(combatant1, combatant2);
-                            console.log("battle ended");
-
-                            game.battlefield.removeDefeatedPermanents();
-                        });
-                });
+                GUI.game.startBattle(combatant1);
             }
         });
         EntityDebug.spawn({
@@ -308,9 +297,51 @@ GUI.Game = ig.Game.extend({
         });
 	},
 
+	startBattle: function(combatant1) {
+        // Simulate a whole battle
+
+        var side1 = game.battlefield.sides.get(combatant1.mage.controller),
+            combatant1Entity = GUI.game.battlefield.entitiesBySide
+                .get(side1)
+                .entitiesByPermanent.get(combatant1);
+
+        // Get possible targets
+        var side2 = game.battlefield.sides.get(combatant1.mage.controller.opponent);
+        var targets = _(side2.permanents).filter(function(permanent) {
+            return _(permanent.spellTypes).contains(SpellType.Familiar);
+        });
+
+        targets.push(side2.mages[0]);
+
+        var GUIside2 = GUI.game.battlefield.entitiesBySide.get(side2);
+        targets.forEach(function(target) {
+            var targetEntity = GUIside2.entitiesByPermanent.get(target) || GUIside2.entitiesByMage.get(target);
+            targetEntity.visualizeSelectable(true);
+        });
+
+        GUI.game.selectTarget = new GUI.SelectTarget(targets, GUIside2, function(combatant2) {
+            targets.forEach(function(target) {
+                var targetEntity = GUIside2.entitiesByPermanent.get(target) || GUIside2.entitiesByMage.get(target);
+                targetEntity.visualizeSelectable(false);
+            });
+
+             var combatant2Entity = GUIside2.entitiesByPermanent.get(combatant2) || GUIside2.entitiesByMage.get(combatant2);
+
+            combatant1Entity.drawBattleLine(combatant2Entity, 2)
+                .then(function() {
+                    new Battle(combatant1, combatant2);
+                    console.log("battle ended");
+
+                    game.battlefield.removeDefeatedPermanents();
+                    console.log('removed defeated permanents');
+                });
+        });
+	},
+
 	advanceAndProcessTurn: function() {
         return GUI.game.advanceTimeToNextAction()
-            .delay(1500).then(function(action) {
+            .delay(1500)
+            .then(function(action) {
                 return new Turn(action).whenFinished();
             }).then(function resetAction(currentAction) {
                 // TODO: what if the associated Permanent was defeated in battle?
@@ -322,7 +353,8 @@ GUI.Game = ig.Game.extend({
                     }
                     GUI.game.timeline.moveAllActions();
                 }
-            }).delay(1500)
+            })
+            .delay(1500)
             .then(GUI.game.advanceAndProcessTurn);
 	},
 
@@ -428,7 +460,6 @@ GUI.Game = ig.Game.extend({
 
 	advanceTimeToNextAction: function() {
 	    return new Promise(function(resolve, reject) {
-
             var currentAction = game.timeline.nextAction();
             while(!currentAction) {
                 game.timeline.advance();

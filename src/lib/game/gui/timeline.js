@@ -52,8 +52,16 @@ GUI.Timeline = ig.Class.extend({
         }).bind(this);
 
         var moveAllActions = this.moveAllActions = (function() {
+            function foo(action) {
+                try{
+                    return getEntityActionPosition(action);
+                } catch(e) {
+                    console.log('ERROR: evil action', action);
+                    return {x:100, y:10};
+                }
+            };
             this.entitiesByAction.forEach(function(entity, action) {
-                entity.move(getEntityActionPosition(action), 1.5);
+                entity.move(foo(action), 1.5);
             });
         }).bind(this);
 

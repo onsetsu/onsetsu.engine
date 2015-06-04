@@ -48,13 +48,9 @@ Timeline.prototype.nextAction = function() {
   // search the TimelineSlot with the lowest negative delay that contains an action
   var action = _.reduceRight(this.negativeTimelineSlots, function(action, timelineSlot) {
     if(action) { return action; }
-    return timelineSlot.actions.shift();
+    return timelineSlot.actions[0];
   }, undefined);
-  // TODO: duplicated code
-  if(action) {
-    var index = this.actions.indexOf(action);
-    this.actions.splice(index, 1);
-  }
+
   return action;
 };
 Timeline.prototype.getTimelineSlotFor = function(action) {
@@ -83,6 +79,11 @@ Timeline.prototype.advance = function() {
   }
 };
 Timeline.prototype.resetAction = function(action) {
+  var timelineSlot = this.getTimelineSlotFor(action);
+  if(timelineSlot) {
+    timelineSlot.removeAction(action);
+  }
+
   this.getSlotAt(action.baseDelay).addAction(action);
 };
 Timeline.prototype.removeAction = function(action) {
@@ -90,7 +91,6 @@ Timeline.prototype.removeAction = function(action) {
   if(timelineSlot) {
     timelineSlot.removeAction(action);
   }
-  // TODO: duplicated code
   if(action) {
     var index = this.actions.indexOf(action);
     this.actions.splice(index, 1);
