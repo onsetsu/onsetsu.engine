@@ -35,6 +35,51 @@ ig.module(
 )
 .defines(function(){
 
+Turn = ig.Class.extend({
+    init: function(action) {
+        this.action = action;
+    },
+    whenFinished: function() {
+        var action = this.action;
+        var player = action.character.controller || action.character.mage.controller;
+
+        if(player === GUI.game.visualizedMainPlayer) {
+            console.log('Main Player');
+            return new Promise(function(resolve, reject) {
+                console.log('Advanced to:', action);
+                GUI.game.spawnEntity(EntityDebug, 200, 200, {
+                    label: 'End Turn',
+                    onclick: function() {
+                        this.kill();
+                        env.conn.send({
+                            command: 'endTurn'
+                        });
+                        resolve(action);
+                    }
+                });
+            });
+        } else {
+            console.log('Not-visualized Player');
+            return new Promise(function(resolve, reject) {
+                var waitEntity = GUI.game.spawnEntity(EntityDebug, 200, 200, {
+                    label: 'Wait For Opponent'
+                });
+                waitEntity.update = function() {
+                    var message = Networking.inbox.shift();
+                    while(message) {
+                        if(message.command === 'endTurn') {
+                            this.kill();
+                            resolve(action);
+                            return;
+                        }
+                        message = Networking.inbox.shift();
+                    }
+                };
+            });
+        }
+    }
+});
+
 GUI.Game = ig.Game.extend({
 
 	// Load a font
@@ -94,7 +139,7 @@ GUI.Game = ig.Game.extend({
                 }
         	}
         });
-        EntityDebug.pos = { x: 200, y: 600 };
+        EntityDebug.pos = { x: 50, y: 600 };
         EntityDebug.spawn = function(settings) {
             GUI.game.spawnEntity(EntityDebug, EntityDebug.pos.x, EntityDebug.pos.y, settings);
                 EntityDebug.pos.x += 66;
@@ -242,16 +287,7 @@ GUI.Game = ig.Game.extend({
             onclick: function() {
                 GUI.game.advanceTimeToNextAction()
                     .delay(1500).then(function(action) {
-                        return new Promise(function(resolve, reject) {
-                            console.log('Advanced to:', action);
-                            GUI.game.spawnEntity(EntityDebug, 200, 200, {
-                                label: 'End Turn',
-                                onclick: function() {
-                                    this.kill();
-                                    resolve(action);
-                                }
-                            });
-                        });
+                        return new Turn(action).whenFinished();
                     }).then(function resetAction(currentAction) {
                         // TODO: what if the associated Permanent was defeated in battle?
                         if(currentAction) {
@@ -265,6 +301,29 @@ GUI.Game = ig.Game.extend({
                     }).delay(1500);
             }
         });
+
+        // START TIMELINE LOOP
+        Promise.resolve().delay(2).then(function() {
+            return GUI.game.advanceAndProcessTurn();
+        });
+	},
+
+	advanceAndProcessTurn: function() {
+        return GUI.game.advanceTimeToNextAction()
+            .delay(1500).then(function(action) {
+                return new Turn(action).whenFinished();
+            }).then(function resetAction(currentAction) {
+                // TODO: what if the associated Permanent was defeated in battle?
+                if(currentAction) {
+                    if(currentAction.recurring === Action.recurring) {
+                        game.timeline.resetAction(currentAction);
+                    } else {
+                        game.timeline.removeAction(currentAction);
+                    }
+                    GUI.game.timeline.moveAllActions();
+                }
+            }).delay(1500)
+            .then(GUI.game.advanceAndProcessTurn);
 	},
 
 	update: function() {
@@ -367,9 +426,7 @@ GUI.Game = ig.Game.extend({
         }
 	},
 
-	advanceTimeToNextAction: function(withAction) {
-	    var loop = Promise.resolve();
-
+	advanceTimeToNextAction: function() {
 	    return new Promise(function(resolve, reject) {
 
             var currentAction = game.timeline.nextAction();

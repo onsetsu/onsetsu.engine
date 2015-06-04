@@ -25,6 +25,7 @@ var Networking = {
         // Receive messages
         env.conn.on('data', function(data) {
           console.log('data received', data);
+          Networking.inbox.push(data);
         });
       };
 
