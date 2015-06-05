@@ -328,34 +328,33 @@ GUI.Game = ig.Game.extend({
             targetEntity.visualizeSelectable(true);
         });
 
-        var promiseProxy = {};
-        promiseProxy.promise = new Promise(function(resolve, reject) {
-            promiseProxy.resolve = resolve;
-        });
-
-        GUI.game.selectTarget = new GUI.SelectTarget(targets, GUIside2, function(combatant2) {
-            targets.forEach(function(target) {
-                var targetEntity = GUIside2.entitiesByPermanent.get(target) || GUIside2.entitiesByMage.get(target);
-                targetEntity.visualizeSelectable(false);
-            });
-
-             var combatant2Entity = GUIside2.entitiesByPermanent.get(combatant2) || GUIside2.entitiesByMage.get(combatant2);
-
-            combatant1Entity.drawBattleLine(combatant2Entity, 2)
-                .then(function() {
-                    new Battle(combatant1, combatant2);
-                    console.log("battle ended");
-
-                    game.battlefield.removeDefeatedPermanents();
-                    console.log('removed defeated permanents');
-                })
-                .delay(2000)
-                .then(function() {
-                    promiseProxy.resolve([combatant1, combatant2]);
+        return new Promise(function(resolve, reject) {
+            GUI.game.selectTarget = new GUI.SelectTarget(targets, GUIside2, function(combatant2) {
+                targets.forEach(function(target) {
+                    var targetEntity = GUIside2.entitiesByPermanent.get(target) || GUIside2.entitiesByMage.get(target);
+                    targetEntity.visualizeSelectable(false);
                 });
-        });
 
-        return promiseProxy.promise;
+                 var combatant2Entity = GUIside2.entitiesByPermanent.get(combatant2) || GUIside2.entitiesByMage.get(combatant2);
+
+                combatant1Entity.drawBattleLine(combatant2Entity, 2)
+                    .then(function() {
+                        new Battle(combatant1, combatant2);
+                        console.log("battle ended");
+
+                        game.battlefield.removeDefeatedPermanents();
+                        console.log('removed defeated permanents');
+                    })
+                    .delay(2000)
+                    .then(function() {
+                        resolve([combatant1, combatant2]);
+                    });
+            });
+        });
+	},
+
+	animatedBattle: function() {
+
 	},
 
 	advanceAndProcessTurn: function() {
