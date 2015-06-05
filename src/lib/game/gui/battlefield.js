@@ -45,6 +45,20 @@ GUI.Battlefield = ig.Class.extend({
         }).bind(this));
 	},
 
+	getEntityFor: function(character) {
+        var entity;
+        this.entitiesBySide.forEach(function(sideEntity, side) {
+            if(sideEntity.entitiesByPermanent.has(character)) {
+                entity = sideEntity.entitiesByPermanent.get(character);
+            }
+            if(sideEntity.entitiesByMage.has(character)) {
+                entity = sideEntity.entitiesByMage.get(character);
+            }
+        });
+
+        return entity;
+	},
+
 	update: function() {
 	    // TODO: check for changes of FieldSides on Battlefield
 	}
