@@ -73,14 +73,22 @@ var Permanent = function Permanent(settings, mage) {
   this.action = new Action({
     execute: this.takeTurn.bind(this)
   }, this.delay, Action.recurring, this);
+
+  this.onBattlefield = false;
+};
+
+Permanent.prototype.isOnBattlefield = function() {
+  return this.onBattlefield;
 };
 
 Permanent.prototype.putOntoBattlefield = function() {
+  this.onBattlefield = true;
   game.battlefield.addPermanent(this, this.mage);
   game.timeline.addAction(this.action);
 };
 
 Permanent.prototype.removeFromBattlefield = function() {
+  this.onBattlefield = false;
   game.timeline.removeAction(this.action);
   game.battlefield.removePermanent(this, this.mage);
 };

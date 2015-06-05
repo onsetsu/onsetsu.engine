@@ -32,14 +32,22 @@ var Mage = function Mage(player, hp, sp, delay, syllableBoard, spellBook, syllab
   this.action = new Action({
     execute: this.takeTurn.bind(this)
   }, this.delay, Action.recurring, this);
+
+  this.onBattlefield = false;
+};
+
+Mage.prototype.isOnBattlefield = function() {
+  return this.onBattlefield;
 };
 
 Mage.prototype.putOntoBattlefield = function() {
+  this.onBattlefield = true;
   game.battlefield.addMage(this);
   game.timeline.addAction(this.action);
 };
 
 Mage.prototype.removeFromBattlefield = function() {
+  this.onBattlefield = false;
   game.timeline.removeAction(this.action);
   game.battlefield.removeMage(this);
 };

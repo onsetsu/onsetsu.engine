@@ -73,31 +73,29 @@ Turn = ig.Class.extend({
                 var waitEntity = GUI.game.spawnEntity(EntityDebug, 200, 200, {
                     label: 'Wait For Opponent'
                 });
-                waitEntity.update = function() {
+                var listening = waitEntity.update = function() {
                     var message = Networking.inbox.shift();
                     if(message) {
                         switch (message.command) {
                           case 'endTurn':
                             this.kill();
                             resolve(action);
-                            return;
                             break;
                           case 'battle':
-                            console.log('BATTLE');
-                            // Anweisungen werden ausgeführt,
-                            // falls expression mit value2 übereinstimmt
+                            console.log('RECEIVED BATTLE');
+                            waitEntity.update = function() {};
+                            GUI.game.animatedBattle(
+                                game.battlefield.charactersById.get(message.combatants[0]),
+                                game.battlefield.charactersById.get(message.combatants[1])
+                            ).then(function() {
+                                waitEntity.update = listening;
+                            });
                             break;
                           case 'switchSyllables':
-                            // Anweisungen werden ausgeführt,
-                            // falls expression mit valueN übereinstimmt
                             break;
                           case 'placeSyllable':
-                            // Anweisungen werden ausgeführt,
-                            // falls expression mit valueN übereinstimmt
                             break;
                           case 'selectTarget':
-                            // Anweisungen werden ausgeführt,
-                            // falls expression mit valueN übereinstimmt
                             break;
                           default:
                             throw new Error('Non matching message received', message);
@@ -289,7 +287,7 @@ GUI.Game = ig.Game.extend({
                     }).then(function resetAction(currentAction) {
                         // TODO: what if the associated Permanent was defeated in battle?
                         if(currentAction) {
-                            if(currentAction.recurring === Action.recurring) {
+                            if(currentAction.character.isOnBattlefield()) {
                                 game.timeline.resetAction(currentAction);
                             } else {
                                 game.timeline.removeAction(currentAction);
@@ -319,27 +317,30 @@ GUI.Game = ig.Game.extend({
 
         return new Promise(function(resolve, reject) {
             GUI.game.selectTarget = new GUI.SelectTarget(targets, function(combatant2) {
-                var combatant1Entity = GUI.game.battlefield.getEntityFor(combatant1),
-                    combatant2Entity = GUI.game.battlefield.getEntityFor(combatant2);
+                GUI.game.animatedBattle(combatant1, combatant2).then(function() {
+                    resolve([combatant1, combatant2]);
+                });
 
-                combatant1Entity.drawBattleLine(combatant2Entity, 2)
-                    .then(function() {
-                        new Battle(combatant1, combatant2);
-                        console.log("battle ended");
-
-                        game.battlefield.removeDefeatedPermanents();
-                        console.log('removed defeated permanents');
-                    })
-                    .delay(2000)
-                    .then(function() {
-                        resolve([combatant1, combatant2]);
-                    });
             });
         });
 	},
 
 	animatedBattle: function(combatant1, combatant2) {
+        return new Promise(function(resolve, reject) {
+            var combatant1Entity = GUI.game.battlefield.getEntityFor(combatant1),
+                combatant2Entity = GUI.game.battlefield.getEntityFor(combatant2);
 
+            combatant1Entity.drawBattleLine(combatant2Entity, 2)
+                .then(function() {
+                    new Battle(combatant1, combatant2);
+                    console.log("battle ended");
+
+                    game.battlefield.removeDefeatedPermanents();
+                    console.log('removed defeated permanents');
+                })
+                .delay(2000)
+                .then(resolve);
+        });
 	},
 
 	advanceAndProcessTurn: function() {
@@ -350,10 +351,8 @@ GUI.Game = ig.Game.extend({
             }).then(function resetAction(currentAction) {
                 // TODO: what if the associated Permanent was defeated in battle?
                 if(currentAction) {
-                    if(currentAction.recurring === Action.recurring) {
+                    if(currentAction.character.isOnBattlefield()) {
                         game.timeline.resetAction(currentAction);
-                    } else {
-                        game.timeline.removeAction(currentAction);
                     }
                     GUI.game.timeline.moveAllActions();
                 }

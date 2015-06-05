@@ -88,11 +88,11 @@ Timeline.prototype.resetAction = function(action) {
 };
 Timeline.prototype.removeAction = function(action) {
   var timelineSlot = this.getTimelineSlotFor(action);
-  if(timelineSlot) {
-    timelineSlot.removeAction(action);
-  }
+  timelineSlot.removeAction(action);
+
   if(action) {
     var index = this.actions.indexOf(action);
+    console.log(index)
     this.actions.splice(index, 1);
   }
 };
