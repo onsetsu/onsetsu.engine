@@ -60,6 +60,18 @@ Battlefield.prototype.removeDefeatedPermanents = function() {
   });
 };
 
+Battlefield.prototype.getCharactersMatching = function(expression) {
+  var matchingCharacters = [];
+
+  this.charactersById.forEach(function(character, id) {
+    if(expression(character)) {
+      matchingCharacters.push(character);
+    };
+  });
+
+  return matchingCharacters;
+};
+
 var Permanent = function Permanent(settings, mage) {
   this.id = settings.id || nextID();
   this.spellTypes = settings.spellTypes;
@@ -97,11 +109,16 @@ Permanent.prototype.takeTurn = function() {
   console.log('Familiar on turn.', this);
 };
 
+Permanent.prototype.receiveDamage = function(amount) {
+  this.hp -= amount;
+  game.battlefield.removeDefeatedPermanents();
+};
+
 var Battle = function Battle(combatant1, combatant2) {
   function attack(attacker, defender) {
     // check whether the attacker has an attack value
     if(_.isNumber(attacker.at)) {
-      defender.hp -= attacker.at
+      defender.receiveDamage(attacker.at);
     }
   };
 

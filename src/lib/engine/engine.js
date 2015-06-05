@@ -56,6 +56,10 @@ Mage.prototype.takeTurn = function() {
   console.log('MAGE TURN!');
 };
 
+Mage.prototype.receiveDamage = function(amount) {
+  this.hp -= amount;
+};
+
 var Gem = function Gem() {};
 
 // --------------------------------------------------------------------------------

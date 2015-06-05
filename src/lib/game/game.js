@@ -129,7 +129,9 @@ Turn = ig.Class.extend({
                             game.stack.process()
                                 .then(function() { console.log('DONE PROCESSING STACK'); });
                             break;
-                          case 'selectTarget':
+                          case 'targetForDamage':
+                            var target = game.battlefield.charactersById.get(message.targetId);
+                            target.receiveDamage(message.damage);
                             break;
                           default:
                             throw new Error('Non matching message received', message);
@@ -229,7 +231,6 @@ GUI.Game = ig.Game.extend({
                 GUI.game.animatedBattle(combatant1, combatant2).then(function() {
                     resolve([combatant1, combatant2]);
                 });
-
             });
         });
 	},
@@ -280,7 +281,7 @@ GUI.Game = ig.Game.extend({
         this.timeline.update();
         this.battlefield.update();
 
-        if(GUI.game.endTurnEntity) {
+        if(GUI.game.endTurnEntity && !GUI.game.endTurnEntity.noSyllableInteraction) {
             // PLACE SYLLABLES
             // start dragging
             if(ig.input.pressed('leftclick')) {
@@ -327,9 +328,11 @@ GUI.Game = ig.Game.extend({
                     );
 
                     GUI.game.endTurnEntity.pos.x -= 1000;
+                    GUI.game.endTurnEntity.noSyllableInteraction = true;
                     game.stack.process()
                         .then(function() {
                             GUI.game.endTurnEntity.pos.x += 1000;
+                            GUI.game.endTurnEntity.noSyllableInteraction = false;
                         });
                 }
 

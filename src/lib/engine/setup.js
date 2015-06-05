@@ -38,35 +38,30 @@ createTestSpellbook = function() {
         Syllables.NIF
       ], SyllableSequence.ordered),
     ],
-`Deal 1 Damage.`
-  );
-
-  var GreatFireball = Spell.createSpell(
-    'Great Fireball',
-    [
-      new SyllableSequence([
-        Syllables.FIRE,
-        Syllables.CHI,
-        Syllables.NIF,
-        Syllables.NIF,
-        Syllables.GAM
-      ], SyllableSequence.ordered),
-    ],
-`Deal 5 Damage.`
-  );
-
-  var MeteorStrike = Spell.createSpell(
-     'Meteor Strike',
-     [
-       new SyllableSequence([
-         Syllables.FIRE,
-         Syllables.CHI,
-         Syllables.NIF,
-         Syllables.RYO,
-         Syllables.GAM
-       ], SyllableSequence.ordered),
-     ],
-`Delay 5: Deal 4 Damage to a Familiar.`
+`Deal 1 Damage.`,
+    function resolve(mage) {
+      var damage = 1;
+      return new Promise(function(resolve, reject) {
+        if(mage.controller === GUI.game.visualizedMainPlayer) {
+          console.log('ownMage');
+          var targets = game.battlefield.getCharactersMatching(function(character) {
+            return true;
+          });
+          GUI.game.selectTarget = new GUI.SelectTarget(targets, function(target) {
+            env.conn.send({
+              command: 'targetForDamage',
+              targetId: target.id,
+              damage: damage
+            });
+            target.receiveDamage(damage);
+            resolve();
+          });
+        } else {
+          console.log('enemyMage');
+          resolve();
+        }
+      });
+    }
   );
 
   var WildPyromancer = Spell.createSpell(
@@ -93,20 +88,6 @@ Battlecry: Cast Fireball.`,
         resolve();
       });
     }
-  );
-
-  var Melting = Spell.createSpell(
-     'Melting',
-     [
-       new SyllableSequence([
-         Syllables.FIRE,
-         Syllables.GAM,
-         Syllables.CHI,
-         Syllables.TO,
-         Syllables.RYO,
-       ], SyllableSequence.ordered),
-     ],
-`Delay 4: Destroy target Artifact.`
   );
 
   var GoblinAttackSquad = Spell.createSpell(
@@ -148,7 +129,19 @@ Battlecry: Cast Fireball.`,
        ], SyllableSequence.ordered),
      ],
 `1/3 (4) Goblin Familiar
-Your other Goblin Familiars enter the battlefield with +1/+1.`
+Your other Goblin Familiars enter the battlefield with +1/+1.`,
+    function resolve(mage) {
+      return new Promise(function(resolve, reject) {
+        (new Permanent({
+          spellTypes: [SpellType.Familiar],
+          hp: 1,
+          at: 1,
+          delay: 1
+        }, mage)).putOntoBattlefield();
+
+        resolve();
+      });
+    }
   );
 
   var Brocky = Spell.createSpell(
@@ -163,22 +156,19 @@ Your other Goblin Familiars enter the battlefield with +1/+1.`
        ], SyllableSequence.ordered),
      ],
 `2/5 (7) Golem Artifact Familiar
-[this] receives 1 Damage less in Battle.`
-  );
+[this] receives 1 Damage less in Battle.`,
+    function resolve(mage) {
+      return new Promise(function(resolve, reject) {
+        (new Permanent({
+          spellTypes: [SpellType.Familiar],
+          hp: 1,
+          at: 1,
+          delay: 1
+        }, mage)).putOntoBattlefield();
 
-  var MonumentOfConsecration = Spell.createSpell(
-     'Monument of Consecration',
-     [
-       new SyllableSequence([
-         Syllables.EARTH,
-         Syllables.LIGHT,
-         Syllables.GAM,
-         Syllables.MA,
-         Syllables.CHI,
-       ], SyllableSequence.ordered),
-     ],
-`Artifact
-Your Familiars deal 1 more Damage in Battle.`
+        resolve();
+       });
+    }
   );
 
   var HealingWave = Spell.createSpell(
@@ -190,19 +180,19 @@ Your Familiars deal 1 more Damage in Battle.`
          Syllables.EX,
        ], SyllableSequence.ordered),
      ],
-`Heal 2 HP of all friendly Characters.`
-  );
+`Heal 2 HP of all friendly Characters.`,
+    function resolve(mage) {
+      return new Promise(function(resolve, reject) {
+        (new Permanent({
+          spellTypes: [SpellType.Familiar],
+          hp: 1,
+          at: 1,
+          delay: 1
+        }, mage)).putOntoBattlefield();
 
-  var LightOfBlessing = Spell.createSpell(
-     'Light of Blessing',
-     [
-       new SyllableSequence([
-         Syllables.LIGHT,
-         Syllables.MA,
-         Syllables.MA,
-       ], SyllableSequence.ordered),
-     ],
-`Target Familiar gets +1/+1.`
+        resolve();
+       });
+    }
   );
 
   var SunlitEidolon = Spell.createSpell(
@@ -217,7 +207,19 @@ Your Familiars deal 1 more Damage in Battle.`
        ], SyllableSequence.ordered),
      ],
 `2/X (4) Spirit Enchantment Familiar
-Battlecry: X becomes the number of your Light Syllables.`
+Battlecry: X becomes the number of your Light Syllables.`,
+    function resolve(mage) {
+      return new Promise(function(resolve, reject) {
+        (new Permanent({
+          spellTypes: [SpellType.Familiar],
+          hp: 1,
+          at: 1,
+          delay: 1
+        }, mage)).putOntoBattlefield();
+
+        resolve();
+       });
+    }
   );
 
   var LightWeaver = Spell.createSpell(
@@ -231,7 +233,19 @@ Battlecry: X becomes the number of your Light Syllables.`
        ], SyllableSequence.ordered),
      ],
 `1/3 Human Priest Familiar
-At the start of your turn: Get 1 SP.`
+At the start of your turn: Get 1 SP.`,
+    function resolve(mage) {
+      return new Promise(function(resolve, reject) {
+        (new Permanent({
+          spellTypes: [SpellType.Familiar],
+          hp: 1,
+          at: 1,
+          delay: 1
+        }, mage)).putOntoBattlefield();
+
+        resolve();
+       });
+    }
   );
 
   var AdlezTheSilverFang = Spell.createSpell(
@@ -244,117 +258,35 @@ At the start of your turn: Get 1 SP.`
          Syllables.XAU,
        ], SyllableSequence.ordered),
      ],
-`2/3 Human Knight Familiar
-At the start of its turn: Gain 1 AT.`
-  );
+`2/3 (4) Human Knight Familiar
+At the start of its turn: Gain 1 AT.`,
+    function resolve(mage) {
+      return new Promise(function(resolve, reject) {
+        (new Permanent({
+          spellTypes: [SpellType.Familiar],
+          hp: 1,
+          at: 1,
+          delay: 1
+        }, mage)).putOntoBattlefield();
 
-  var ChainLightning = Spell.createSpell(
-     'Chain Lightning',
-     [
-       new SyllableSequence([
-         Syllables.LIGHT,
-         Syllables.GAM,
-         Syllables.CHI,
-         Syllables.NIF,
-         Syllables.REN,
-       ], SyllableSequence.ordered),
-     ],
-`Deal X Damage to a Familiar. X is the number of your Light Syllables.`
-  );
-
-  var KissOfDeath = Spell.createSpell(
-     'Kiss of Death',
-     [
-       new SyllableSequence([
-         Syllables.LUNA,
-         Syllables.GAM,
-         Syllables['13TH_SYLLABLE'],
-         Syllables['13TH_SYLLABLE'],
-         Syllables['14TH_SYLLABLE'],
-         Syllables['15TH_SYLLABLE'],
-         Syllables['16TH_SYLLABLE'],
-         Syllables.TO,
-         Syllables.CHI,
-         Syllables.GAM
-       ], SyllableSequence.ordered),
-     ],
-     'Destroy a Mage.'
-  );
-
-  var TurquoiseInferno = Spell.createSpell(
-     'Turquoise Inferno',
-     [
-       new SyllableSequence([
-         Syllables['7TH_ELEMENT'],
-         Syllables.GAM,
-         Syllables['13TH_SYLLABLE'],
-         Syllables.EX,
-         Syllables.CHI,
-         Syllables['13TH_SYLLABLE']
-       ], SyllableSequence.ordered),
-     ],
-     'Massive AoE Damage using the 7th Element.'
-  );
-
-  var SwordOfGeminiWings = Spell.createSpell(
-     'Sword of Gemini Wings',
-     [
-       new SyllableSequence([
-         Syllables.SOL,
-         Syllables.EARTH,
-         Syllables.GAM,
-         Syllables.TO,
-         Syllables.CHI,
-         Syllables.XAU
-       ], SyllableSequence.ordered),
-     ],
-`4/3 WeaponAngel Artifact Familiar
-LightForge.
-If [this] was lightforged: Cast Schild of Gemini Wings.
-Equip to a Light Familiar.
-[this] and the equipped familiar get:
-"If [this] battles an enemy Familiar: reduce its AT by 1."`
-  );
-
-  var ElementCurse = Spell.createSpell(
-     'Element Curse',
-     [
-       new SyllableSequence([
-         Syllables.OMNIPOTENCE,
-         Syllables.CHI,
-         Syllables.TO,
-         Syllables.MA
-       ], SyllableSequence.ordered),
-     ],
-`Target opponent disables an Element Syllable.
-You may place a copy of that Syllable.`
+        resolve();
+       });
+    }
   );
 
   var spellBook = new SpellBook();
   [
     Fireball,
-    //MeteorStrike,
     WildPyromancer,
-    //Melting,
     GoblinAttackSquad,
     RaidLeader,
 
     Brocky,
-    //MonumentOfConsecration,
 
     HealingWave,
     SunlitEidolon,
-    //LightOfBlessing,
     LightWeaver,
-    ChainLightning,
-    AdlezTheSilverFang,
-
-    //GreatFireball,
-
-    //KissOfDeath,
-    //TurquoiseInferno,
-    //SwordOfGeminiWings,
-    //ElementCurse,
+    AdlezTheSilverFang
   ].forEach(spellBook.addSpell.bind(spellBook));
   return spellBook;
 };
