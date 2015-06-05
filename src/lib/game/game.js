@@ -241,30 +241,7 @@ GUI.Game = ig.Game.extend({
                 permanent.spellTypes = [SpellType.Artifact];
             }
         });
-        EntityDebug.spawn({
-            label: 'Selectable',
-            onclick: function() {
-                this.visualizeSelectable(!this.shouldVisualizeSelectable);
-            }
-        });
-        EntityDebug.spawn({
-            label: 'Advance Time',
-            onclick: function() {
-                var currentAction = game.timeline.nextAction();
-                if(currentAction) {
-                    console.log('ACTION', currentAction);
 
-                    if(currentAction.recurring === Action.recurring) {
-                        game.timeline.resetAction(currentAction);
-                    } else {
-                        game.timeline.removeAction(currentAction);
-                    }
-                    GUI.game.timeline.moveAllActions();
-                } else {
-                    game.timeline.advance();
-                }
-            }
-        });
         EntityDebug.spawn({
             label: 'Battle Test',
             onclick: function() {
@@ -278,25 +255,7 @@ GUI.Game = ig.Game.extend({
                     });
             }
         });
-        EntityDebug.spawn({
-            label: 'Advance Til Next',
-            onclick: function() {
-                GUI.game.advanceTimeToNextAction()
-                    .delay(1500).then(function(action) {
-                        return new Turn(action).whenFinished();
-                    }).then(function resetAction(currentAction) {
-                        // TODO: what if the associated Permanent was defeated in battle?
-                        if(currentAction) {
-                            if(currentAction.character.isOnBattlefield()) {
-                                game.timeline.resetAction(currentAction);
-                            } else {
-                                game.timeline.removeAction(currentAction);
-                            }
-                            GUI.game.timeline.moveAllActions();
-                        }
-                    }).delay(1500);
-            }
-        });
+
 
         // START TIMELINE LOOP
         Promise.resolve().delay(2).then(function() {
