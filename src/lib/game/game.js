@@ -12,16 +12,7 @@ ig.module(
 	'game.gui.battlefield',
 
     // entities
-	//'game.entities.battle-field',
-	//'game.entities.field',
-	//'game.entities.info-text',
-	//'game.entities.spell',
-	//'game.entities.spell-checker',
-	//'game.entities.spell-list',
 	'game.entities.syllable',
-	//'game.entities.syllable-board',
-	//'game.entities.syllable-selection',
-	//'game.entities.time-line',
 
     // maps
 	'game.levels.battle',
@@ -42,26 +33,40 @@ Turn = ig.Class.extend({
     whenFinished: function() {
         var action = this.action;
         var player = action.character.controller || action.character.mage.controller;
+        console.log('Advanced to:', action);
 
         if(player === GUI.game.visualizedMainPlayer) {
-            console.log('Main Player');
             return new Promise(function(resolve, reject) {
-                console.log('Advanced to:', action);
-                var endTurnEntity = GUI.game.spawnEntity(EntityDebug, 200, 200, {
-                    label: 'End Turn',
-                    onclick: function() {
-                        this.kill();
+                console.log('Main Player');
+                if(action.character instanceof Permanent) {
+                    console.log('Turn of Familiar');
+                    GUI.game.startBattle(action.character).then(function(combatants) {
+                        console.log('ENTITYDEBUG_BATTLE_TEST_FINISHED');
+                        env.conn.send({
+                            command: 'battle',
+                            combatants: [combatants[0].id, combatants[1].id]
+                        });
                         env.conn.send({
                             command: 'endTurn'
                         });
                         resolve(action);
-                    }
-                });
+                    });
+                } else if(action.character instanceof Mage) {
+                    console.log('Turn of Mage');
+                    var endTurnEntity = GUI.game.spawnEntity(EntityDebug, 200, 200, {
+                        label: 'End Turn',
+                        onclick: function() {
+                            this.kill();
+                            env.conn.send({
+                                command: 'endTurn'
+                            });
+                            resolve(action);
+                        }
+                    });
+                } else {
+                    throw new Error('neither Mage nor Familiar Turn');
+                };
             });
-
-            if(action.character instanceof Permanent) {
-                console.log('Turn of Familiar');
-            };
         } else {
             console.log('Not-visualized Player');
             return new Promise(function(resolve, reject) {
@@ -78,6 +83,7 @@ Turn = ig.Class.extend({
                             return;
                             break;
                           case 'battle':
+                            console.log('BATTLE');
                             // Anweisungen werden ausgeführt,
                             // falls expression mit value2 übereinstimmt
                             break;
@@ -344,7 +350,9 @@ GUI.Game = ig.Game.extend({
                     console.log('removed defeated permanents');
                 })
                 .delay(2000)
-                .then(promiseProxy.resolve);
+                .then(function() {
+                    promiseProxy.resolve([combatant1, combatant2]);
+                });
         });
 
         return promiseProxy.promise;
