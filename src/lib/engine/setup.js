@@ -74,8 +74,8 @@ createTestSpellbook = function() {
     [
       new SyllableSequence([
         Syllables.FIRE,
-        Syllables.XAU,
-        Syllables.CHI,
+        //Syllables.XAU,
+        //Syllables.CHI,
         Syllables.NIF,
       ], SyllableSequence.ordered),
     ],
@@ -114,24 +114,26 @@ Battlecry: Cast Fireball.`,
      [
        new SyllableSequence([
          Syllables.FIRE,
-         Syllables.XAU,
-         Syllables.CHI,
-         Syllables.REN,
+         //Syllables.XAU,
+         //Syllables.CHI,
+         //Syllables.REN,
          Syllables.CHI,
        ], SyllableSequence.ordered),
      ],
 `Summon 3 1/1 (3) Goblin Familiars.`,
     function resolve(mage) {
-      _(3).times(function() {
-        new Permanent({
-          spellTypes: [SpellType.Familiar],
-          hp: 1,
-          at: 1,
-          delay: 3
-        }, mage).putOntoBattlefield();
-      });
+      return new Promise(function(resolve, reject) {
+        _(3).times(function() {
+          new Permanent({
+            spellTypes: [SpellType.Familiar],
+            hp: 1,
+            at: 1,
+            delay: 3
+          }, mage).putOntoBattlefield();
+        });
 
-      return Promise.resolve();
+        resolve();
+      });
     }
   );
 
@@ -380,11 +382,13 @@ configureGameForTwoPlayers = function() {
     )
   ];
 
+/*
   var sampleBoard = mages[0].syllableBoard;
   sampleBoard.placeSyllable({ x: 0, y: 3 }, Syllables.FIRE);
   sampleBoard.placeSyllable({ x: 2, y: 3 }, Syllables.XAU);
   sampleBoard.placeSyllable({ x: 1, y: 3 }, Syllables.CHI);
   sampleBoard.switchSyllables({ x: 2, y: 3 }, { x: 1, y: 3 });
+*/
 
   players.forEach(game.addPlayer.bind(game));
 
@@ -394,6 +398,7 @@ configureGameForTwoPlayers = function() {
   game.timeline.advance();
   mages[1].putOntoBattlefield();
 
+/*
   (new Permanent({
     spellTypes: [SpellType.Artifact, SpellType.Familiar],
     hp: 5,
@@ -430,6 +435,7 @@ configureGameForTwoPlayers = function() {
     delay: 6,
     id: nextID()
   }, mages[1])).putOntoBattlefield();
+  */
 }
 
 game = new Game();

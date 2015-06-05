@@ -93,8 +93,41 @@ Turn = ig.Class.extend({
                             });
                             break;
                           case 'switchSyllables':
+                            var syllableBoard = game.battlefield.sides.get(GUI.game.opponentPlayer).mages[0].syllableBoard,
+                                syl1 = GUI.game.opponentSyllableBoard.syllableStones[message.fiend1x][message.fiend1y],
+                                syl2 = GUI.game.opponentSyllableBoard.syllableStones[message.fiend2x][message.fiend2y];
+
+                            if(syllableBoard.switchSyllables(
+                                syl1.index,
+                                syl2.index)
+                            ) {
+                                syl1.kill();
+                                syl2.kill();
+                            }
                             break;
                           case 'placeSyllable':
+                            var syllableIndex = {
+                              x: message.fieldX,
+                              y: message.fieldY
+                            };
+                            var syllableBoard = game.battlefield.sides.get(GUI.game.opponentPlayer).mages[0].syllableBoard;
+                            var syllable = GUI.game.syllablePool.syllables[message.indexInSyllablePool].model.copy();
+                            var callback = function(ConcreteSpell, startIndex, direction) {
+                              console.log('CAST on Stack', ConcreteSpell, startIndex, ''+direction);
+                              var spell = new ConcreteSpell();
+                              spell.mage = syllableBoard.mage
+                              game.stack.push(spell);
+                            };
+
+                            tryPlaceSyllableAndCastSpells(
+                                syllableIndex,
+                                syllableBoard,
+                                syllable,
+                                callback
+                            );
+
+                            game.stack.process()
+                                .then(function() { console.log('DONE PROCESSING STACK'); });
                             break;
                           case 'selectTarget':
                             break;
@@ -247,87 +280,107 @@ GUI.Game = ig.Game.extend({
         this.timeline.update();
         this.battlefield.update();
 
-        // PLACE SYLLABLES
-        // start dragging
-        if(ig.input.pressed('leftclick')) {
-            var hoveredSyllable = _(this.syllablePool.syllables).find(function(entity) { return ig.input.hover(entity); });
-            if(hoveredSyllable) {
-                this.dragEntity = hoveredSyllable.copy();
-            }
-        }
-
-        // dragging
-        if(this.dragEntity) {
-            this.dragEntity.pos.x = ig.input.mouse.x - this.dragEntity.size.x / 2;
-            this.dragEntity.pos.y = ig.input.mouse.y - this.dragEntity.size.y / 2;
-        }
-
-        // dropping
-        if(this.dragEntity && ig.input.released('leftclick')) {
-            var hoveredField = _(this.syllableBoard.fields).find(function(entity) { return ig.input.hover(entity); });
-
-            if(hoveredField) {
-                var syllableIndex = hoveredField.model.index,
-                    syllableBoard = this.syllableBoard.getModel(),
-                    syllable = this.dragEntity.model,
-                    callback = function(ConcreteSpell, startIndex, direction) {
-                        console.log('CAST on Stack', ConcreteSpell, startIndex, ''+direction);
-                        var spell = new ConcreteSpell();
-                        spell.mage = syllableBoard.mage
-                        game.stack.push(spell);
-                    };
-
-                tryPlaceSyllableAndCastSpells(
-                    syllableIndex,
-                    syllableBoard,
-                    syllable,
-                    callback
-                );
-
-                game.stack.process()
-                    .then(function() { console.log('DONE PROCESSING STACK'); });
-            }
-
-            this.dragEntity.kill();
-            this.dragEntity = undefined;
-        }
-
-        // SWITCH SYLLABLES
-        // start dragging
-        if(ig.input.pressed('leftclick')) {
-            var hoveredField = _.find(this.syllableBoard.fields, function(field) { return ig.input.hover(field); });
-            if(hoveredField) {
-                var hoveredSyllable = this.syllableBoard.syllableStones[hoveredField.index.x][hoveredField.index.y];
+        if(GUI.game.endTurnEntity) {
+            // PLACE SYLLABLES
+            // start dragging
+            if(ig.input.pressed('leftclick')) {
+                var hoveredSyllable = _(this.syllablePool.syllables).find(function(entity) { return ig.input.hover(entity); });
                 if(hoveredSyllable) {
-                    this.dragStoneEntity = hoveredSyllable;
+                    this.dragEntity = hoveredSyllable.copy();
+                    this.dragEntity.original = hoveredSyllable;
                 }
             }
-        }
 
-        // dragging
-        if(this.dragStoneEntity) {
-            this.dragStoneEntity.pos.x = ig.input.mouse.x - this.dragStoneEntity.size.x / 2;
-            this.dragStoneEntity.pos.y = ig.input.mouse.y - this.dragStoneEntity.size.y / 2;
-        }
+            // dragging
+            if(this.dragEntity) {
+                this.dragEntity.pos.x = ig.input.mouse.x - this.dragEntity.size.x / 2;
+                this.dragEntity.pos.y = ig.input.mouse.y - this.dragEntity.size.y / 2;
+            }
 
-        // dropping
-        if(this.dragStoneEntity && ig.input.released('leftclick')) {
-            var hoveredField = _(this.syllableBoard.fields).find(function(entity) { return ig.input.hover(entity); });
-            if(hoveredField) {
-                var hoveredSyllable = this.syllableBoard.syllableStones[hoveredField.index.x][hoveredField.index.y];
-                if(hoveredSyllable) {
-                    if(this.syllableBoard.getModel().switchSyllables(this.dragStoneEntity.index, hoveredSyllable.index)) {
-                        this.dragStoneEntity.kill();
-                        hoveredSyllable.kill();
-                        var successful = true;
+            // dropping
+            if(this.dragEntity && ig.input.released('leftclick')) {
+                var hoveredField = _(this.syllableBoard.fields).find(function(entity) { return ig.input.hover(entity); });
+
+                if(hoveredField) {
+                    var syllableIndex = hoveredField.model.index,
+                        syllableBoard = this.syllableBoard.getModel(),
+                        syllable = this.dragEntity.model,
+                        callback = function(ConcreteSpell, startIndex, direction) {
+                            console.log('CAST on Stack', ConcreteSpell, startIndex, ''+direction);
+                            var spell = new ConcreteSpell();
+                            spell.mage = syllableBoard.mage
+                            game.stack.push(spell);
+                        };
+
+                    env.conn.send({
+                        command: 'placeSyllable',
+                        fieldX: syllableIndex.x,
+                        fieldY: syllableIndex.y,
+                        indexInSyllablePool: this.syllablePool.syllables.indexOf(this.dragEntity.original)
+                    });
+
+                    tryPlaceSyllableAndCastSpells(
+                        syllableIndex,
+                        syllableBoard,
+                        syllable,
+                        callback
+                    );
+
+                    GUI.game.endTurnEntity.pos.x -= 1000;
+                    game.stack.process()
+                        .then(function() {
+                            GUI.game.endTurnEntity.pos.x += 1000;
+                        });
+                }
+
+                this.dragEntity.kill();
+                this.dragEntity = undefined;
+            }
+
+            // SWITCH SYLLABLES
+            // start dragging
+            if(ig.input.pressed('leftclick')) {
+                var hoveredField = _.find(this.syllableBoard.fields, function(field) { return ig.input.hover(field); });
+                if(hoveredField) {
+                    var hoveredSyllable = this.syllableBoard.syllableStones[hoveredField.index.x][hoveredField.index.y];
+                    if(hoveredSyllable) {
+                        this.dragStoneEntity = hoveredSyllable;
                     }
                 }
             }
 
-            if(!successful) {
-                this.syllableBoard.resetPosition(this.dragStoneEntity);
+            // dragging
+            if(this.dragStoneEntity) {
+                this.dragStoneEntity.pos.x = ig.input.mouse.x - this.dragStoneEntity.size.x / 2;
+                this.dragStoneEntity.pos.y = ig.input.mouse.y - this.dragStoneEntity.size.y / 2;
             }
-            this.dragStoneEntity = undefined;
+
+            // dropping
+            if(this.dragStoneEntity && ig.input.released('leftclick')) {
+                var hoveredField = _(this.syllableBoard.fields).find(function(entity) { return ig.input.hover(entity); });
+                if(hoveredField) {
+                    var hoveredSyllable = this.syllableBoard.syllableStones[hoveredField.index.x][hoveredField.index.y];
+                    if(hoveredSyllable) {
+                        env.conn.send({
+                            command: 'switchSyllables',
+                            fiend1x: this.dragStoneEntity.index.x,
+                            fiend1y: this.dragStoneEntity.index.y,
+                            fiend2x: hoveredSyllable.index.x,
+                            fiend2y: hoveredSyllable.index.y
+                        });
+                        if(this.syllableBoard.getModel().switchSyllables(this.dragStoneEntity.index, hoveredSyllable.index)) {
+                            this.dragStoneEntity.kill();
+                            hoveredSyllable.kill();
+                            var successful = true;
+                        }
+                    }
+                }
+
+                if(!successful) {
+                    this.syllableBoard.resetPosition(this.dragStoneEntity);
+                }
+                this.dragStoneEntity = undefined;
+            }
         }
 
         // select target
