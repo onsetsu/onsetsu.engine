@@ -8,8 +8,16 @@ var Player = function Player() {};
 
 var Team = function Team() {};
 
+var nextID = (function() {
+  var id = 1;
+  return function() {
+    return id++;
+  };
+})();
+
 // TODO: separate owner and controller?
 var Mage = function Mage(player, hp, sp, delay, syllableBoard, spellBook, syllablePool) {
+  this.id = nextID();
   this.controller = player;
   this.maxHp = hp;
   this.hp = hp;

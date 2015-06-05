@@ -398,31 +398,37 @@ configureGameForTwoPlayers = function() {
     spellTypes: [SpellType.Artifact, SpellType.Familiar],
     hp: 5,
     at: 2,
-    delay: 4
+    delay: 4,
+    id: nextID()
   }, mages[0])).putOntoBattlefield();
   (new Permanent({
     spellTypes: [SpellType.Familiar],
     hp: 2,
     at: 4,
-    delay: 4
+    delay: 4,
+    id: nextID()
   }, mages[0])).putOntoBattlefield();
   (new Permanent({
     spellTypes: [SpellType.Familiar],
     hp: 7,
     at: 1,
-    delay: 3
+    delay: 3,
+    id: nextID()
   }, mages[1])).putOntoBattlefield();
   (new Permanent({
     spellTypes: [SpellType.Familiar],
     hp: 8,
     at: 8,
-    delay: 8
+    delay: 8,
+    id: nextID()
+
   }, mages[1])).putOntoBattlefield();
   (new Permanent({
     spellTypes: [SpellType.Familiar],
     hp: 1,
     at: 6,
-    delay: 6
+    delay: 6,
+    id: nextID()
   }, mages[1])).putOntoBattlefield();
 }
 

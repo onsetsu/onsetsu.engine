@@ -56,6 +56,7 @@ Battlefield.prototype.removeDefeatedPermanents = function() {
 };
 
 var Permanent = function Permanent(settings, mage) {
+  this.id = settings.id || nextID();
   this.spellTypes = settings.spellTypes;
   this.hp = settings.hp;
   this.maxHp = settings.hp;
