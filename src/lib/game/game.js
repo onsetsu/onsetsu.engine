@@ -310,9 +310,7 @@ GUI.Game = ig.Game.extend({
         // Simulate a whole battle
 
         var side1 = game.battlefield.sides.get(combatant1.mage.controller),
-            combatant1Entity = GUI.game.battlefield.entitiesBySide
-                .get(side1)
-                .entitiesByPermanent.get(combatant1);
+            combatant1Entity = GUI.game.battlefield.getEntityFor(combatant1);
 
         // Get possible targets
         var side2 = game.battlefield.sides.get(combatant1.mage.controller.opponent);
@@ -322,20 +320,9 @@ GUI.Game = ig.Game.extend({
 
         targets.push(side2.mages[0]);
 
-        var GUIside2 = GUI.game.battlefield.entitiesBySide.get(side2);
-        targets.forEach(function(target) {
-            var targetEntity = GUIside2.entitiesByPermanent.get(target) || GUIside2.entitiesByMage.get(target);
-            targetEntity.visualizeSelectable(true);
-        });
-
         return new Promise(function(resolve, reject) {
-            GUI.game.selectTarget = new GUI.SelectTarget(targets, GUIside2, function(combatant2) {
-                targets.forEach(function(target) {
-                    var targetEntity = GUIside2.entitiesByPermanent.get(target) || GUIside2.entitiesByMage.get(target);
-                    targetEntity.visualizeSelectable(false);
-                });
-
-                 var combatant2Entity = GUIside2.entitiesByPermanent.get(combatant2) || GUIside2.entitiesByMage.get(combatant2);
+            GUI.game.selectTarget = new GUI.SelectTarget(targets, function(combatant2) {
+                var combatant2Entity = GUI.game.battlefield.getEntityFor(combatant2);
 
                 combatant1Entity.drawBattleLine(combatant2Entity, 2)
                     .then(function() {
