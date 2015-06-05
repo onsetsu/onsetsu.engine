@@ -53,9 +53,10 @@ Turn = ig.Class.extend({
                     });
                 } else if(action.character instanceof Mage) {
                     console.log('Turn of Mage');
-                    var endTurnEntity = GUI.game.spawnEntity(EntityDebug, 200, 200, {
+                    GUI.game.endTurnEntity = GUI.game.spawnEntity(EntityDebug, 200, 200, {
                         label: 'End Turn',
                         onclick: function() {
+                            GUI.game.endTurnEntity = undefined;
                             this.kill();
                             env.conn.send({
                                 command: 'endTurn'
@@ -173,90 +174,6 @@ GUI.Game = ig.Game.extend({
                 EntityDebug.pos.x += 66;
         };
 
-        EntityDebug.spawn({
-            label: 'Add Player',
-            onclick: function() {
-                var player = new Player(),
-                    mage = new Mage(
-                        player,
-                        15,
-                        5,
-                        9,
-                        new SyllableBoard({ x: 6, y: 6 }),
-                        createTestSpellbook(),
-                        createStandardSyllablePool()
-                    );
-                game.addPlayer(player);
-                mage.putOntoBattlefield();
-            }
-        });
-        EntityDebug.spawn({
-            label: 'Add Mage',
-            onclick: function() {
-                new Mage(
-                    GUI.game.visualizedMainPlayer,
-                    17,
-                    42,
-                    5,
-                    new SyllableBoard({ x: 3, y: 3 }),
-                    createTestSpellbook(),
-                    createStandardSyllablePool()
-                ).putOntoBattlefield();
-            }
-        });
-        EntityDebug.spawn({
-            label: 'Remove Mage',
-            onclick: function() {
-                var mages = game.battlefield.sides.get(GUI.game.visualizedMainPlayer).mages
-                var mageToRemove = mages[mages.length - 1];
-                mageToRemove.removeFromBattlefield();
-            }
-        });
-        EntityDebug.spawn({
-            label: 'Add Familiar',
-            onclick: function() {
-                var mage = game.battlefield.sides.get(GUI.game.visualizedMainPlayer).mages[0];
-                (new Permanent({
-                    spellTypes: [SpellType.Familiar],
-                    hp: 2,
-                    at: 3,
-                    delay: 3
-                }, mage)).putOntoBattlefield();
-            }
-        });
-        EntityDebug.spawn({
-            label: 'Remove Familiar',
-            onclick: function() {
-                var side = game.battlefield.sides.get(GUI.game.visualizedMainPlayer),
-                    permanent = side.permanents[0];
-                permanent.removeFromBattlefield();
-            }
-        });
-        // TODO: works, but does not trigger rerendering yet
-        EntityDebug.spawn({
-            label: 'Become Artifact',
-            onclick: function() {
-                var side = game.battlefield.sides.get(GUI.game.visualizedMainPlayer)
-                    permanent = _.sample(side.permanents);
-                permanent.spellTypes = [SpellType.Artifact];
-            }
-        });
-
-        EntityDebug.spawn({
-            label: 'Battle Test',
-            onclick: function() {
-                var side1 = game.battlefield.sides.get(GUI.game.visualizedMainPlayer),
-                    combatant1 = _(side1.permanents).find(function(perm) {
-                        return _(perm.spellTypes).contains(SpellType.Familiar);
-                    });
-                GUI.game.startBattle(combatant1)
-                    .then(function() {
-                        console.log('ENTITYDEBUG_BATTLE_TEST_FINISHED');
-                    });
-            }
-        });
-
-
         // START TIMELINE LOOP
         Promise.resolve().delay(2).then(function() {
             return GUI.game.advanceAndProcessTurn();
@@ -308,7 +225,6 @@ GUI.Game = ig.Game.extend({
             .then(function(action) {
                 return new Turn(action).whenFinished();
             }).then(function resetAction(currentAction) {
-                // TODO: what if the associated Permanent was defeated in battle?
                 if(currentAction) {
                     if(currentAction.character.isOnBattlefield()) {
                         game.timeline.resetAction(currentAction);
@@ -429,13 +345,6 @@ GUI.Game = ig.Game.extend({
             }
             resolve(currentAction);
 	    });
-	},
-
-	draw: function() {
-		// Draw all entities and backgroundMaps
-		this.parent();
-
-		// Add your own drawing code here
 	}
 });
 
