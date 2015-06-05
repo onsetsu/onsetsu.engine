@@ -25,6 +25,7 @@ FieldSide.prototype.removeMage = function(mage) {
 var Zone = function Zone() {};
 
 var Battlefield = function Battlefield() {
+  this.charactersById = new Map();
   this.sides = new Map();
 };
 Battlefield.prototype.addPlayer = function(player) {
@@ -32,16 +33,20 @@ Battlefield.prototype.addPlayer = function(player) {
 };
 // TODO: remove player has to remove all associated permanents and effects (the complete FieldSide)
 Battlefield.prototype.addPermanent = function(permanent, mage) {
+  this.charactersById.set(permanent.id, permanent);
   this.sides.get(mage.controller).addPermanent(permanent);
 };
 Battlefield.prototype.removePermanent = function(permanent, mage) {
+  this.charactersById.delete(permanent.id);
   this.sides.get(mage.controller).removePermanent(permanent);
 };
 Battlefield.prototype.addMage = function(mage) {
+  this.charactersById.set(mage.id, mage);
   this.sides.get(mage.controller).addMage(mage);
 };
 
 Battlefield.prototype.removeMage = function(mage) {
+  this.charactersById.delete(mage.id);
   this.sides.get(mage.controller).removeMage(mage);
 };
 
