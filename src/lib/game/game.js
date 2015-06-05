@@ -309,9 +309,6 @@ GUI.Game = ig.Game.extend({
 	startBattle: function(combatant1) {
         // Simulate a whole battle
 
-        var side1 = game.battlefield.sides.get(combatant1.mage.controller),
-            combatant1Entity = GUI.game.battlefield.getEntityFor(combatant1);
-
         // Get possible targets
         var side2 = game.battlefield.sides.get(combatant1.mage.controller.opponent);
         var targets = _(side2.permanents).filter(function(permanent) {
@@ -322,7 +319,8 @@ GUI.Game = ig.Game.extend({
 
         return new Promise(function(resolve, reject) {
             GUI.game.selectTarget = new GUI.SelectTarget(targets, function(combatant2) {
-                var combatant2Entity = GUI.game.battlefield.getEntityFor(combatant2);
+                var combatant1Entity = GUI.game.battlefield.getEntityFor(combatant1),
+                    combatant2Entity = GUI.game.battlefield.getEntityFor(combatant2);
 
                 combatant1Entity.drawBattleLine(combatant2Entity, 2)
                     .then(function() {
@@ -340,7 +338,7 @@ GUI.Game = ig.Game.extend({
         });
 	},
 
-	animatedBattle: function() {
+	animatedBattle: function(combatant1, combatant2) {
 
 	},
 
