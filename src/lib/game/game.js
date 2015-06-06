@@ -129,6 +129,23 @@ Turn = ig.Class.extend({
                                 .then(function() { console.log('DONE PROCESSING STACK'); });
                             break;
                           case 'targetForDamage':
+                            /*
+                            waitEntity.update = function() {};
+                            GUI.game.animatedBattle(
+                                game.battlefield.charactersById.get(message.combatants[0]),
+                                game.battlefield.charactersById.get(message.combatants[1])
+                            ).then(function() {
+                                waitEntity.update = listening;
+                            });
+                            combatant1Entity.drawBattleLine(combatant2Entity, 2)
+                                .then(function() {
+                                    new Battle(combatant1, combatant2);
+                                    console.log("battle ended");
+
+                                    game.battlefield.removeDefeatedPermanents();
+                                    console.log('removed defeated permanents');
+                                })
+                            */
                             var target = game.battlefield.charactersById.get(message.targetId);
                             target.receiveDamage(message.damage);
                             break;

@@ -25,7 +25,7 @@ createStandardSyllablePool = function() {
   ]);
 };
 
-var dealDamage = function(mage, damage) {
+var dealDamage = function(mage, damage, spellIndex) {
   return new Promise(function(resolve, reject) {
     if(mage.controller === GUI.game.visualizedMainPlayer) {
       console.log('ownMage');
@@ -36,10 +36,15 @@ var dealDamage = function(mage, damage) {
         env.conn.send({
           command: 'targetForDamage',
           targetId: target.id,
-          damage: damage
+          damage: damage,
+          spellIndex: spellIndex
         });
-        target.receiveDamage(damage);
-        resolve();
+        GUI.game.spellBook.spellEntities[spellIndex]
+          .drawBattleLine(GUI.game.battlefield.getEntityFor(target), 2)
+          .then(function() {
+            target.receiveDamage(damage);
+            resolve();
+          });
       });
      } else {
       console.log('enemyMage');
@@ -78,7 +83,7 @@ createTestSpellbook = function() {
 `Deal 2 Damage.`,
     function resolve(mage) {
       var damage = 2;
-      return dealDamage(mage, damage);
+      return dealDamage(mage, damage, Fireball.index);
     }
   );
 
@@ -219,7 +224,7 @@ Reduce Damage [this] receives by 1.`,
         return character === mage || character.mage === mage;
       }).length;
 
-      return dealDamage(mage, damage);
+      return dealDamage(mage, damage, PurgeRay.index);
     }
   );
 
