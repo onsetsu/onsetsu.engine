@@ -54,6 +54,13 @@ var pushOnStack = function(ConcreteSpellClass, mage) {
   game.stack.push(spell);
 }
 
+var orgeCount = function(mage) {
+  var ogres = game.battlefield.getCharactersMatching(function(character) {
+    return character.mage === mage && character.isOgre;
+  });
+  return ogres.length;
+};
+
 createTestSpellbook = function() {
   /*
    * Currently used Spells
@@ -80,8 +87,9 @@ createTestSpellbook = function() {
     [
       new SyllableSequence([
         Syllables.FIRE,
-        //Syllables.XAU,
-        //Syllables.CHI,
+        Syllables.XAU,
+        Syllables.CHI,
+        Syllables.CHI,
         Syllables.NIF,
       ], SyllableSequence.ordered),
     ],
@@ -91,8 +99,8 @@ When [this] enters the Battlefield: Cast Fireball.`,
       return new Promise(function(resolve, reject) {
         (new Permanent({
           spellTypes: [SpellType.Familiar],
-          hp: 2,
-          at: 3,
+          hp: 2 + orgeCount(mage),
+          at: 3 + orgeCount(mage),
           delay: 5
         }, mage)).putOntoBattlefield();
 
@@ -107,9 +115,9 @@ When [this] enters the Battlefield: Cast Fireball.`,
      [
        new SyllableSequence([
          Syllables.FIRE,
-         //Syllables.XAU,
-         //Syllables.CHI,
-         //Syllables.REN,
+         Syllables.XAU,
+         Syllables.CHI,
+         Syllables.REN,
          Syllables.CHI,
        ], SyllableSequence.ordered),
      ],
@@ -119,8 +127,8 @@ When [this] enters the Battlefield: Cast Fireball.`,
         _(3).times(function() {
           new Permanent({
             spellTypes: [SpellType.Familiar],
-            hp: 1,
-            at: 1,
+            hp: 1 + orgeCount(mage),
+            at: 1 + orgeCount(mage),
             delay: 3
           }, mage).putOntoBattlefield();
         });
@@ -135,21 +143,23 @@ When [this] enters the Battlefield: Cast Fireball.`,
      [
        new SyllableSequence([
          Syllables.FIRE,
-//         Syllables.XAU,
+         Syllables.XAU,
          Syllables.MA,
-  //       Syllables.EX,
+         Syllables.EX,
        ], SyllableSequence.ordered),
      ],
 `3/3 (4) Ogre Familiar
 Your Goblin Familiars enter the battlefield with +1/+1.`,
     function resolve(mage) {
       return new Promise(function(resolve, reject) {
-        (new Permanent({
+        var permanent = new Permanent({
           spellTypes: [SpellType.Familiar],
           hp: 3,
           at: 3,
           delay: 4
-        }, mage)).putOntoBattlefield();
+        }, mage)
+        permanent.putOntoBattlefield()
+        permanent.isOgre = true;
 
         resolve();
       });
@@ -219,7 +229,8 @@ Reduce Damage [this] receives by 1.`,
        ], SyllableSequence.ordered),
      ],
 `2/? (4) Spirit Enchantment Familiar
-When [this] enters the Battlefield: Its HP become the number of your Light Syllables.`,
+When [this] enters the Battlefield:
+Its HP become the number of your Light Syllables.`,
     function resolve(mage) {
       return new Promise(function(resolve, reject) {
         var lightSyllableCount = 0;
