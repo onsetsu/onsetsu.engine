@@ -25,6 +25,35 @@ createStandardSyllablePool = function() {
   ]);
 };
 
+var dealDamage = function(mage, damage) {
+  return new Promise(function(resolve, reject) {
+    if(mage.controller === GUI.game.visualizedMainPlayer) {
+      console.log('ownMage');
+      var targets = game.battlefield.getCharactersMatching(function(character) {
+        return true;
+      });
+      GUI.game.selectTarget = new GUI.SelectTarget(targets, function(target) {
+        env.conn.send({
+          command: 'targetForDamage',
+          targetId: target.id,
+          damage: damage
+        });
+        target.receiveDamage(damage);
+        resolve();
+      });
+     } else {
+      console.log('enemyMage');
+      resolve();
+    }
+  });
+}
+
+var pushOnStack = function(ConcreteSpellClass, mage) {
+  var spell = new ConcreteSpellClass();
+  spell.mage = mage;
+  game.stack.push(spell);
+}
+
 createTestSpellbook = function() {
   /*
    * Currently used Spells
@@ -35,32 +64,14 @@ createTestSpellbook = function() {
       new SyllableSequence([
         Syllables.FIRE,
         Syllables.CHI,
+        Syllables.CHI,
         Syllables.NIF
       ], SyllableSequence.ordered),
     ],
-`Deal 1 Damage.`,
+`Deal 2 Damage.`,
     function resolve(mage) {
-      var damage = 1;
-      return new Promise(function(resolve, reject) {
-        if(mage.controller === GUI.game.visualizedMainPlayer) {
-          console.log('ownMage');
-          var targets = game.battlefield.getCharactersMatching(function(character) {
-            return true;
-          });
-          GUI.game.selectTarget = new GUI.SelectTarget(targets, function(target) {
-            env.conn.send({
-              command: 'targetForDamage',
-              targetId: target.id,
-              damage: damage
-            });
-            target.receiveDamage(damage);
-            resolve();
-          });
-        } else {
-          console.log('enemyMage');
-          resolve();
-        }
-      });
+      var damage = 2;
+      return dealDamage(mage, damage);
     }
   );
 
@@ -75,7 +86,7 @@ createTestSpellbook = function() {
       ], SyllableSequence.ordered),
     ],
 `3/2 (5) Goblin Shaman Familiar
-Battlecry: Cast Fireball.`,
+When [this] enters the Battlefield: Cast Fireball.`,
     function resolve(mage) {
       return new Promise(function(resolve, reject) {
         (new Permanent({
@@ -85,6 +96,7 @@ Battlecry: Cast Fireball.`,
           delay: 5
         }, mage)).putOntoBattlefield();
 
+        pushOnStack(Fireball, mage);
         resolve();
       });
     }
@@ -123,20 +135,20 @@ Battlecry: Cast Fireball.`,
      [
        new SyllableSequence([
          Syllables.FIRE,
-         Syllables.XAU,
+//         Syllables.XAU,
          Syllables.MA,
-         Syllables.EX,
+  //       Syllables.EX,
        ], SyllableSequence.ordered),
      ],
-`1/3 (4) Goblin Familiar
-Your other Goblin Familiars enter the battlefield with +1/+1.`,
+`3/3 (4) Ogre Familiar
+Your Goblin Familiars enter the battlefield with +1/+1.`,
     function resolve(mage) {
       return new Promise(function(resolve, reject) {
         (new Permanent({
           spellTypes: [SpellType.Familiar],
-          hp: 1,
-          at: 1,
-          delay: 1
+          hp: 3,
+          at: 3,
+          delay: 4
         }, mage)).putOntoBattlefield();
 
         resolve();
@@ -156,42 +168,42 @@ Your other Goblin Familiars enter the battlefield with +1/+1.`,
        ], SyllableSequence.ordered),
      ],
 `2/5 (7) Golem Artifact Familiar
-[this] receives 1 Damage less in Battle.`,
+Reduce Damage [this] receives by 1.`,
     function resolve(mage) {
       return new Promise(function(resolve, reject) {
-        (new Permanent({
+        var brocky = new Permanent({
           spellTypes: [SpellType.Familiar],
-          hp: 1,
-          at: 1,
-          delay: 1
-        }, mage)).putOntoBattlefield();
+          hp: 5,
+          at: 2,
+          delay: 7
+        }, mage)
+        brocky.putOntoBattlefield();
+        brocky.receiveDamage = function(amount) {
+          return Permanent.prototype.receiveDamage.call(this, amount-1);
+        };
 
         resolve();
        });
     }
   );
 
-  var HealingWave = Spell.createSpell(
-     'Healing Wave',
+  var PurgeRay = Spell.createSpell(
+     'Purge Ray',
      [
        new SyllableSequence([
          Syllables.LIGHT,
-         Syllables.MA,
-         Syllables.EX,
+         Syllables.CHI,
+         Syllables.REN,
+         Syllables.NIF,
        ], SyllableSequence.ordered),
      ],
-`Heal 2 HP of all friendly Characters.`,
+`Deal Damage equal to the number of friendly Characters.`,
     function resolve(mage) {
-      return new Promise(function(resolve, reject) {
-        (new Permanent({
-          spellTypes: [SpellType.Familiar],
-          hp: 1,
-          at: 1,
-          delay: 1
-        }, mage)).putOntoBattlefield();
+      var damage = game.battlefield.getCharactersMatching(function(character) {
+        return character === mage || character.mage === mage;
+      }).length;
 
-        resolve();
-       });
+      return dealDamage(mage, damage);
     }
   );
 
@@ -206,15 +218,27 @@ Your other Goblin Familiars enter the battlefield with +1/+1.`,
          Syllables.XAU,
        ], SyllableSequence.ordered),
      ],
-`2/X (4) Spirit Enchantment Familiar
-Battlecry: X becomes the number of your Light Syllables.`,
+`2/? (4) Spirit Enchantment Familiar
+When [this] enters the Battlefield: Its HP become the number of your Light Syllables.`,
     function resolve(mage) {
       return new Promise(function(resolve, reject) {
+        var lightSyllableCount = 0;
+        mage.syllableBoard.syllableStones.forEach(function(row) {
+          row.forEach(function(stone) {
+            if(stone &&
+                stone.syllable &&
+                stone.syllable.isA &&
+                stone.syllable.isA(Syllables.LIGHT)
+            ) {
+              lightSyllableCount += 1;
+            }
+          })
+        });
         (new Permanent({
           spellTypes: [SpellType.Familiar],
-          hp: 1,
-          at: 1,
-          delay: 1
+          hp: lightSyllableCount,
+          at: 2,
+          delay: 4
         }, mage)).putOntoBattlefield();
 
         resolve();
@@ -232,16 +256,20 @@ Battlecry: X becomes the number of your Light Syllables.`,
          Syllables.RYO,
        ], SyllableSequence.ordered),
      ],
-`1/3 Human Priest Familiar
+`1/3 (5) Human Priest Familiar
 At the start of your turn: Get 1 SP.`,
     function resolve(mage) {
       return new Promise(function(resolve, reject) {
-        (new Permanent({
+        var permanent = new Permanent({
           spellTypes: [SpellType.Familiar],
-          hp: 1,
+          hp: 3,
           at: 1,
-          delay: 1
-        }, mage)).putOntoBattlefield();
+          delay: 5
+        }, mage);
+        permanent.putOntoBattlefield();
+        permanent.startMageTurn = function(mage) {
+          mage.sp += 1;
+        };
 
         resolve();
        });
@@ -262,12 +290,16 @@ At the start of your turn: Get 1 SP.`,
 At the start of its turn: Gain 1 AT.`,
     function resolve(mage) {
       return new Promise(function(resolve, reject) {
-        (new Permanent({
+        var permanent = new Permanent({
           spellTypes: [SpellType.Familiar],
-          hp: 1,
-          at: 1,
-          delay: 1
-        }, mage)).putOntoBattlefield();
+          hp: 3,
+          at: 2,
+          delay: 4
+        }, mage);
+        permanent.putOntoBattlefield();
+        permanent.startTurn = function() {
+          this.at++;
+        };
 
         resolve();
        });
@@ -283,11 +315,14 @@ At the start of its turn: Gain 1 AT.`,
 
     Brocky,
 
-    HealingWave,
+    PurgeRay,
     SunlitEidolon,
     LightWeaver,
     AdlezTheSilverFang
   ].forEach(spellBook.addSpell.bind(spellBook));
+  /*spellBook.forEach(function(spellClass) {
+
+  });*/
   return spellBook;
 };
 
@@ -297,7 +332,7 @@ configureGameForTwoPlayers = function() {
     new Mage(
       players[0],
       20,
-      30,
+      0,
       6,
       new SyllableBoard({ x: 8, y: 8 }),
       createTestSpellbook(),
@@ -305,10 +340,10 @@ configureGameForTwoPlayers = function() {
     ),
     new Mage(
       players[1],
-      50,
-      10,
+      20,
+      0,
       6,
-      new SyllableBoard({ x: 7, y: 7 }),
+      new SyllableBoard({ x: 8, y: 8 }),
       createTestSpellbook(),
       createStandardSyllablePool()
     )

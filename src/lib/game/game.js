@@ -32,6 +32,7 @@ Turn = ig.Class.extend({
     },
     whenFinished: function() {
         var action = this.action;
+        action.character.startTurn();
         var player = action.character.controller || action.character.mage.controller;
         console.log('Advanced to:', action);
 
@@ -114,9 +115,7 @@ Turn = ig.Class.extend({
                             var syllable = GUI.game.syllablePool.syllables[message.indexInSyllablePool].model.copy();
                             var callback = function(ConcreteSpell, startIndex, direction) {
                               console.log('CAST on Stack', ConcreteSpell, startIndex, ''+direction);
-                              var spell = new ConcreteSpell();
-                              spell.mage = syllableBoard.mage
-                              game.stack.push(spell);
+                              pushOnStack(ConcreteSpell, syllableBoard.mage);
                             };
 
                             tryPlaceSyllableAndCastSpells(

@@ -114,6 +114,9 @@ Permanent.prototype.receiveDamage = function(amount) {
   game.battlefield.removeDefeatedPermanents();
 };
 
+Permanent.prototype.startTurn = function() {};
+Permanent.prototype.startMageTurn = function(mage) {};
+
 var Battle = function Battle(combatant1, combatant2) {
   function attack(attacker, defender) {
     // check whether the attacker has an attack value

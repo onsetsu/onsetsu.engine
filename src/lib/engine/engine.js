@@ -60,6 +60,19 @@ Mage.prototype.receiveDamage = function(amount) {
   this.hp -= amount;
 };
 
+Mage.prototype.startTurn = function() {
+  this.maxSp = Math.min(this.maxSp+1, 8);
+  this.sp = this.maxSp;
+
+  var that = this;
+  game.battlefield.getCharactersMatching(function(character) {
+    return character.mage === that;
+  }).forEach(function(character) {
+    character.startMageTurn(that);
+  });
+
+};
+
 var Gem = function Gem() {};
 
 // --------------------------------------------------------------------------------
