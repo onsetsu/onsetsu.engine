@@ -358,7 +358,7 @@ configureGameForTwoPlayers = function() {
     new Mage(
       players[0],
       20,
-      5,
+      0,
       6,
       new SyllableBoard({ x: 8, y: 8 }),
       createTestSpellbook(),
@@ -367,21 +367,13 @@ configureGameForTwoPlayers = function() {
     new Mage(
       players[1],
       20,
-      5,
+      0,
       6,
       new SyllableBoard({ x: 8, y: 8 }),
       createTestSpellbook(),
       createStandardSyllablePool()
     )
   ];
-
-/*
-  var sampleBoard = mages[0].syllableBoard;
-  sampleBoard.placeSyllable({ x: 0, y: 3 }, Syllables.FIRE);
-  sampleBoard.placeSyllable({ x: 2, y: 3 }, Syllables.XAU);
-  sampleBoard.placeSyllable({ x: 1, y: 3 }, Syllables.CHI);
-  sampleBoard.switchSyllables({ x: 2, y: 3 }, { x: 1, y: 3 });
-*/
 
   players.forEach(game.addPlayer.bind(game));
 
@@ -390,45 +382,6 @@ configureGameForTwoPlayers = function() {
   game.timeline.advance();
   game.timeline.advance();
   mages[1].putOntoBattlefield();
-
-/*
-  (new Permanent({
-    spellTypes: [SpellType.Artifact, SpellType.Familiar],
-    hp: 5,
-    at: 2,
-    delay: 4,
-    id: nextID()
-  }, mages[0])).putOntoBattlefield();
-  (new Permanent({
-    spellTypes: [SpellType.Familiar],
-    hp: 2,
-    at: 4,
-    delay: 4,
-    id: nextID()
-  }, mages[0])).putOntoBattlefield();
-  (new Permanent({
-    spellTypes: [SpellType.Familiar],
-    hp: 7,
-    at: 1,
-    delay: 3,
-    id: nextID()
-  }, mages[1])).putOntoBattlefield();
-  (new Permanent({
-    spellTypes: [SpellType.Familiar],
-    hp: 8,
-    at: 8,
-    delay: 8,
-    id: nextID()
-
-  }, mages[1])).putOntoBattlefield();
-  (new Permanent({
-    spellTypes: [SpellType.Familiar],
-    hp: 1,
-    at: 6,
-    delay: 6,
-    id: nextID()
-  }, mages[1])).putOntoBattlefield();
-  */
 }
 
 game = new Game();
