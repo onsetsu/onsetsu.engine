@@ -10,6 +10,7 @@ ig.module(
 
 EntitySpell = ig.Entity.extend({
 	size: {x:32, y:32},
+	animSheet: new ig.AnimationSheet('media/board.png', 32, 32),
 	sequencePadding: 4,
 	init: function(x, y, settings) {
 		this.parent(x, y, settings);
