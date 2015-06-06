@@ -47,6 +47,12 @@ EntityPermanent = ig.Entity.extend({
                     this.drawRelatedTo(GUI.game.timeline.entitiesByAction.get(action));
                 }
             };
+
+            // show associated Spell
+            var index = this.model.index;
+            var associatedSpellEntity = GUI.game.spellBook.spellEntities[index];
+
+            this.drawRelatedTo(associatedSpellEntity);
         }
 	}
 });

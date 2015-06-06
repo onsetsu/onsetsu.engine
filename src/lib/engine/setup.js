@@ -97,12 +97,14 @@ createTestSpellbook = function() {
 When [this] enters the Battlefield: Cast Fireball.`,
     function resolve(mage) {
       return new Promise(function(resolve, reject) {
-        (new Permanent({
+        var permanent = new Permanent({
           spellTypes: [SpellType.Familiar],
           hp: 2 + orgeCount(mage),
           at: 3 + orgeCount(mage),
           delay: 5
-        }, mage)).putOntoBattlefield();
+        }, mage);
+        permanent.index = WildPyromancer.index;
+        permanent.putOntoBattlefield();
 
         pushOnStack(Fireball, mage);
         resolve();
@@ -125,12 +127,14 @@ When [this] enters the Battlefield: Cast Fireball.`,
     function resolve(mage) {
       return new Promise(function(resolve, reject) {
         _(3).times(function() {
-          new Permanent({
+          var permanent = new Permanent({
             spellTypes: [SpellType.Familiar],
             hp: 1 + orgeCount(mage),
             at: 1 + orgeCount(mage),
             delay: 3
-          }, mage).putOntoBattlefield();
+          }, mage);
+          permanent.index = GoblinAttackSquad.index;
+          permanent.putOntoBattlefield();
         });
 
         resolve();
@@ -158,6 +162,7 @@ Your Goblin Familiars enter the battlefield with +1/+1.`,
           at: 3,
           delay: 4
         }, mage)
+        permanent.index = RaidLeader.index;
         permanent.putOntoBattlefield()
         permanent.isOgre = true;
 
@@ -187,6 +192,7 @@ Reduce Damage [this] receives by 1.`,
           at: 2,
           delay: 7
         }, mage)
+        brocky.index = Brocky.index;
         brocky.putOntoBattlefield();
         brocky.receiveDamage = function(amount) {
           return Permanent.prototype.receiveDamage.call(this, amount-1);
@@ -245,12 +251,14 @@ Its HP become the number of your Light Syllables.`,
             }
           })
         });
-        (new Permanent({
+        var permanent = new Permanent({
           spellTypes: [SpellType.Familiar],
           hp: lightSyllableCount,
           at: 2,
           delay: 4
-        }, mage)).putOntoBattlefield();
+        }, mage);
+        permanent.index = SunlitEidolon.index;
+        permanent.putOntoBattlefield();
 
         resolve();
        });
@@ -277,6 +285,7 @@ At the start of your turn: Get 1 SP.`,
           at: 1,
           delay: 5
         }, mage);
+        permanent.index = LightWeaver.index;
         permanent.putOntoBattlefield();
         permanent.startMageTurn = function(mage) {
           mage.sp += 1;
@@ -307,6 +316,7 @@ At the start of its turn: Gain 1 AT.`,
           at: 2,
           delay: 4
         }, mage);
+        permanent.index = AdlezTheSilverFang.index;
         permanent.putOntoBattlefield();
         permanent.startTurn = function() {
           this.at++;
@@ -331,9 +341,9 @@ At the start of its turn: Gain 1 AT.`,
     LightWeaver,
     AdlezTheSilverFang
   ].forEach(spellBook.addSpell.bind(spellBook));
-  /*spellBook.forEach(function(spellClass) {
-
-  });*/
+  spellBook.spells.forEach(function(spellClass, index) {
+    spellClass.index = index;
+  });
   return spellBook;
 };
 
@@ -343,7 +353,7 @@ configureGameForTwoPlayers = function() {
     new Mage(
       players[0],
       20,
-      0,
+      5,
       6,
       new SyllableBoard({ x: 8, y: 8 }),
       createTestSpellbook(),
@@ -352,7 +362,7 @@ configureGameForTwoPlayers = function() {
     new Mage(
       players[1],
       20,
-      0,
+      5,
       6,
       new SyllableBoard({ x: 8, y: 8 }),
       createTestSpellbook(),

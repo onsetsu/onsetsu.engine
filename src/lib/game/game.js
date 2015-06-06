@@ -54,7 +54,7 @@ Turn = ig.Class.extend({
                     });
                 } else if(action.character instanceof Mage) {
                     console.log('Turn of Mage');
-                    GUI.game.endTurnEntity = GUI.game.spawnEntity(EntityDebug, 200, 200, {
+                    GUI.game.endTurnEntity = GUI.game.spawnEntity(EntityDebug, 350, 50, {
                         label: 'End Turn',
                         onclick: function() {
                             GUI.game.endTurnEntity = undefined;
@@ -72,7 +72,7 @@ Turn = ig.Class.extend({
         } else {
             console.log('Not-visualized Player');
             return new Promise(function(resolve, reject) {
-                var waitEntity = GUI.game.spawnEntity(EntityDebug, 200, 200, {
+                var waitEntity = GUI.game.spawnEntity(EntityDebug, 350, 50, {
                     label: 'Wait For Opponent'
                 });
                 var listening = waitEntity.update = function() {
