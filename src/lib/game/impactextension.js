@@ -80,6 +80,9 @@ ig.Entity.inject({
                 easeQuarticInOut((this.tween.timeDone / this.tween.duration));
         }
 	},
+	markOnTurn: function(value) {
+	    this.shouldMarkOnTurn = value;
+	},
 	visualizeSelectable: function(value) {
 	    this.shouldVisualizeSelectable = value;
 	    this.dashOffset = 0;
@@ -98,6 +101,20 @@ ig.Entity.inject({
 	},
 	draw: function() {
 	    this.parent();
+
+        if(this.shouldMarkOnTurn) {
+            // TODO: duplicated logic
+            ig.system.context.save()
+            ig.system.context.strokeStyle = this.colors.onTurn;
+            ig.system.context.lineWidth = 2.0;
+            ig.system.context.strokeRect(
+                ig.system.getDrawPos(this.pos.x.round() - ig.game.screen.x) - 0.5 - 2,
+                ig.system.getDrawPos(this.pos.y.round() - ig.game.screen.y) - 0.5 - 2,
+                (this.size.x+4) * ig.system.scale,
+                (this.size.y+4) * ig.system.scale
+            );
+            ig.system.context.restore();
+        }
 
         if(this.shouldVisualizeSelectable) {
             // TODO: duplicated logic
@@ -161,6 +178,7 @@ ig.Entity.inject({
     }
 });
 
+ig.Entity.prototype.colors.onTurn = '#0ff';
 ig.Entity.prototype.colors.selectable = '#ff0';
 ig.Entity.prototype.colors.battleLine = '#f00';
 ig.Entity.prototype.colors.related = '#0f0';

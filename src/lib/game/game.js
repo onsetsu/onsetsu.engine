@@ -254,16 +254,16 @@ GUI.Game = ig.Game.extend({
 
 	advanceAndProcessTurn: function() {
         return GUI.game.advanceTimeToNextAction()
-            .delay(1500)
+            .delay(1000)
             .then(function(action) {
+                GUI.game.battlefield.getEntityFor(action.character).markOnTurn(true);
                 return new Turn(action).whenFinished();
             }).then(function resetAction(currentAction) {
-                if(currentAction) {
-                    if(currentAction.character.isOnBattlefield()) {
-                        game.timeline.resetAction(currentAction);
-                    }
-                    GUI.game.timeline.moveAllActions();
+                if(currentAction.character.isOnBattlefield()) {
+                    GUI.game.battlefield.getEntityFor(currentAction.character).markOnTurn(false);
+                    game.timeline.resetAction(currentAction);
                 }
+                GUI.game.timeline.moveAllActions();
             })
             .delay(1500)
             .then(GUI.game.advanceAndProcessTurn);
