@@ -27,9 +27,7 @@ ig.module(
 	'game.levels.battle',
 
 	// handler
-	'game.handler.selecttarget',
-
-	'impact.debug.debug'
+	'game.handler.selecttarget'
 )
 .defines(function(){
 
@@ -178,9 +176,16 @@ ig.Entity.inject({
     }
 });
 
-ig.Entity.prototype.colors.onTurn = '#0ff';
-ig.Entity.prototype.colors.selectable = '#ff0';
-ig.Entity.prototype.colors.battleLine = '#f00';
-ig.Entity.prototype.colors.related = '#0f0';
+ig.Entity.inject({
+	colors: {
+		names: '#fff',
+		velocities: '#0f0',
+        onTurn: '#0ff',
+        selectable: '#ff0',
+        battleLine: '#f00',
+        related: '#0f0',
+		boxes: '#f00'
+	}
+});
 
 });

@@ -20,8 +20,6 @@ ig.module(
 	// handler
 	'game.handler.selecttarget',
 
-	'impact.debug.debug',
-
 	'game.impactextension'
 )
 .defines(function(){
