@@ -3,7 +3,7 @@
 Onsetsu is a game strategy game with a strong puzzle aspect for 2 players. Each player represents a powerful mages, able to summon familiars and cast elemental spells.
 
 ### Start a Game
-Visit the game at [onsetsu.github.io/onsetsu.engine].
+Visit the game [here].
 For this prototype no lobby server is currently available. So connection is manually set up by the players.
 ##### Host
 Click 'host game' and your host 'id' will be generated. Transmit this 'id' to your opponent.
@@ -25,5 +25,5 @@ To end a turn press the 'End Turn' button in the upper area. Once the turn ends,
 
 The player who reduces its opponent's HP to 0 or below wins.
 
-[onsetsu.github.io/onsetsu.engine]:http://onsetsu.github.io/onsetsu.engine/
+[here]:http://onsetsu.github.io/onsetsu.engine/src/index.html
 [screenshot]: Screenshot4.png
