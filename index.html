@@ -1,36 +1,43 @@
-<!DOCTYPE html>
+<!doctype html>
 <html>
-
   <head>
-    <meta charset='utf-8'>
+    <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="chrome=1">
-    <meta name="description" content="Onsetsu Prototype Summer15 : An early prototype of the online game Onsetsu.">
+    <title>Onsetsu Prototype Summer15 by onsetsu</title>
+    <link rel="stylesheet" href="stylesheets/styles.css">
+    <link rel="stylesheet" href="stylesheets/github-dark.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
+    <script src="javascripts/respond.js"></script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <!--[if lt IE 8]>
+    <link rel="stylesheet" href="stylesheets/ie.css">
+    <![endif]-->
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
 
-    <link rel="stylesheet" type="text/css" media="screen" href="stylesheets/stylesheet.css">
-
-    <title>Onsetsu Prototype Summer15</title>
   </head>
-
   <body>
+      <div id="header">
+        <nav>
+          <li class="fork"><a href="https://github.com/onsetsu/onsetsu.engine">View On GitHub</a></li>
+          <li class="downloads"><a href="https://github.com/onsetsu/onsetsu.engine/zipball/master">ZIP</a></li>
+          <li class="downloads"><a href="https://github.com/onsetsu/onsetsu.engine/tarball/master">TAR</a></li>
+          <li class="title">DOWNLOADS</li>
+        </nav>
+      </div><!-- end header -->
 
-    <!-- HEADER -->
-    <div id="header_wrap" class="outer">
-        <header class="inner">
-          <a id="forkme_banner" href="https://github.com/onsetsu/onsetsu.engine">View on GitHub</a>
+    <div class="wrapper">
 
-          <h1 id="project_title">Onsetsu Prototype Summer15</h1>
-          <h2 id="project_tagline">An early prototype of the online game Onsetsu.</h2>
+      <section>
+        <div id="title">
+          <h1>Onsetsu Prototype Summer15</h1>
+          <p>An early prototype of the online game Onsetsu.</p>
+          <hr>
+          <span class="credits left">Project maintained by <a href="https://github.com/onsetsu">onsetsu</a></span>
+          <span class="credits right">Hosted on GitHub Pages &mdash; Theme by <a href="https://twitter.com/michigangraham">mattgraham</a></span>
+        </div>
 
-            <section id="downloads">
-              <a class="zip_download_link" href="https://github.com/onsetsu/onsetsu.engine/zipball/master">Download this project as a .zip file</a>
-              <a class="tar_download_link" href="https://github.com/onsetsu/onsetsu.engine/tarball/master">Download this project as a tar.gz file</a>
-            </section>
-        </header>
-    </div>
-
-    <!-- MAIN CONTENT -->
-    <div id="main_content_wrap" class="outer">
-      <section id="main_content" class="inner">
         <h1>
 <a id="a-javascript-engine-for-onsetsu" class="anchor" href="#a-javascript-engine-for-onsetsu" aria-hidden="true"><span class="octicon octicon-link"></span></a>A JavaScript engine for Onsetsu.</h1>
 
@@ -39,16 +46,16 @@
 <h3>
 <a id="start-a-game" class="anchor" href="#start-a-game" aria-hidden="true"><span class="octicon octicon-link"></span></a>Start a Game</h3>
 
-<p>Visit the game at <a href="http://onsetsu.github.io/onsetsu.engine/">onsetsu.github.io/onsetsu.engine</a>.
+<p>Visit the game <a href="http://onsetsu.github.io/onsetsu.engine/">here</a>.
 For this prototype no lobby server is currently available. So connection is manually set up by the players.</p>
 
-<h5>
-<a id="host" class="anchor" href="#host" aria-hidden="true"><span class="octicon octicon-link"></span></a>Host</h5>
+<h4>
+<a id="host" class="anchor" href="#host" aria-hidden="true"><span class="octicon octicon-link"></span></a>Host</h4>
 
 <p>Click 'host game' and your host 'id' will be generated. Transmit this 'id' to your opponent.</p>
 
-<h5>
-<a id="client" class="anchor" href="#client" aria-hidden="true"><span class="octicon octicon-link"></span></a>Client</h5>
+<h4>
+<a id="client" class="anchor" href="#client" aria-hidden="true"><span class="octicon octicon-link"></span></a>Client</h4>
 
 <p>Click 'join game'. Replace 'Host ID' with the transmitted id, then click 'join'.</p>
 
@@ -69,17 +76,9 @@ For this prototype no lobby server is currently available. So connection is manu
 
 <p>The player who reduces its opponent's HP to 0 or below wins.</p>
       </section>
-    </div>
 
-    <!-- FOOTER  -->
-    <div id="footer_wrap" class="outer">
-      <footer class="inner">
-        <p class="copyright">Onsetsu Prototype Summer15 maintained by <a href="https://github.com/onsetsu">onsetsu</a></p>
-        <p>Published with <a href="https://pages.github.com">GitHub Pages</a></p>
-      </footer>
     </div>
-
+    <!--[if !IE]><script>fixScale(document);</script><![endif]-->
     
-
   </body>
 </html>
