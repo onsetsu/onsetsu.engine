@@ -28,7 +28,7 @@ EntityPermanent = ig.Entity.extend({
             var hp = this.model.hp.toString(),
                 maxHp = this.model.maxHp.toString(),
                 x = this.pos.x + this.animSheet.width;
-            GUI.Font.draw(hp + '/' + maxHp + ' HP', x, this.pos.y, ig.Font.ALIGN.RIGHT);
+            GUI.Font.draw(hp + ' HP', x, this.pos.y, ig.Font.ALIGN.RIGHT);
         }
 
         // draw at if at and hp present

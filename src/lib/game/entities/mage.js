@@ -30,7 +30,7 @@ EntityMage = ig.Entity.extend({
         var hp = this.model.hp,
             maxHp = this.model.maxHp,
             x = this.pos.x + this.animSheet.width;
-        GUI.Font.draw(hp + '/' + maxHp + ' HP', x, this.pos.y, ig.Font.ALIGN.RIGHT);
+        GUI.Font.draw(hp + ' HP', x, this.pos.y, ig.Font.ALIGN.RIGHT);
 
         // draw sp
         // TODO: split into currentSP and maxSp
