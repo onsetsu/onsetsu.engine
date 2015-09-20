@@ -1,4 +1,7 @@
 var Networking = {
+  getNextMessage: function() {
+    return Networking.inbox.shift();
+  },
   inbox: [],
   setup: function setupNetworking(callback) {
     window.onunload = function() {
@@ -27,7 +30,7 @@ var Networking = {
           console.log('data received', data);
           Networking.inbox.push(data);
         });
-      };
+      }
 
     // creates a new peer and sets up its disconnection gui
       function createPeer() {
@@ -72,6 +75,20 @@ var Networking = {
         }
       };
 
+      var aiGame = function() {
+        Networking = {
+          getNextMessage: function() {
+            return {
+              command: 'endTurn'
+            }
+          }
+        };
+
+        env.conn = {
+          send: function() {}
+        }
+      };
+
       // Host side
       var host = {
         init: function() {
@@ -105,8 +122,14 @@ var Networking = {
           datGui.destroy();
           join.init();
         },
+        'ai game': function() {
+          datGui.destroy();
+          aiGame();
+          callback(true);
+        },
         init: function() {
           datGui = new dat.GUI();
+          datGui.add(hostOrClient, 'ai game');
           datGui.add(hostOrClient, 'host game');
           datGui.add(hostOrClient, 'join game');
         }
@@ -116,3 +139,4 @@ var Networking = {
     })();
   }
 };
+

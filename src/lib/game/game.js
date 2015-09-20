@@ -74,7 +74,7 @@ Turn = ig.Class.extend({
                     label: 'Wait For Opponent'
                 });
                 var listening = waitEntity.update = function() {
-                    var message = Networking.inbox.shift();
+                    var message = Networking.getNextMessage();
                     if(message) {
                         switch (message.command) {
                           case 'endTurn':
