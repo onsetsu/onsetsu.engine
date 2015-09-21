@@ -1,3 +1,5 @@
+'use strict';
+
 // --------------------------------------------------------------------------------
 // General
 // --------------------------------------------------------------------------------
@@ -79,39 +81,41 @@ var Gem = function Gem() {};
 // Stack
 // --------------------------------------------------------------------------------
 
-var Stack = function Stack() {
-  this.spells = [];
-};
+class Stack {
+  constructor() {
+    this.spells = [];
+  }
 
-Stack.prototype.push = function(spell) {
-  this.spells.push(spell);
-};
+  push(spell) {
+    this.spells.push(spell);
+  }
 
-Stack.prototype.pop = function() {
-  return this.spells.shift();
-};
+  pop() {
+    return this.spells.shift();
+  }
 
-Stack.prototype.empty = function() {
-  return this.spells.length == 0;
-};
+  empty() {
+    return this.spells.length == 0;
+  }
 
-Stack.prototype.process = function() {
-  return new Promise(function(resolve, reject) {
-    var popFirstIfNotEmpty = function() {
-      if(game.stack.empty()) {
-        console.log('Empty Stack');
-        return resolve();
-      }
+  process() {
+    return new Promise(function(resolve, reject) {
+      var popFirstIfNotEmpty = function() {
+        if(game.stack.empty()) {
+          console.log('Empty Stack');
+          return resolve();
+        }
 
-      console.log('Non-empty Stack: Processing');
-      console.log('Resolve Spell', spell);
-      var spell = game.stack.pop();
-      spell.effect(spell.mage).then(popFirstIfNotEmpty);
-    };
+        console.log('Non-empty Stack: Processing');
+        console.log('Resolve Spell', spell);
+        var spell = game.stack.pop();
+        spell.effect(spell.mage).then(popFirstIfNotEmpty);
+      };
 
-    popFirstIfNotEmpty();
-  });
-};
+      popFirstIfNotEmpty();
+    });
+  }
+}
 
 // --------------------------------------------------------------------------------
 // General
