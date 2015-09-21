@@ -196,7 +196,7 @@ Reduce Damage [this] receives by 1.`,
           hp: 5,
           at: 2,
           delay: 7
-        }, mage)
+        }, mage);
         brocky.index = Brocky.index;
         brocky.putOntoBattlefield();
         brocky.receiveDamage = function(amount) {
