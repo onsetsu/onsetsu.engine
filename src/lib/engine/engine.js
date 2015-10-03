@@ -17,63 +17,64 @@ var nextID = (function() {
   };
 })();
 
-// TODO: separate owner and controller?
-var Mage = function Mage(player, hp, sp, delay, syllableBoard, spellBook, syllablePool) {
-  this.id = nextID();
-  this.controller = player;
-  this.maxHp = hp;
-  this.hp = hp;
-  this.maxSp = sp;
-  this.sp = sp;
-  this.delay = delay;
-  this.syllableBoard = syllableBoard;
-  syllableBoard.mage = this;
-  this.spellBook = spellBook;
-  this.syllablePool = syllablePool;
+class Mage {
+  // TODO: separate owner and controller?
+  constructor(player, hp, sp, delay, syllableBoard, spellBook, syllablePool) {
+    this.id = nextID();
+    this.controller = player;
+    this.maxHp = hp;
+    this.hp = hp;
+    this.maxSp = sp;
+    this.sp = sp;
+    this.delay = delay;
+    this.syllableBoard = syllableBoard;
+    syllableBoard.mage = this;
+    this.spellBook = spellBook;
+    this.syllablePool = syllablePool;
 
-  this.action = new Action({
-    execute: this.takeTurn.bind(this)
-  }, this.delay, Action.recurring, this);
+    this.action = new Action({
+      execute: this.takeTurn.bind(this)
+    }, this.delay, Action.recurring, this);
 
-  this.onBattlefield = false;
-};
+    this.onBattlefield = false;
+  }
 
-Mage.prototype.isOnBattlefield = function() {
-  return this.onBattlefield;
-};
+  isOnBattlefield() {
+    return this.onBattlefield;
+  }
 
-Mage.prototype.putOntoBattlefield = function() {
-  this.onBattlefield = true;
-  game.battlefield.addMage(this);
-  game.timeline.addAction(this.action);
-};
+  putOntoBattlefield() {
+    this.onBattlefield = true;
+    game.battlefield.addMage(this);
+    game.timeline.addAction(this.action);
+  }
 
-Mage.prototype.removeFromBattlefield = function() {
-  this.onBattlefield = false;
-  game.timeline.removeAction(this.action);
-  game.battlefield.removeMage(this);
-};
+  removeFromBattlefield() {
+    this.onBattlefield = false;
+    game.timeline.removeAction(this.action);
+    game.battlefield.removeMage(this);
+  }
 
-Mage.prototype.takeTurn = function() {
-  console.log('MAGE TURN!');
-};
+  takeTurn() {
+    console.log('MAGE TURN!');
+  }
 
-Mage.prototype.receiveDamage = function(amount) {
-  this.hp -= amount;
-};
+  receiveDamage(amount) {
+    this.hp -= amount;
+  }
 
-Mage.prototype.startTurn = function() {
-  this.maxSp = Math.min(this.maxSp+1, 8);
-  this.sp = this.maxSp;
+  startTurn() {
+    this.maxSp = Math.min(this.maxSp+1, 8);
+    this.sp = this.maxSp;
 
-  var that = this;
-  game.battlefield.getCharactersMatching(function(character) {
-    return character.mage === that;
-  }).forEach(function(character) {
-    character.startMageTurn(that);
-  });
-
-};
+    var that = this;
+    game.battlefield.getCharactersMatching(function(character) {
+      return character.mage === that;
+    }).forEach(function(character) {
+      character.startMageTurn(that);
+    });
+  }
+}
 
 var Gem = function Gem() {};
 
@@ -121,15 +122,18 @@ class Stack {
 // General
 // --------------------------------------------------------------------------------
 
-var Game = function Game() {
-  this.players = [];
-  this.battlefield = new Battlefield();
-  this.timeline = new Timeline();
-  this.stack = new Stack();
-};
-Game.prototype.addPlayer = function(player) {
-  this.players.push(player);
-  this.battlefield.addPlayer(player);
-};
+class Game {
+  constructor() {
+    this.players = [];
+    this.battlefield = new Battlefield();
+    this.timeline = new Timeline();
+    this.stack = new Stack();
+  }
+
+  addPlayer(player) {
+    this.players.push(player);
+    this.battlefield.addPlayer(player);
+  }
+}
 
 var Engine = function Engine() {};
