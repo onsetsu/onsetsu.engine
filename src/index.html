@@ -22,6 +22,22 @@
 			border: 1px solid #555;
 		}
 	</style>
+
+	<script src="es6/system.src.js" type="text/javascript" charset="utf-8"></script>
+	<script>
+		System.config({
+			// or 'traceur' or 'typescript'
+			transpiler: 'babel',
+			// or traceurOptions or typescriptOptions
+			babelOptions: {
+				//modules: "amd"
+			},
+			map: {
+				babel: 'es6/browser.js'
+			}
+		});
+	</script>
+
     <script type="text/javascript" src="external/underscore.js"></script>
     <script type="text/javascript" src="external/bluebird.js"></script>
     <script type="text/javascript" src="external/peer.js"></script>
