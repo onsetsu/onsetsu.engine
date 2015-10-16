@@ -306,9 +306,9 @@ At the start of your turn: Get 1 SP.`,
      [
        new SyllableSequence([
          Syllables.LIGHT,
-         Syllables.GAM,
+         //Syllables.GAM,
          Syllables.MA,
-         Syllables.XAU,
+         //Syllables.XAU,
        ], SyllableSequence.ordered),
      ],
 `2/3 (4) Human Knight Familiar
@@ -323,9 +323,12 @@ At the start of its turn: Gain 1 AT.`,
         }, mage);
         permanent.index = AdlezTheSilverFang.index;
         permanent.putOntoBattlefield();
-        permanent.startTurn = function() {
-          this.at++;
-        };
+        permanent.afterTriggers = [
+          new Trigger(
+              (event, ...args) => { return event === EVENT_START_TURN && args[0] === permanent},
+              event => { permanent.at++; }
+          )
+        ];
 
         resolve();
        });

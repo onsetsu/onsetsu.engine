@@ -128,6 +128,7 @@ class Game {
     this.battlefield = new Battlefield();
     this.timeline = new Timeline();
     this.stack = new Stack();
+    this.eventManager = new ONS_EventManager();
   }
 
   addPlayer(player) {

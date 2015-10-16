@@ -30,7 +30,7 @@ Turn = ig.Class.extend({
     },
     whenFinished: function() {
         var action = this.action;
-        action.character.startTurn();
+        game.eventManager.do(EVENT_START_TURN, action.character);
         var player = action.character.controller || action.character.mage.controller;
         console.log('Advanced to:', action);
 
