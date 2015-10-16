@@ -275,9 +275,9 @@ Its HP become the number of your Light Syllables.`,
      [
        new SyllableSequence([
          Syllables.LIGHT,
-         Syllables.XAU,
+         //Syllables.XAU,
          Syllables.MA,
-         Syllables.RYO,
+         //Syllables.RYO,
        ], SyllableSequence.ordered),
      ],
 `1/3 (5) Human Priest Familiar
@@ -292,9 +292,12 @@ At the start of your turn: Get 1 SP.`,
         }, mage);
         permanent.index = LightWeaver.index;
         permanent.putOntoBattlefield();
-        permanent.startMageTurn = function(mage) {
-          mage.sp += 1;
-        };
+        permanent.afterTriggers = [
+          new Trigger(
+              (event, ...args) => { return event === EVENT_START_TURN && args[0] === permanent.mage},
+              (event, ...args) => { args[0].sp += 1; }
+          )
+        ];
 
         resolve();
        });
