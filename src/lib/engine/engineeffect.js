@@ -2,8 +2,8 @@
 
 class Trigger {
     constructor(check, action) {
-        this.check = check;
-        this.action = action;
+        this.match = check;
+        this.performAction = action;
     }
 
     match(event, ...args) {
@@ -29,7 +29,9 @@ class ONS_Event {
 }
 
 class ONS_EventManager {
-    do(eventIdentifier, ...args) {
+    execute(eventIdentifier, ...args) {
+        console.log(eventIdentifier);
+
         EVENT_MAP.get(eventIdentifier).apply(undefined, args);
         var activatedTriggers = this.checkTriggers(eventIdentifier, args);
         activatedTriggers.forEach(trigger => {
@@ -37,26 +39,19 @@ class ONS_EventManager {
         });
     }
 
-    checkTriggers(eventIndentifier, args) {
-        console.log(eventIndentifier);
+    checkTriggers(eventIdentifier, args) {
         var afterTriggers = [];
+
+        function pushActivatedTriggers(character) {
+            console.log(character);
+            var acti = (character.afterTriggers || []).filter(trigger => {
+                return trigger.match(eventIdentifier, ...args);
+            });
+            afterTriggers.push(...acti);
+        }
         for(let fieldSide of game.battlefield.sides.values()) {
-            fieldSide.mages.forEach(mage => {
-                console.log(mage);
-                (mage.afterTriggers || []).forEach(trigger => {
-                    if(trigger.match(eventIndentifier, ...args)) {
-                        afterTriggers.push(trigger);
-                    }
-                });
-            });
-            fieldSide.permanents.forEach(permanent => {
-                console.log(permanent);
-                (permanent.afterTriggers || []).forEach(trigger => {
-                    if(trigger.match(eventIndentifier, ...args)) {
-                        afterTriggers.push(trigger);
-                    }
-                });
-            });
+            fieldSide.mages.forEach(pushActivatedTriggers);
+            fieldSide.permanents.forEach(pushActivatedTriggers);
         }
         return afterTriggers;
     }
