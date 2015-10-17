@@ -73,6 +73,7 @@ class Effect {
 
 function checkStateBasedActions() {
     game.battlefield.removeDefeatedPermanents();
+    console.log('removed defeated permanents');
 }
 
 function checkTurnBasedActions() {
