@@ -51,13 +51,13 @@ var dealDamage = function(mage, damage, spellIndex) {
       resolve();
     }
   });
-}
+};
 
 var pushOnStack = function(ConcreteSpellClass, mage) {
   var spell = new ConcreteSpellClass();
   spell.mage = mage;
   game.stack.push(spell);
-}
+};
 
 var orgeCount = function(mage) {
   var ogres = game.battlefield.getCharactersMatching(function(character) {
@@ -152,9 +152,9 @@ When [this] enters the Battlefield: Cast Fireball.`,
      [
        new SyllableSequence([
          Syllables.FIRE,
-         Syllables.XAU,
+         //Syllables.XAU,
          Syllables.MA,
-         Syllables.EX,
+         //Syllables.EX,
        ], SyllableSequence.ordered),
      ],
 `3/3 (4) Ogre Familiar
@@ -166,9 +166,9 @@ Your Goblin Familiars enter the battlefield with +1/+1.`,
           hp: 3,
           at: 3,
           delay: 4
-        }, mage)
+        }, mage);
         permanent.index = RaidLeader.index;
-        permanent.putOntoBattlefield()
+        permanent.putOntoBattlefield();
         permanent.isOgre = true;
 
         resolve();
@@ -388,6 +388,6 @@ configureGameForTwoPlayers = function() {
   game.timeline.advance();
   game.timeline.advance();
   mages[1].putOntoBattlefield();
-}
+};
 
 game = new Game();

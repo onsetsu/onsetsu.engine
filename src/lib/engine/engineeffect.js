@@ -1,5 +1,11 @@
 'use strict';
 
+/**
+ * Trigger class
+ * supports:
+ * - match: check whether an event matches the trigger
+ * - performAction: execute the effect if the trigger event matched
+ */
 class Trigger {
     constructor(check, action) {
         this.match = check;
