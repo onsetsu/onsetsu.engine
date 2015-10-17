@@ -1,3 +1,5 @@
+'use strict';
+
 ig.module(
 	'game.game'
 )
@@ -24,7 +26,7 @@ ig.module(
 )
 .defines(function(){
 
-Turn = ig.Class.extend({
+window.Turn = ig.Class.extend({
     init: function(action) {
         this.action = action;
     },
@@ -347,9 +349,9 @@ GUI.Game = ig.Game.extend({
             // SWITCH SYLLABLES
             // start dragging
             if(ig.input.pressed('leftclick')) {
-                var hoveredField = _.find(this.syllableBoard.fields, function(field) { return ig.input.hover(field); });
+                let hoveredField = _.find(this.syllableBoard.fields, function(field) { return ig.input.hover(field); });
                 if(hoveredField) {
-                    var hoveredSyllable = this.syllableBoard.syllableStones[hoveredField.index.x][hoveredField.index.y];
+                    let hoveredSyllable = this.syllableBoard.syllableStones[hoveredField.index.x][hoveredField.index.y];
                     if(hoveredSyllable) {
                         this.dragStoneEntity = hoveredSyllable;
                     }
@@ -364,9 +366,9 @@ GUI.Game = ig.Game.extend({
 
             // dropping
             if(this.dragStoneEntity && ig.input.released('leftclick')) {
-                var hoveredField = _(this.syllableBoard.fields).find(function(entity) { return ig.input.hover(entity); });
+                let hoveredField = _(this.syllableBoard.fields).find(function(entity) { return ig.input.hover(entity); });
                 if(hoveredField) {
-                    var hoveredSyllable = this.syllableBoard.syllableStones[hoveredField.index.x][hoveredField.index.y];
+                    let hoveredSyllable = this.syllableBoard.syllableStones[hoveredField.index.x][hoveredField.index.y];
                     if(hoveredSyllable) {
                         env.conn.send({
                             command: 'switchSyllables',

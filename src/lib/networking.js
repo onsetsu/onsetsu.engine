@@ -79,6 +79,7 @@ var Networking = {
 
       var aiGame = function() {
         Networking = {
+          __ai_commands__: undefined,
           getNextMessage: function() {
             var msg = Networking.__ai_commands__ && Networking.__ai_commands__.shift();
             if(msg) {
