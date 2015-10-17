@@ -5,14 +5,6 @@ class Trigger {
         this.match = check;
         this.performAction = action;
     }
-
-    match(event, ...args) {
-        return this.check(event, ...args);
-    }
-
-    performAction(event, ...args) {
-        this.action(event, ...args);
-    }
 }
 
 const EVENT_START_TURN = 'EVENT_START_TURN';
