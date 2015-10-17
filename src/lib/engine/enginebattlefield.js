@@ -62,8 +62,11 @@ class Battlefield {
         }
       });
     });
+    console.log('removed defeated permanents');
   }
 
+  // TODO: refactor to .filter
+  // keep in mind: expression is currently called only with the character, not its id
   getCharactersMatching(expression) {
     var matchingCharacters = [];
 
