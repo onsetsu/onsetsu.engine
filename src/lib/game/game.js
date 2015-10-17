@@ -251,7 +251,7 @@ GUI.Game = ig.Game.extend({
                     new Battle(combatant1, combatant2);
                     console.log("battle ended");
 
-                    game.battlefield.removeDefeatedPermanents();
+                    checkStateBasedActions();
                     console.log('removed defeated permanents');
                 })
                 .delay(2000)

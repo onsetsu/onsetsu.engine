@@ -69,3 +69,12 @@ class Effect {
         return new Effect();
     }
 }
+
+
+function checkStateBasedActions() {
+    game.battlefield.removeDefeatedPermanents();
+}
+
+function checkTurnBasedActions() {
+
+}

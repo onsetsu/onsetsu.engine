@@ -97,28 +97,28 @@ class Permanent {
   }
 
   isOnBattlefield() {
-  return this.onBattlefield;
+      return this.onBattlefield;
 }
 
-  putOntoBattlefield() {
+putOntoBattlefield() {
   this.onBattlefield = true;
   game.battlefield.addPermanent(this, this.mage);
   game.timeline.addAction(this.action);
 }
 
-  removeFromBattlefield() {
+removeFromBattlefield() {
   this.onBattlefield = false;
   game.timeline.removeAction(this.action);
   game.battlefield.removePermanent(this, this.mage);
 }
 
-  takeTurn() {
+takeTurn() {
   console.log('Familiar on turn.', this);
 }
 
-  receiveDamage(amount) {
+receiveDamage(amount) {
   this.hp -= amount;
-  game.battlefield.removeDefeatedPermanents();
+  checkStateBasedActions();
 }
 
   startTurn() {};
