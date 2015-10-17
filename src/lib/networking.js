@@ -1,3 +1,5 @@
+'use strict';
+
 var Networking = {
   getNextMessage: function() {
     return Networking.inbox.shift();
@@ -78,8 +80,53 @@ var Networking = {
       var aiGame = function() {
         Networking = {
           getNextMessage: function() {
+            var msg = Networking.__ai_commands__ && Networking.__ai_commands__.shift();
+            if(msg) {
+              return msg;
+            }
             return {
               command: 'endTurn'
+            }
+          },
+          __ai_set_current_character__: function(character) {
+            console.log('AI: Plan turn for', character);
+            if(character instanceof Permanent) {
+              let enemies = game.battlefield.getCharactersMatching(function(c) {
+                return (c.mage || c) !== character.mage
+              });
+              Networking.__ai_commands__ = [
+                {
+                  command: 'battle',
+                  combatants: [character.id, enemies[0].id]
+                },
+                {
+                  command: 'endTurn'
+                }
+              ];
+            } else if(character instanceof Mage) {
+              Networking.__ai_commands__ = [
+                {
+                  command: 'placeSyllable',
+                  fieldX: 1,
+                  fieldY: 2,
+                  indexInSyllablePool: 12
+                },
+                {
+                  command: 'placeSyllable',
+                  fieldX: 1,
+                  fieldY: 3,
+                  indexInSyllablePool: 1
+                },
+                {
+                  command: 'placeSyllable',
+                  fieldX: 0,
+                  fieldY: 3,
+                  indexInSyllablePool: 12
+                },
+                {
+                  command: 'endTurn'
+                }
+              ];
             }
           }
         };

@@ -70,6 +70,7 @@ Turn = ig.Class.extend({
         } else {
             console.log('Not-visualized Player');
             return new Promise(function(resolve, reject) {
+                Networking.__ai_set_current_character__ && Networking.__ai_set_current_character__(action.character);
                 var waitEntity = GUI.game.spawnEntity(EntityDebug, 350, 50, {
                     label: 'Wait For Opponent'
                 });
