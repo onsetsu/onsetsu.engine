@@ -92,8 +92,8 @@ class Stack {
         }
 
         console.log('Non-empty Stack: Processing');
-        console.log('Resolve Spell', spell);
         var spell = game.stack.pop();
+        console.log('Resolve Spell', spell);
         spell.effect(spell.mage).then(popFirstIfNotEmpty);
       };
 
