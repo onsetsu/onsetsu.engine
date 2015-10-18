@@ -56,7 +56,7 @@ class Mage {
 
   // TODO: turn this method into an event
   receiveDamage(amount) {
-    this.hp -= amount;
+    game.eventManager.execute(EVENT_DEAL_DAMAGE, this, amount);
   }
 }
 

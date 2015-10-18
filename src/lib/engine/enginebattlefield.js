@@ -114,8 +114,7 @@ class Permanent {
   }
 
   receiveDamage(amount) {
-    this.hp -= amount;
-    checkStateBasedActions();
+    game.eventManager.execute(EVENT_DEAL_DAMAGE, this, amount);
   }
 }
 

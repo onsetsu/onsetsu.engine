@@ -76,8 +76,8 @@ createTestSpellbook = function() {
       new SyllableSequence([
         Syllables.FIRE,
         Syllables.CHI,
-        Syllables.CHI,
-        Syllables.NIF
+        //Syllables.CHI,
+        //Syllables.NIF
       ], SyllableSequence.ordered),
     ],
 `Deal 2 Damage.`,
@@ -181,10 +181,10 @@ Your Goblin Familiars enter the battlefield with +1/+1.`,
      [
        new SyllableSequence([
          Syllables.EARTH,
-         Syllables.GAM,
+         //Syllables.GAM,
          Syllables.KUN,
-         Syllables.KUN,
-         Syllables.XAU,
+         //Syllables.KUN,
+         //Syllables.XAU,
        ], SyllableSequence.ordered),
      ],
 `2/5 (7) Golem Artifact Familiar
@@ -199,6 +199,7 @@ Reduce Damage [this] receives by 1.`,
         }, mage);
         brocky.index = Brocky.index;
         brocky.putOntoBattlefield();
+        brocky.isBrocky = true;
         brocky.receiveDamage = function(amount) {
           return Permanent.prototype.receiveDamage.call(this, amount-1);
         };
