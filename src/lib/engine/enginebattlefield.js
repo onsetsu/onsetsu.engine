@@ -112,10 +112,6 @@ class Permanent {
     game.timeline.removeAction(this.action);
     game.battlefield.removePermanent(this, this.mage);
   }
-
-  receiveDamage(amount) {
-    game.eventManager.execute(EVENT_DEAL_DAMAGE, this, amount);
-  }
 }
 
 class Battle {
@@ -123,7 +119,7 @@ class Battle {
     function attack(attacker, defender) {
       // check whether the attacker has an attack value
       if(_.isNumber(attacker.at)) {
-        defender.receiveDamage(attacker.at);
+        game.eventManager.execute(EVENT_DEAL_DAMAGE, defender, attacker.at);
       }
     }
 

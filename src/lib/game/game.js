@@ -138,7 +138,7 @@ window.Turn = ig.Class.extend({
                             GUI.game.spellBook.spellEntities[message.spellIndex]
                                 .drawBattleLine(GUI.game.battlefield.getEntityFor(target), 2)
                                 .then(function() {
-                                    target.receiveDamage(message.damage);
+                                    game.eventManager.execute(EVENT_DEAL_DAMAGE, target, message.damage);
                                     waitEntity.update = listening;
                                 });
                             break;

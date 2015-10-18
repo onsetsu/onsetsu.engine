@@ -53,11 +53,6 @@ class Mage {
     game.timeline.removeAction(this.action);
     game.battlefield.removeMage(this);
   }
-
-  // TODO: turn this method into an event
-  receiveDamage(amount) {
-    game.eventManager.execute(EVENT_DEAL_DAMAGE, this, amount);
-  }
 }
 
 var Gem = function Gem() {};

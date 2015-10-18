@@ -42,7 +42,7 @@ var dealDamage = function(mage, damage, spellIndex) {
         GUI.game.spellBook.spellEntities[spellIndex]
           .drawBattleLine(GUI.game.battlefield.getEntityFor(target), 2)
           .then(function() {
-            target.receiveDamage(damage);
+            game.eventManager.execute(EVENT_DEAL_DAMAGE, target, damage);
             resolve();
           });
       });
