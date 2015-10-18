@@ -32,6 +32,9 @@ window.Turn = ig.Class.extend({
     },
     whenFinished: function() {
         var action = this.action;
+        if(action.character instanceof Mage) {
+            TURN_BASED_ACTIONS.START_MAGE_TURN(action.character);
+        }
         game.eventManager.execute(EVENT_START_TURN, action.character);
         var player = action.character.controller || action.character.mage.controller;
         console.log('Advanced to:', action);
@@ -67,7 +70,7 @@ window.Turn = ig.Class.extend({
                     });
                 } else {
                     throw new Error('neither Mage nor Familiar Turn');
-                };
+                }
             });
         } else {
             console.log('Not-visualized Player');

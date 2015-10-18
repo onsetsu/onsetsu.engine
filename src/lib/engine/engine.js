@@ -54,14 +54,12 @@ class Mage {
     game.battlefield.removeMage(this);
   }
 
+  // TODO: turn this method into an event
   receiveDamage(amount) {
     this.hp -= amount;
   }
 
-  startTurn() {
-    this.maxSp = Math.min(this.maxSp+1, 8);
-    this.sp = this.maxSp;
-  }
+  startTurn() {}
 }
 
 var Gem = function Gem() {};
