@@ -200,9 +200,6 @@ Reduce Damage [this] receives by 1.`,
         brocky.index = Brocky.index;
         brocky.putOntoBattlefield();
         brocky.isBrocky = true;
-        brocky.receiveDamage = function(amount) {
-          return Permanent.prototype.receiveDamage.call(this, amount-1);
-        };
 
         resolve();
        });
