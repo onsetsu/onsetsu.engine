@@ -92,9 +92,7 @@ class Permanent {
     this.delay = settings.delay;
 
     this.mage = mage;
-    this.action = new Action({
-      execute: this.takeTurn.bind(this)
-    }, this.delay, Action.recurring, this);
+    this.action = new Action({}, this.delay, Action.recurring, this);
 
     this.onBattlefield = false;
   }
@@ -115,17 +113,12 @@ class Permanent {
     game.battlefield.removePermanent(this, this.mage);
   }
 
-  takeTurn() {
-    console.log('Familiar on turn.', this);
-  }
-
   receiveDamage(amount) {
     this.hp -= amount;
     checkStateBasedActions();
   }
 
   startTurn() {};
-  startMageTurn(mage) {};
 }
 
 class Battle {

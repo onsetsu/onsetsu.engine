@@ -10,6 +10,7 @@ var Player = function Player() {};
 
 var Team = function Team() {};
 
+// TODO: refactor to positiveUUIDGenerator (allow multiple nextIDs)
 var nextID = (function() {
   var id = 1;
   return function() {
@@ -32,9 +33,7 @@ class Mage {
     this.spellBook = spellBook;
     this.syllablePool = syllablePool;
 
-    this.action = new Action({
-      execute: this.takeTurn.bind(this)
-    }, this.delay, Action.recurring, this);
+    this.action = new Action({}, this.delay, Action.recurring, this);
 
     this.onBattlefield = false;
   }
@@ -53,10 +52,6 @@ class Mage {
     this.onBattlefield = false;
     game.timeline.removeAction(this.action);
     game.battlefield.removeMage(this);
-  }
-
-  takeTurn() {
-    console.log('MAGE TURN!');
   }
 
   receiveDamage(amount) {

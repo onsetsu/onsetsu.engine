@@ -76,5 +76,7 @@ function checkStateBasedActions() {
 }
 
 function checkTurnBasedActions() {
+    return {
 
+    }
 }
