@@ -1,5 +1,22 @@
 'use strict';
 
+const STATIC_ABILITY = {};
+
+class Ability {}
+class Effect {
+    static getTimeStamp() {
+
+    }
+
+    static createEffect() {
+        return new Effect();
+    }
+
+    constructor() {
+        this.timeStamp = Effect.getTimeStamp();
+    }
+}
+
 /**
  * Trigger class
  * supports:
@@ -10,6 +27,14 @@ class Trigger {
     constructor(check, action) {
         this.match = check;
         this.performAction = action;
+    }
+}
+
+class ReplacementEffect extends Effect {
+    constructor(check, replaceEvent) {
+        super();
+        this.match = check;
+        this.replaceEvent = replaceEvent;
     }
 }
 
@@ -37,6 +62,11 @@ class ONS_EventManager {
         console.log(eventIdentifier);
 
         EVENT_MAP.get(eventIdentifier).apply(undefined, args);
+
+        this.doAfterTrigger(eventIdentifier, args);
+    }
+
+    doAfterTrigger(eventIdentifier, args) {
         var activatedTriggers = this.checkTriggers(eventIdentifier, args);
         activatedTriggers.forEach(trigger => {
             trigger.performAction(eventIdentifier, ...args);
@@ -64,15 +94,6 @@ class ONS_EventManager {
 class Pointer {
     constructor() {
 
-    }
-}
-
-const STATIC_ABILITY = {};
-
-class Ability {}
-class Effect {
-    static createEffect() {
-        return new Effect();
     }
 }
 

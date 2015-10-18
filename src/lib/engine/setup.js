@@ -200,7 +200,14 @@ Reduce Damage [this] receives by 1.`,
         brocky.index = Brocky.index;
         brocky.putOntoBattlefield();
         brocky.isBrocky = true;
+        brocky.replacementEffects = [
+            new ReplacementEffect(
+                (event, target) => { return event === EVENT_DEAL_DAMAGE && target === brocky; },
+                (event, ...args) => {
 
+                }
+            )
+        ];
         resolve();
        });
     }
