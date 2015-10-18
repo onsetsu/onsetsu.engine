@@ -16,9 +16,7 @@ class Trigger {
 const EVENT_START_TURN = 'EVENT_START_TURN';
 
 const EVENT_MAP = new Map();
-EVENT_MAP.set(EVENT_START_TURN, function(character) {
-    character.startTurn();
-});
+EVENT_MAP.set(EVENT_START_TURN, function(character) {});
 
 class ONS_Event {
     static before() {}

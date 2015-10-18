@@ -58,8 +58,6 @@ class Mage {
   receiveDamage(amount) {
     this.hp -= amount;
   }
-
-  startTurn() {}
 }
 
 var Gem = function Gem() {};

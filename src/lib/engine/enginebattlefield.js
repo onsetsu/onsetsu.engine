@@ -117,8 +117,6 @@ class Permanent {
     this.hp -= amount;
     checkStateBasedActions();
   }
-
-  startTurn() {};
 }
 
 class Battle {
