@@ -61,13 +61,6 @@ class Mage {
   startTurn() {
     this.maxSp = Math.min(this.maxSp+1, 8);
     this.sp = this.maxSp;
-
-    var that = this;
-    game.battlefield.getCharactersMatching(function(character) {
-      return character.mage === that;
-    }).forEach(function(character) {
-      character.startMageTurn(that);
-    });
   }
 }
 
