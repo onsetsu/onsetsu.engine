@@ -182,9 +182,11 @@ Your Goblin Familiars enter the battlefield with +1/+1.`,
        new SyllableSequence([
          Syllables.EARTH,
          //Syllables.GAM,
-         Syllables.KUN,
+         //Syllables.KUN,
          //Syllables.KUN,
          //Syllables.XAU,
+
+           Syllables.MA
        ], SyllableSequence.ordered),
      ],
 `2/5 (7) Golem Artifact Familiar
@@ -201,12 +203,18 @@ Reduce Damage [this] receives by 1.`,
         brocky.putOntoBattlefield();
         brocky.isBrocky = true;
         brocky.replacementEffects = [
-            new ReplacementEffect(
-                (event, target) => { return event === EVENT_DEAL_DAMAGE && target === brocky; },
-                (event, ...args) => {
-
-                }
-            )
+          new ReplacementEffect(
+              (event, target) => event === EVENT_DEAL_DAMAGE && target === brocky,
+              (event, target, amount, ...args) => [event, target.mage, amount, ...args]
+          ),
+          new ReplacementEffect(
+              (event, target) => event === EVENT_DEAL_DAMAGE && target === brocky,
+              (event, target, amount, ...args) => [event, target, amount-1, ...args]
+          ),
+          new ReplacementEffect(
+              (event, target) => event === EVENT_DEAL_DAMAGE && target === brocky,
+              (event, target, amount, ...args) => [event, target, amount-1, ...args]
+          ),
         ];
         resolve();
        });
