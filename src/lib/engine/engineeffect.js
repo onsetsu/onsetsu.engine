@@ -59,9 +59,6 @@ const EVENT_DEAL_DAMAGE = 'EVENT_DEAL_DAMAGE';
 const EVENT_MAP = new Map();
 EVENT_MAP.set(EVENT_START_TURN, function(character) {});
 EVENT_MAP.set(EVENT_DEAL_DAMAGE, function(character, amount) {
-    //if(character.isBrocky) {
-    //    amount -= 1;
-    //}
     character.hp -= amount;
     checkStateBasedActions();
 });

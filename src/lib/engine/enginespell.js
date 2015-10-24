@@ -72,3 +72,4 @@ SpellType.Mage = function Mage() {};
 var SubType = function SubType() {};
 const SUBTYPE_GOBLIN = 'SUBTYPE_GOBLIN';
 const SUBTYPE_OGRE = 'SUBTYPE_OGRE';
+const SUBTYPE_ELEMENTAL = 'SUBTYPE_ELEMENTAL';
