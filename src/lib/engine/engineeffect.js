@@ -2,14 +2,25 @@
 
 const STATIC_ABILITY = {};
 
+var _effectTimeStampGenerator = new IncrementalIDGenerator();
 class EffectTimeStamp {
+    constructor() {
+        this.id = _effectTimeStampGenerator.nextID();
+    }
 
+    before(timeStamp) {
+        return this.id < timeStamp.id;
+    }
+
+    after(timeStamp) {
+        return this.id > timeStamp.id;
+    }
 }
 
 class Ability {}
 class Effect {
     static getTimeStamp() {
-
+        return new EffectTimeStamp();
     }
 
     static createEffect() {
@@ -86,7 +97,6 @@ class ONS_EventManager {
         })();
         console.log('Replacements:', possibleReplacements);
 
-        // TODO: loop til no matching replacement is found
         var matchingReplacements;
         function updateMatchingReplacements() {
             matchingReplacements = possibleReplacements.filter(function(replacementEffect) {
@@ -96,9 +106,11 @@ class ONS_EventManager {
         updateMatchingReplacements();
         while(matchingReplacements.length > 0) {
             let chosenReplacement = matchingReplacements.reduce(function(previousReplacementEffect, replacementEffect) {
-                return replacementEffect;
-                // TODO: consider timeStamp
-                //return replacementEffect.timeStamp.before(previousReplacementEffect.timestamp);
+                if(replacementEffect.timeStamp.before(previousReplacementEffect.timeStamp)) {
+                    return replacementEffect;
+                } else {
+                    return previousReplacementEffect;
+                }
             });
 
             args = chosenReplacement.replaceEvent(...args);
