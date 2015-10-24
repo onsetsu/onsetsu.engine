@@ -109,7 +109,7 @@ When [this] enters the Battlefield: Cast Fireball.`,
           delay: 5
         }, mage);
         permanent.index = WildPyromancer.index;
-        permanent.putOntoBattlefield();
+        game.eventManager.execute(EVENT_ENTER_BATTLEFIELD, permanent, mage);
 
         pushOnStack(Fireball, mage);
         resolve();
@@ -139,7 +139,7 @@ When [this] enters the Battlefield: Cast Fireball.`,
             delay: 3
           }, mage);
           permanent.index = GoblinAttackSquad.index;
-          permanent.putOntoBattlefield();
+          game.eventManager.execute(EVENT_ENTER_BATTLEFIELD, permanent, mage);
         });
 
         resolve();
@@ -168,8 +168,8 @@ Your Goblin Familiars enter the battlefield with +1/+1.`,
           delay: 4
         }, mage);
         permanent.index = RaidLeader.index;
-        permanent.putOntoBattlefield();
         permanent.isOgre = true;
+        game.eventManager.execute(EVENT_ENTER_BATTLEFIELD, permanent, mage);
 
         resolve();
       });
@@ -200,7 +200,6 @@ Reduce Damage [this] receives by 1.`,
           delay: 7
         }, mage);
         brocky.index = Brocky.index;
-        brocky.putOntoBattlefield();
         brocky.replacementEffects = [
           new ReplacementEffect(
               (event, target) => event === EVENT_DEAL_DAMAGE && target === brocky,
@@ -215,6 +214,7 @@ Reduce Damage [this] receives by 1.`,
               (event, target, amount, ...args) => [event, target, amount-1, ...args]
           ),
         ];
+        game.eventManager.execute(EVENT_ENTER_BATTLEFIELD, brocky, mage);
         resolve();
        });
     }
@@ -275,7 +275,7 @@ Its HP become the number of your Light Syllables.`,
           delay: 4
         }, mage);
         permanent.index = SunlitEidolon.index;
-        permanent.putOntoBattlefield();
+        game.eventManager.execute(EVENT_ENTER_BATTLEFIELD, permanent, mage);
 
         resolve();
        });
@@ -303,13 +303,13 @@ At the start of your turn: Get 1 SP.`,
           delay: 5
         }, mage);
         permanent.index = LightWeaver.index;
-        permanent.putOntoBattlefield();
         permanent.afterTriggers = [
           new Trigger(
               (event, ...args) => { return event === EVENT_START_TURN && args[0] === permanent.mage},
               (event, ...args) => { args[0].sp += 1; }
           )
         ];
+        game.eventManager.execute(EVENT_ENTER_BATTLEFIELD, permanent, mage);
 
         resolve();
        });
@@ -337,13 +337,13 @@ At the start of its turn: Gain 1 AT.`,
           delay: 4
         }, mage);
         permanent.index = AdlezTheSilverFang.index;
-        permanent.putOntoBattlefield();
         permanent.afterTriggers = [
           new Trigger(
               (event, ...args) => { return event === EVENT_START_TURN && args[0] === permanent},
               event => { permanent.at++; }
           )
         ];
+        game.eventManager.execute(EVENT_ENTER_BATTLEFIELD, permanent, mage);
 
         resolve();
        });

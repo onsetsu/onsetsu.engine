@@ -1,5 +1,9 @@
 'use strict';
 
+// The 4 types of abilities:
+const SPELL_ABILITY = {};
+const ACTIVATED_ABILITY = {};
+const TRIGGERED_ABILITY = {};
 const STATIC_ABILITY = {};
 
 var _effectTimeStampGenerator = new IncrementalIDGenerator();
@@ -53,14 +57,20 @@ class ReplacementEffect extends Effect {
     }
 }
 
+const EVENT_NOOP = 'EVENT_NOOP';
 const EVENT_START_TURN = 'EVENT_START_TURN';
 const EVENT_DEAL_DAMAGE = 'EVENT_DEAL_DAMAGE';
+const EVENT_ENTER_BATTLEFIELD = 'EVENT_ENTER_BATTLEFIELD';
 
 const EVENT_MAP = new Map();
+EVENT_MAP.set(EVENT_NOOP, function() {});
 EVENT_MAP.set(EVENT_START_TURN, function(character) {});
 EVENT_MAP.set(EVENT_DEAL_DAMAGE, function(character, amount) {
     character.hp -= amount;
     checkStateBasedActions();
+});
+EVENT_MAP.set(EVENT_ENTER_BATTLEFIELD, function(permanent, mage) {
+    permanent.putOntoBattlefield();
 });
 
 class ONS_Event {
