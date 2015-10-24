@@ -70,6 +70,12 @@ SpellType.Mage = function Mage() {};
  * E.g. a Familiar may have the "Dwarf" and the "Engineer" SubTypes.
  */
 var SubType = function SubType() {};
+// races
 const SUBTYPE_GOBLIN = 'SUBTYPE_GOBLIN';
 const SUBTYPE_OGRE = 'SUBTYPE_OGRE';
+
+// classes
+const SUBTYPE_SHAMAN = 'SUBTYPE_SHAMAN';
+
+// misc
 const SUBTYPE_ELEMENTAL = 'SUBTYPE_ELEMENTAL';

@@ -109,7 +109,8 @@ When [this] enters the Battlefield: Cast Fireball.`,
           delay: 5
         }, mage);
         permanent.index = WildPyromancer.index;
-        game.eventManager.execute(EVENT_ENTER_BATTLEFIELD, permanent, mage);
+        permanent.putOntoBattlefield();
+        //game.eventManager.execute(EVENT_ENTER_BATTLEFIELD, permanent, mage);
 
         pushOnStack(Fireball, mage);
         resolve();
@@ -139,7 +140,8 @@ When [this] enters the Battlefield: Cast Fireball.`,
             delay: 3
           }, mage);
           permanent.index = GoblinAttackSquad.index;
-          game.eventManager.execute(EVENT_ENTER_BATTLEFIELD, permanent, mage);
+          permanent.putOntoBattlefield();
+          //game.eventManager.execute(EVENT_ENTER_BATTLEFIELD, permanent, mage);
         });
 
         resolve();
@@ -158,7 +160,8 @@ When [this] enters the Battlefield: Cast Fireball.`,
        ], SyllableSequence.ordered),
      ],
 `3/3 (4) Ogre Familiar
-Your Goblin Familiars enter the battlefield with +1/+1.`,
+When a friendly Goblin Familiar enters the battlefield: Give it +1/+1.
+(= Your Goblin Familiars enter the battlefield with +1/+1.)`,
     function resolve(mage) {
       return new Promise(function(resolve, reject) {
         var permanent = new Permanent({
@@ -169,7 +172,19 @@ Your Goblin Familiars enter the battlefield with +1/+1.`,
         }, mage);
         permanent.index = RaidLeader.index;
         permanent.isOgre = true;
-        game.eventManager.execute(EVENT_ENTER_BATTLEFIELD, permanent, mage);
+        permanent.afterTriggers = [
+                    new Trigger(
+              (event, ...args) => {
+                return event === EVENT_ENTER_BATTLEFIELD &&
+                    //[0] is a SUBTYPE_GOBLIN &&
+                    args[1] === permanent.mage
+              },
+              (event, newPermanent, itsController, ...args) => { newPermanent.at++; newPermanent.hp++; newPermanent.maxHp++; }
+          )
+
+        ];
+        //game.eventManager.execute(EVENT_ENTER_BATTLEFIELD, permanent, mage);
+        permanent.putOntoBattlefield();
 
         resolve();
       });
@@ -214,7 +229,8 @@ Reduce Damage [this] receives by 1.`,
               (event, target, amount, ...args) => [event, target, amount-1, ...args]
           ),
         ];
-        game.eventManager.execute(EVENT_ENTER_BATTLEFIELD, brocky, mage);
+        brocky.putOntoBattlefield();
+        //game.eventManager.execute(EVENT_ENTER_BATTLEFIELD, brocky, mage);
         resolve();
        });
     }
@@ -275,7 +291,8 @@ Its HP become the number of your Light Syllables.`,
           delay: 4
         }, mage);
         permanent.index = SunlitEidolon.index;
-        game.eventManager.execute(EVENT_ENTER_BATTLEFIELD, permanent, mage);
+        permanent.putOntoBattlefield();
+        //game.eventManager.execute(EVENT_ENTER_BATTLEFIELD, permanent, mage);
 
         resolve();
        });
@@ -309,7 +326,8 @@ At the start of your turn: Get 1 SP.`,
               (event, ...args) => { args[0].sp += 1; }
           )
         ];
-        game.eventManager.execute(EVENT_ENTER_BATTLEFIELD, permanent, mage);
+        permanent.putOntoBattlefield();
+        //game.eventManager.execute(EVENT_ENTER_BATTLEFIELD, permanent, mage);
 
         resolve();
        });
@@ -343,7 +361,8 @@ At the start of its turn: Gain 1 AT.`,
               event => { permanent.at++; }
           )
         ];
-        game.eventManager.execute(EVENT_ENTER_BATTLEFIELD, permanent, mage);
+        permanent.putOntoBattlefield();
+        //game.eventManager.execute(EVENT_ENTER_BATTLEFIELD, permanent, mage);
 
         resolve();
        });
