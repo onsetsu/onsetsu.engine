@@ -17,8 +17,8 @@ test(function() {
   assert(CHIorNIF.isA(Syllables.NIF));
   assert(!Syllables.NIF.isA(CHIorNIF));
 
-  assert(CHIorNIF.contains(SyllableValue.NIF));
-  assert(!CHIorNIF.contains(SyllableValue.EX));
+  assert(CHIorNIF.contains(SyllableAtom.NIF));
+  assert(!CHIorNIF.contains(SyllableAtom.EX));
 });
 
 test(function() {
