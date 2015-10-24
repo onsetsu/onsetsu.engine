@@ -10,18 +10,25 @@ var Player = function Player() {};
 
 var Team = function Team() {};
 
-// TODO: refactor to positiveUUIDGenerator (allow multiple nextIDs)
-var nextID = (function() {
-  var id = 1;
-  return function() {
-    return id++;
-  };
+class IncrementalIDGenerator {
+  constructor() {
+    this.id = 1;
+  }
+
+  nextID() {
+    return this.id++;
+  }
+}
+
+var nextBattlefieldID = (function() {
+  var generator = new IncrementalIDGenerator();
+  return generator.nextID.bind(generator);
 })();
 
 class Mage {
   // TODO: separate owner and controller?
   constructor(player, hp, sp, delay, syllableBoard, spellBook, syllablePool) {
-    this.id = nextID();
+    this.id = nextBattlefieldID();
     this.controller = player;
     this.maxHp = hp;
     this.hp = hp;

@@ -83,7 +83,7 @@ class Battlefield {
 
 class Permanent {
   constructor(settings, mage) {
-    this.id = settings.id || nextID();
+    this.id = nextBattlefieldID();
     this.spellTypes = settings.spellTypes;
     this.hp = settings.hp;
     this.maxHp = settings.hp;
