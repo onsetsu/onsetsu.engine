@@ -183,6 +183,45 @@ When a friendly Goblin Familiar enters the battlefield: Give it +1/+1.
     }
   );
 
+  var MediumOfFire = Spell.createSpell(
+      'Medium Of Fire/Elder of Flame',
+      [
+        new SyllableSequence([
+          Syllables.FIRE,
+          //Syllables.LIGHT,
+          //Syllables.XAU,
+          Syllables.YUN,
+          //Syllables.CHI,
+          //Syllables.NIF,
+        ], SyllableSequence.ordered),
+      ],
+      `3/2 (5) Human Wizard Familiar
+When a Spell is casted: Cast Fireball instead.`,
+      function resolve(mage) {
+        return new Promise(function(resolve, reject) {
+          var permanent = new Permanent({
+            spellTypes: [SpellType.Familiar],
+            subTypes: [SUBTYPE_HUMAN, SUBTYPE_WIZARD],
+            hp: 6,
+            at: 2,
+            delay: 5
+          }, mage);
+          permanent.index = MediumOfFire.index;
+          permanent.replacementEffects = [
+            new ReplacementEffect(
+                (event, Spell, mage, ...args) => event === EVENT_CAST_SPELL,
+                (event, Spell, mage, ...args) => [event, Fireball, mage, ...args]
+            )
+          ];
+
+          // TODO: Effect: On its turn: you may cast a Fireball.
+
+          game.eventManager.execute(EVENT_ENTER_BATTLEFIELD, permanent, mage);
+          resolve();
+        });
+      }
+  );
+
   var Brocky = Spell.createSpell(
      `Brocky, Cynthia's Guardian`,
      [
@@ -368,6 +407,8 @@ At the start of its turn: Gain 1 AT.`,
     WildPyromancer,
     GoblinAttackSquad,
     RaidLeader,
+
+    MediumOfFire,
 
     Brocky,
 
