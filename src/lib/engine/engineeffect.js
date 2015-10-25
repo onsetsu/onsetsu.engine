@@ -133,24 +133,20 @@ class ONS_EventManager {
         EVENT_MAP.get(eventIdentifier).apply(undefined, args);
     }
 
-    doAfterTrigger(eventIdentifier, args) {
-        // HACK: allArgs as spread operator leads to weird behaviour
-        var allArgs = arguments;
-        var activatedTriggers = this.checkTriggers.apply(this, allArgs);
+    doAfterTrigger(eventIdentifier, ...args) {
+        var activatedTriggers = this.checkTriggers(eventIdentifier, ...args);
         activatedTriggers.forEach(trigger => {
-            trigger.performAction.apply(trigger, allArgs);
+            trigger.performAction(eventIdentifier, ...args);
         });
     }
 
-    checkTriggers(eventIdentifier, args) {
-        // HACK: allArgs as spread operator leads to weird behaviour
-        var allArgs = arguments;
+    checkTriggers(eventIdentifier, ...args) {
         var afterTriggers = [];
 
         function pushActivatedTriggers(character) {
             console.log(character);
             var acti = (character.afterTriggers || []).filter(trigger => {
-                return trigger.match.apply(trigger, allArgs);
+                return trigger.match(eventIdentifier, ...args);
             });
             afterTriggers.push(...acti);
         }

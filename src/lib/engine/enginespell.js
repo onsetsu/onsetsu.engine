@@ -71,11 +71,19 @@ SpellType.Mage = function Mage() {};
  */
 var SubType = function SubType() {};
 // races
+const SUBTYPE_HUMAN = 'SUBTYPE_HUMAN';
 const SUBTYPE_GOBLIN = 'SUBTYPE_GOBLIN';
 const SUBTYPE_OGRE = 'SUBTYPE_OGRE';
 
 // classes
 const SUBTYPE_SHAMAN = 'SUBTYPE_SHAMAN';
+const SUBTYPE_KNIGHT = 'SUBTYPE_KNIGHT';
+const SUBTYPE_PRIEST = 'SUBTYPE_PRIEST';
 
 // misc
 const SUBTYPE_ELEMENTAL = 'SUBTYPE_ELEMENTAL';
+const SUBTYPE_SPIRIT = 'SUBTYPE_SPIRIT';
+const SUBTYPE_GOLEM = 'SUBTYPE_GOLEM';
+
+// attributes
+const SUBTYPE_LIGHTNING = 'SUBTYPE_LIGHTNING';

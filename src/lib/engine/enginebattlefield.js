@@ -85,6 +85,7 @@ class Permanent {
   constructor(settings, mage) {
     this.id = nextBattlefieldID();
     this.spellTypes = settings.spellTypes;
+    this.subTypes = settings.subTypes;
     this.hp = settings.hp;
     this.maxHp = settings.hp;
     this.at = settings.at;

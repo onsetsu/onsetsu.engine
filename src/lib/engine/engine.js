@@ -30,6 +30,7 @@ class Mage {
   constructor(player, hp, sp, delay, syllableBoard, spellBook, syllablePool) {
     this.id = nextBattlefieldID();
     this.controller = player;
+    // TODO: add spellType Mage and SubTypes
     this.maxHp = hp;
     this.hp = hp;
     this.maxSp = sp;

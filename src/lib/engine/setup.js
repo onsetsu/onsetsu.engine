@@ -59,13 +59,6 @@ var pushOnStack = function(ConcreteSpellClass, mage) {
   game.stack.push(spell);
 };
 
-var orgeCount = function(mage) {
-  var ogres = game.battlefield.getCharactersMatching(function(character) {
-    return character.mage === mage && character.isOgre;
-  });
-  return ogres.length;
-};
-
 createTestSpellbook = function() {
   /*
    * Currently used Spells
@@ -104,13 +97,13 @@ When [this] enters the Battlefield: Cast Fireball.`,
       return new Promise(function(resolve, reject) {
         var permanent = new Permanent({
           spellTypes: [SpellType.Familiar],
-          hp: 2 + orgeCount(mage),
-          at: 3 + orgeCount(mage),
+          subTypes: [SUBTYPE_GOBLIN, SUBTYPE_SHAMAN],
+          hp: 2,
+          at: 3,
           delay: 5
         }, mage);
         permanent.index = WildPyromancer.index;
-        permanent.putOntoBattlefield();
-        //game.eventManager.execute(EVENT_ENTER_BATTLEFIELD, permanent, mage);
+        game.eventManager.execute(EVENT_ENTER_BATTLEFIELD, permanent, mage);
 
         pushOnStack(Fireball, mage);
         resolve();
@@ -123,9 +116,9 @@ When [this] enters the Battlefield: Cast Fireball.`,
      [
        new SyllableSequence([
          Syllables.FIRE,
-         Syllables.XAU,
-         Syllables.CHI,
-         Syllables.REN,
+         //Syllables.XAU,
+         //Syllables.CHI,
+         //Syllables.REN,
          Syllables.REN,
        ], SyllableSequence.ordered),
      ],
@@ -135,13 +128,13 @@ When [this] enters the Battlefield: Cast Fireball.`,
         _(3).times(function() {
           var permanent = new Permanent({
             spellTypes: [SpellType.Familiar],
-            hp: 1 + orgeCount(mage),
-            at: 1 + orgeCount(mage),
+            subTypes: [SUBTYPE_GOBLIN],
+            hp: 1,
+            at: 1,
             delay: 3
           }, mage);
           permanent.index = GoblinAttackSquad.index;
-          permanent.putOntoBattlefield();
-          //game.eventManager.execute(EVENT_ENTER_BATTLEFIELD, permanent, mage);
+          game.eventManager.execute(EVENT_ENTER_BATTLEFIELD, permanent, mage);
         });
 
         resolve();
@@ -166,25 +159,29 @@ When a friendly Goblin Familiar enters the battlefield: Give it +1/+1.
       return new Promise(function(resolve, reject) {
         var permanent = new Permanent({
           spellTypes: [SpellType.Familiar],
+          subTypes: [SUBTYPE_OGRE],
           hp: 3,
           at: 3,
           delay: 4
         }, mage);
         permanent.index = RaidLeader.index;
-        permanent.isOgre = true;
         permanent.afterTriggers = [
-                    new Trigger(
-              (event, ...args) => {
+          new Trigger(
+              (event, newPermanent, itsController, ...args) => {
                 return event === EVENT_ENTER_BATTLEFIELD &&
-                    //[0] is a SUBTYPE_GOBLIN &&
-                    args[1] === permanent.mage
+                    newPermanent.subTypes &&
+                    newPermanent.subTypes.indexOf(SUBTYPE_GOBLIN) >= 0 &&
+                    itsController === permanent.mage
               },
-              (event, newPermanent, itsController, ...args) => { newPermanent.at++; newPermanent.hp++; newPermanent.maxHp++; }
+              (event, newPermanent, itsController, ...args) => {
+                newPermanent.at++;
+                newPermanent.hp++;
+                newPermanent.maxHp++;
+              }
           )
 
         ];
-        //game.eventManager.execute(EVENT_ENTER_BATTLEFIELD, permanent, mage);
-        permanent.putOntoBattlefield();
+        game.eventManager.execute(EVENT_ENTER_BATTLEFIELD, permanent, mage);
 
         resolve();
       });
@@ -209,7 +206,8 @@ Reduce Damage [this] receives by 1.`,
     function resolve(mage) {
       return new Promise(function(resolve, reject) {
         var brocky = new Permanent({
-          spellTypes: [SpellType.Familiar],
+          spellTypes: [SpellType.Artifact, SpellType.Familiar],
+          subTypes: [SUBTYPE_GOLEM],
           hp: 5,
           at: 2,
           delay: 7
@@ -229,8 +227,7 @@ Reduce Damage [this] receives by 1.`,
               (event, target, amount, ...args) => [event, target, amount-1, ...args]
           ),
         ];
-        brocky.putOntoBattlefield();
-        //game.eventManager.execute(EVENT_ENTER_BATTLEFIELD, brocky, mage);
+        game.eventManager.execute(EVENT_ENTER_BATTLEFIELD, brocky, mage);
         resolve();
        });
     }
@@ -248,6 +245,7 @@ Reduce Damage [this] receives by 1.`,
      ],
 `Deal Damage equal to the number of friendly Characters.`,
     function resolve(mage) {
+      // TODO: use SUBTYPE_LIGHTNING
       var damage = game.battlefield.getCharactersMatching(function(character) {
         return character === mage || character.mage === mage;
       }).length;
@@ -285,14 +283,14 @@ Its HP become the number of your Light Syllables.`,
           })
         });
         var permanent = new Permanent({
-          spellTypes: [SpellType.Familiar],
+          spellTypes: [SpellType.Enchantment, SpellType.Familiar],
+          subTypes: [SUBTYPE_SPIRIT],
           hp: lightSyllableCount,
           at: 2,
           delay: 4
         }, mage);
         permanent.index = SunlitEidolon.index;
-        permanent.putOntoBattlefield();
-        //game.eventManager.execute(EVENT_ENTER_BATTLEFIELD, permanent, mage);
+        game.eventManager.execute(EVENT_ENTER_BATTLEFIELD, permanent, mage);
 
         resolve();
        });
@@ -315,6 +313,7 @@ At the start of your turn: Get 1 SP.`,
       return new Promise(function(resolve, reject) {
         var permanent = new Permanent({
           spellTypes: [SpellType.Familiar],
+          subTypes: [SUBTYPE_HUMAN, SUBTYPE_PRIEST],
           hp: 3,
           at: 1,
           delay: 5
@@ -326,8 +325,7 @@ At the start of your turn: Get 1 SP.`,
               (event, ...args) => { args[0].sp += 1; }
           )
         ];
-        permanent.putOntoBattlefield();
-        //game.eventManager.execute(EVENT_ENTER_BATTLEFIELD, permanent, mage);
+        game.eventManager.execute(EVENT_ENTER_BATTLEFIELD, permanent, mage);
 
         resolve();
        });
@@ -350,6 +348,7 @@ At the start of its turn: Gain 1 AT.`,
       return new Promise(function(resolve, reject) {
         var permanent = new Permanent({
           spellTypes: [SpellType.Familiar],
+          subTypes: [SUBTYPE_HUMAN, SUBTYPE_KNIGHT],
           hp: 3,
           at: 2,
           delay: 4
@@ -361,8 +360,7 @@ At the start of its turn: Gain 1 AT.`,
               event => { permanent.at++; }
           )
         ];
-        permanent.putOntoBattlefield();
-        //game.eventManager.execute(EVENT_ENTER_BATTLEFIELD, permanent, mage);
+        game.eventManager.execute(EVENT_ENTER_BATTLEFIELD, permanent, mage);
 
         resolve();
        });
@@ -395,7 +393,7 @@ configureGameForTwoPlayers = function() {
     new Mage(
       players[0],
       20,
-      0,
+      8, // 0
       6,
       new SyllableBoard({ x: 8, y: 8 }),
       createTestSpellbook(),
