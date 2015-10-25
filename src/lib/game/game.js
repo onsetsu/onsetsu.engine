@@ -119,7 +119,7 @@ window.Turn = ig.Class.extend({
                             var syllable = GUI.game.syllablePool.syllables[message.indexInSyllablePool].model.copy();
                             var callback = function(ConcreteSpell, startIndex, direction) {
                               console.log('CAST on Stack', ConcreteSpell, startIndex, ''+direction);
-                              pushOnStack(ConcreteSpell, syllableBoard.mage);
+                              game.eventManager.execute(EVENT_CAST_SPELL, ConcreteSpell, syllableBoard.mage);
                             };
 
                             tryPlaceSyllableAndCastSpells(
@@ -313,11 +313,9 @@ GUI.Game = ig.Game.extend({
                     var syllableIndex = hoveredField.model.index,
                         syllableBoard = this.syllableBoard.getModel(),
                         syllable = this.dragEntity.model,
-                        callback = function(ConcreteSpell, startIndex, direction) {
+                        callback = function castFromBoard(ConcreteSpell, startIndex, direction) {
                             console.log('CAST on Stack', ConcreteSpell, startIndex, ''+direction);
-                            var spell = new ConcreteSpell();
-                            spell.mage = syllableBoard.mage
-                            game.stack.push(spell);
+                            game.eventManager.execute(EVENT_CAST_SPELL, ConcreteSpell, syllableBoard.mage);
                         };
 
                     env.conn.send({

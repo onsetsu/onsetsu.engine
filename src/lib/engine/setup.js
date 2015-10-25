@@ -53,12 +53,6 @@ var dealDamage = function(mage, damage, spellIndex) {
   });
 };
 
-var pushOnStack = function(ConcreteSpellClass, mage) {
-  var spell = new ConcreteSpellClass();
-  spell.mage = mage;
-  game.stack.push(spell);
-};
-
 createTestSpellbook = function() {
   /*
    * Currently used Spells
@@ -105,7 +99,8 @@ When [this] enters the Battlefield: Cast Fireball.`,
         permanent.index = WildPyromancer.index;
         game.eventManager.execute(EVENT_ENTER_BATTLEFIELD, permanent, mage);
 
-        pushOnStack(Fireball, mage);
+        // TODO: as afterTrigger
+        game.eventManager.execute(EVENT_CAST_SPELL, Fireball, mage);
         resolve();
       });
     }
