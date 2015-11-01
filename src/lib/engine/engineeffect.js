@@ -5,6 +5,7 @@ const SPELL_ABILITY = {};
 const ACTIVATED_ABILITY = {};
 const TRIGGERED_ABILITY = {};
 const STATIC_ABILITY = {};
+const LINKED_ABILITY = {};
 
 var _effectTimeStampGenerator = new IncrementalIDGenerator();
 class EffectTimeStamp {

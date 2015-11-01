@@ -67,7 +67,8 @@ createTestSpellbook = function() {
         //Syllables.NIF
       ], SyllableSequence.ordered),
     ],
-`Deal 2 Damage.`,
+`Sorcery
+Deal 2 Damage.`,
     function resolve(mage) {
       var damage = 2;
       return dealDamage(mage, damage, Fireball.index);
@@ -97,10 +98,18 @@ When [this] enters the Battlefield: Cast Fireball.`,
           delay: 5
         }, mage);
         permanent.index = WildPyromancer.index;
+        permanent.afterTriggers = [
+            new Trigger(
+                (event, newPermanent, mage, ...args) => {
+                  return event === EVENT_ENTER_BATTLEFIELD && newPermanent === permanent
+                },
+                (event, permanent, mage, ...args) => {
+                  game.eventManager.execute(EVENT_CAST_SPELL, Fireball, mage);
+                }
+            )
+        ];
         game.eventManager.execute(EVENT_ENTER_BATTLEFIELD, permanent, mage);
 
-        // TODO: as afterTrigger
-        game.eventManager.execute(EVENT_CAST_SPELL, Fireball, mage);
         resolve();
       });
     }
@@ -117,7 +126,8 @@ When [this] enters the Battlefield: Cast Fireball.`,
          Syllables.REN,
        ], SyllableSequence.ordered),
      ],
-`Summon 3 1/1 (3) Goblin Familiars.`,
+`Sorcery
+Summon 3 1/1 (3) Goblin Familiars.`,
     function resolve(mage) {
       return new Promise(function(resolve, reject) {
         _(3).times(function() {
@@ -184,7 +194,7 @@ When a friendly Goblin Familiar enters the battlefield: Give it +1/+1.
   );
 
   var MediumOfFire = Spell.createSpell(
-      'Medium Of Fire/Elder of Flame',
+      'Medium of Fire/Elder of Flame',
       [
         new SyllableSequence([
           Syllables.FIRE,
@@ -277,7 +287,8 @@ Reduce Damage [this] receives by 1.`,
          Syllables.NIF,
        ], SyllableSequence.ordered),
      ],
-`Deal Damage equal to the number of friendly Characters.`,
+`Lightning Sorcery
+Deal Damage equal to the number of friendly Characters.`,
     function resolve(mage) {
       // TODO: use SUBTYPE_LIGHTNING
       var damage = game.battlefield.getCharactersMatching(function(character) {
