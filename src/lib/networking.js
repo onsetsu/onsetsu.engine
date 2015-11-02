@@ -1,6 +1,6 @@
 'use strict';
 
-var Networking = {
+window.Networking = {
   getNextMessage: function() {
     return Networking.inbox.shift();
   },
@@ -187,4 +187,3 @@ var Networking = {
     })();
   }
 };
-

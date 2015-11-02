@@ -2,11 +2,13 @@
 // Main
 // --------------------------------------------------------------------------------
 
-var game,
-    engine,
-    env = {},
-    GUI = {},
-    isHost;
+import {} from 'lib/networking.js';
+
+window.game = undefined;
+window.engine = undefined;
+window.env = {};
+window.GUI = {};
+window.isHost = undefined;
 
 ig.module(
   'init.game'
