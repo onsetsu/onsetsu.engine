@@ -108,6 +108,7 @@ When [this] enters the Battlefield: Cast Fireball.`,
                 }
             )
         ];
+
         game.eventManager.execute(EVENT_ENTER_BATTLEFIELD, permanent, mage);
 
         resolve();
@@ -205,7 +206,7 @@ When a friendly Goblin Familiar enters the battlefield: Give it +1/+1.
           //Syllables.NIF,
         ], SyllableSequence.ordered),
       ],
-      `3/2 (5) Human Wizard Familiar
+      `2/6 (5) Human Wizard Familiar
 When a Spell is casted: Cast Fireball instead.`,
       function resolve(mage) {
         return new Promise(function(resolve, reject) {
