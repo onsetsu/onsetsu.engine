@@ -29,19 +29,30 @@ GUI.SelectTarget = ig.Class.extend({
             }, this);
 
             if(hoveredOn) {
-                this.actualTargets.push(hoveredOn);
-                GUI.game.battlefield.getEntityFor(hoveredOn).visualizeSelected(true);
-                if(this.actualTargets.length === this.numTargets) {
-                    GUI.SelectTarget.selectTarget = undefined;
-
-                    this.targetEntities.forEach(targetEntity => {
-                        targetEntity.visualizeSelectable(false);
-                        targetEntity.visualizeSelected(false);
-                    });
-
-                    this.callback(this.actualTargets);
+                var indexOfHoveredOn = this.actualTargets.indexOf(hoveredOn);
+                if(indexOfHoveredOn >= 0) {
+                    // already selected target -> deselect target
+                    this.actualTargets.splice(indexOfHoveredOn, 1);
+                    GUI.game.battlefield.getEntityFor(hoveredOn).visualizeSelected(false);
+                } else {
+                    // new target
+                    this.actualTargets.push(hoveredOn);
+                    GUI.game.battlefield.getEntityFor(hoveredOn).visualizeSelected(true);
                 }
+                this.checkForTargetSelectionCompleted();
             }
+        }
+    },
+    checkForTargetSelectionCompleted: function() {
+        if(this.actualTargets.length === this.numTargets) {
+            GUI.SelectTarget.selectTarget = undefined;
+
+            this.targetEntities.forEach(targetEntity => {
+                targetEntity.visualizeSelectable(false);
+                targetEntity.visualizeSelected(false);
+            });
+
+            this.callback(this.actualTargets);
         }
     }
 });
