@@ -16,6 +16,8 @@ GUI.SelectTarget = ig.Class.extend({
             targetEntity.visualizeSelectable(true);
             return targetEntity;
         });
+
+        GUI.SelectTarget.selectTarget = this;
     },
     doIt: function() {
         if(ig.input.pressed('leftclick')) {
@@ -25,7 +27,7 @@ GUI.SelectTarget = ig.Class.extend({
             }, this);
 
             if(hoveredOn) {
-                GUI.game.selectTarget = undefined;
+                GUI.SelectTarget.selectTarget = undefined;
 
                 this.targetEntities.forEach(function(targetEntity) {
                     targetEntity.visualizeSelectable(false);

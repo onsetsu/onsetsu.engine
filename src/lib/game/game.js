@@ -236,7 +236,7 @@ GUI.Game = ig.Game.extend({
         targets.push(side2.mages[0]);
 
         return new Promise(function(resolve, reject) {
-            GUI.game.selectTarget = new GUI.SelectTarget(targets, function(combatant2) {
+            new GUI.SelectTarget(targets, function(combatant2) {
                 GUI.game.animatedBattle(combatant1, combatant2).then(function() {
                     resolve([combatant1, combatant2]);
                 });
@@ -245,19 +245,16 @@ GUI.Game = ig.Game.extend({
 	},
 
 	animatedBattle: function(combatant1, combatant2) {
-        return new Promise(function(resolve, reject) {
-            var combatant1Entity = GUI.game.battlefield.getEntityFor(combatant1),
-                combatant2Entity = GUI.game.battlefield.getEntityFor(combatant2);
+        var combatant1Entity = GUI.game.battlefield.getEntityFor(combatant1),
+            combatant2Entity = GUI.game.battlefield.getEntityFor(combatant2);
 
-            combatant1Entity.drawBattleLine(combatant2Entity, 2)
-                .then(function() {
-                    new Battle(combatant1, combatant2);
-                    console.log("battle ended");
-                })
-                .then(checkStateBasedActions)
-                .delay(2000)
-                .then(resolve);
-        });
+        return combatant1Entity.drawBattleLine(combatant2Entity, 2)
+            .then(function() {
+                new Battle(combatant1, combatant2);
+                console.log("battle ended");
+            })
+            .then(checkStateBasedActions)
+            .delay(2000);
 	},
 
 	advanceAndProcessTurn: function() {
@@ -392,8 +389,8 @@ GUI.Game = ig.Game.extend({
         }
 
         // select target
-        if(this.selectTarget) {
-            this.selectTarget.doIt();
+        if(GUI.SelectTarget.selectTarget) {
+            GUI.SelectTarget.selectTarget.doIt();
         }
 	},
 
