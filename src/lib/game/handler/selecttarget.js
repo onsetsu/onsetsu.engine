@@ -39,4 +39,10 @@ GUI.SelectTarget = ig.Class.extend({
     }
 });
 
+GUI.SelectTarget.update = function() {
+    if(GUI.SelectTarget.selectTarget) {
+        GUI.SelectTarget.selectTarget.doIt();
+    }
+};
+
 });

@@ -236,7 +236,7 @@ GUI.Game = ig.Game.extend({
         targets.push(side2.mages[0]);
 
         return new Promise(function(resolve, reject) {
-            new GUI.SelectTarget(targets, function(combatant2) {
+            selectTarget(targets).then(function(combatant2) {
                 GUI.game.animatedBattle(combatant1, combatant2).then(function() {
                     resolve([combatant1, combatant2]);
                 });
@@ -389,9 +389,7 @@ GUI.Game = ig.Game.extend({
         }
 
         // select target
-        if(GUI.SelectTarget.selectTarget) {
-            GUI.SelectTarget.selectTarget.doIt();
-        }
+        GUI.SelectTarget.update();
 	},
 
 	advanceTimeToNextAction: function() {

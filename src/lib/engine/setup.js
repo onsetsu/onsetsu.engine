@@ -25,8 +25,10 @@ createStandardSyllablePool = function() {
   ]);
 };
 
-function selectTarget() {
-
+function selectTarget(targets) {
+    return new Promise(function(resolve, reject) {
+        new GUI.SelectTarget(targets, resolve);
+    });
 }
 
 var dealDamage = function(mage, damage, spellIndex) {
@@ -36,7 +38,7 @@ var dealDamage = function(mage, damage, spellIndex) {
       var targets = game.battlefield.getCharactersMatching(function(character) {
         return true;
       });
-      new GUI.SelectTarget(targets, function(target) {
+      selectTarget(targets).then(function(target) {
         env.conn.send({
           command: 'targetForDamage',
           targetId: target.id,
