@@ -81,11 +81,14 @@ ig.Entity.inject({
 	markOnTurn: function(value) {
 	    this.shouldMarkOnTurn = value;
 	},
-	visualizeSelectable: function(value) {
-	    this.shouldVisualizeSelectable = value;
-	    this.dashOffset = 0;
-	    this.dashOffsetSpeed = 40;
-	},
+    visualizeSelectable: function(value) {
+        this.shouldVisualizeSelectable = value;
+        this.dashOffset = 0;
+        this.dashOffsetSpeed = 40;
+    },
+    visualizeSelected: function(value) {
+        this.shouldVisualizeSelected = value;
+    },
 	drawBattleLine: function(target, duration) {
 	    var battleLine = this.battleLine = {
 	        target: target,
@@ -102,7 +105,7 @@ ig.Entity.inject({
 
         if(this.shouldMarkOnTurn) {
             // TODO: duplicated logic
-            ig.system.context.save()
+            ig.system.context.save();
             ig.system.context.strokeStyle = this.colors.onTurn;
             ig.system.context.lineWidth = 2.0;
             ig.system.context.strokeRect(
@@ -116,7 +119,7 @@ ig.Entity.inject({
 
         if(this.shouldVisualizeSelectable) {
             // TODO: duplicated logic
-            ig.system.context.save()
+            ig.system.context.save();
             ig.system.context.strokeStyle = this.colors.selectable;
             ig.system.context.setLineDash([4,4]);
             this.dashOffset += this.dashOffsetSpeed * ig.system.tick;
@@ -132,9 +135,22 @@ ig.Entity.inject({
             ig.system.context.restore();
         }
 
+        if(this.shouldVisualizeSelected) {
+            ig.system.context.save();
+            ig.system.context.strokeStyle = this.colors.selectable;
+            ig.system.context.lineWidth = 2.0;
+            ig.system.context.strokeRect(
+                ig.system.getDrawPos(this.pos.x.round() - ig.game.screen.x) - 0.5,
+                ig.system.getDrawPos(this.pos.y.round() - ig.game.screen.y) - 0.5,
+                this.size.x * ig.system.scale,
+                this.size.y * ig.system.scale
+            );
+            ig.system.context.restore();
+        }
+
         if(this.battleLine) {
             // TODO: duplicated logic
-            ig.system.context.save()
+            ig.system.context.save();
             ig.system.context.strokeStyle = this.colors.battleLine;
             ig.system.context.setLineDash([16,16]);
             this.battleLine.dashOffset += this.battleLine.dashOffsetSpeed * ig.system.tick;

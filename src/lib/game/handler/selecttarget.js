@@ -30,11 +30,13 @@ GUI.SelectTarget = ig.Class.extend({
 
             if(hoveredOn) {
                 this.actualTargets.push(hoveredOn);
+                GUI.game.battlefield.getEntityFor(hoveredOn).visualizeSelected(true);
                 if(this.actualTargets.length === this.numTargets) {
                     GUI.SelectTarget.selectTarget = undefined;
 
                     this.targetEntities.forEach(targetEntity => {
                         targetEntity.visualizeSelectable(false);
+                        targetEntity.visualizeSelected(false);
                     });
 
                     this.callback(this.actualTargets);

@@ -85,7 +85,7 @@ Deal 2 Damage.`,
     'Forked Bolt',
     [
       new SyllableSequence([
-        Syllables.FIRE,
+        //Syllables.FIRE,
         Syllables.CHI,
         Syllables.CHI,
         //Syllables.NIF
