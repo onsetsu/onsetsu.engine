@@ -27,35 +27,39 @@ createStandardSyllablePool = function() {
 
 function selectTarget(targets, numTargets) {
     return new Promise(function(resolve, reject) {
-        new GUI.SelectTarget(targets, numTargets, ts => resolve(ts[0]));
+        new GUI.SelectTarget(targets, numTargets, ts => resolve(...ts));
     });
 }
 
+function ifEnemyResolveElseDo(mage, els) {
+    var isEnemy = mage.controller !== GUI.game.visualizedMainPlayer;
+    return Promise.resolve(isEnemy ? null : els());
+}
+
+// TODO: extract choosing a target(s) and actual dealing damage
+// TODO: should look like:
+// selectTarget.then(forEachInSeries(dealDamage.bind(undefined, mage, damge)))
 var dealDamage = function(mage, damage, spellIndex, numTargets) {
-  return new Promise(function(resolve, reject) {
-    if(mage.controller === GUI.game.visualizedMainPlayer) {
-      console.log('ownMage');
+  return ifEnemyResolveElseDo(mage, function() {
+    return new Promise(function(resolve, reject) {
       var targets = game.battlefield.getCharactersMatching(function(character) {
         return true;
       });
       selectTarget(targets, numTargets).then(function(target) {
-        env.conn.send({
-          command: 'targetForDamage',
-          targetId: target.id,
-          damage: damage,
-          spellIndex: spellIndex
-        });
-        GUI.game.spellBook.spellEntities[spellIndex]
-          .drawBattleLine(GUI.game.battlefield.getEntityFor(target), 2)
-          .then(function() {
-            game.eventManager.execute(EVENT_DEAL_DAMAGE, target, damage);
-            resolve();
-          });
+      env.conn.send({
+        command: 'targetForDamage',
+        targetId: target.id,
+        damage: damage,
+        spellIndex: spellIndex
       });
-    } else {
-      console.log('enemyMage');
-      resolve();
-    }
+      GUI.game.spellBook.spellEntities[spellIndex]
+        .drawBattleLine(GUI.game.battlefield.getEntityFor(target), 2)
+        .then(function() {
+          game.eventManager.execute(EVENT_DEAL_DAMAGE, target, damage);
+          resolve();
+        });
+      });
+    });
   });
 };
 
@@ -96,6 +100,8 @@ Deal 2 Damage.`,
 Deal 2 Damage to 2 different targets.`,
     function resolve(mage) {
       var damage = 2;
+        // TODO: add possibility to damage both chosen targets!!
+        // TODO: see selectTarget and dealDamage
       return dealDamage(mage, damage, Fireball.index, 2);
     }
   );
