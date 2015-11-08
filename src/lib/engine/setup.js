@@ -25,20 +25,20 @@ createStandardSyllablePool = function() {
   ]);
 };
 
-function selectTarget(targets) {
+function selectTarget(targets, numTargets) {
     return new Promise(function(resolve, reject) {
-        new GUI.SelectTarget(targets, resolve);
+        new GUI.SelectTarget(targets, numTargets, ts => resolve(ts[0]));
     });
 }
 
-var dealDamage = function(mage, damage, spellIndex) {
+var dealDamage = function(mage, damage, spellIndex, numTargets) {
   return new Promise(function(resolve, reject) {
     if(mage.controller === GUI.game.visualizedMainPlayer) {
       console.log('ownMage');
       var targets = game.battlefield.getCharactersMatching(function(character) {
         return true;
       });
-      selectTarget(targets).then(function(target) {
+      selectTarget(targets, numTargets).then(function(target) {
         env.conn.send({
           command: 'targetForDamage',
           targetId: target.id,
@@ -77,11 +77,30 @@ createTestSpellbook = function() {
 Deal 2 Damage.`,
     function resolve(mage) {
       var damage = 2;
-      return dealDamage(mage, damage, Fireball.index);
+      return dealDamage(mage, damage, Fireball.index, 1);
     }
   );
 
-  var WildPyromancer = Spell.createSpell(
+  var ForkedBolt = Spell.createSpell(
+    'Forked Bolt',
+    [
+      new SyllableSequence([
+        Syllables.FIRE,
+        Syllables.CHI,
+        Syllables.CHI,
+        //Syllables.NIF
+      ], SyllableSequence.ordered),
+    ],
+    // TODO: Lightning subtype
+    `Lightning Sorcery
+Deal 2 Damage to 2 different targets.`,
+    function resolve(mage) {
+      var damage = 2;
+      return dealDamage(mage, damage, Fireball.index, 2);
+    }
+  );
+
+    var WildPyromancer = Spell.createSpell(
     'Wild Pyromancer',
     [
       new SyllableSequence([
@@ -302,7 +321,7 @@ Deal Damage equal to the number of friendly Characters.`,
         return character === mage || character.mage === mage;
       }).length;
 
-      return dealDamage(mage, damage, PurgeRay.index);
+      return dealDamage(mage, damage, PurgeRay.index, 1);
     }
   );
 
@@ -422,6 +441,7 @@ At the start of its turn: Gain 1 AT.`,
   var spellBook = new SpellBook();
   [
     Fireball,
+    ForkedBolt,
     WildPyromancer,
     GoblinAttackSquad,
     RaidLeader,
