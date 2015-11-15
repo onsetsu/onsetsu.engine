@@ -7,9 +7,10 @@ ig.module(
 .defines(function(){
 
 GUI.SelectTarget = ig.Class.extend({
-    init: function(possibleTargets, numTargets, callback) {
+    init: function(possibleTargets, minNumTargets, maxNumTargets, callback) {
         this.possibleTargets = possibleTargets;
-        this.numTargets = numTargets;
+        this.minNumTargets = minNumTargets;
+        this.maxNumTargets = maxNumTargets;
         this.callback = callback;
         this.actualTargets = [];
 
@@ -41,19 +42,35 @@ GUI.SelectTarget = ig.Class.extend({
                 }
                 this.checkForTargetSelectionCompleted();
             }
+        } else {
+            if(ig.input.pressed('rightclick')) {
+                this.cancelToComplete();
+            }
         }
     },
+    // TODO: check for 'no more targets available!'
+    // e.g.: Choose up to 4 targets, but only 2 available
+    // and those are already selected
     checkForTargetSelectionCompleted: function() {
-        if(this.actualTargets.length === this.numTargets) {
-            GUI.SelectTarget.selectTarget = undefined;
-
-            this.targetEntities.forEach(targetEntity => {
-                targetEntity.visualizeSelectable(false);
-                targetEntity.visualizeSelected(false);
-            });
-
-            this.callback(this.actualTargets);
+        if(this.actualTargets.length === this.maxNumTargets) {
+            this.completeTargeting();
         }
+    },
+    cancelToComplete: function() {
+        var numTargets = this.actualTargets.length;
+        if (numTargets >= this.minNumTargets && numTargets <= this.maxNumTargets) {
+            this.completeTargeting();
+        }
+    },
+    completeTargeting: function() {
+        GUI.SelectTarget.selectTarget = undefined;
+
+        this.targetEntities.forEach(targetEntity => {
+            targetEntity.visualizeSelectable(false);
+            targetEntity.visualizeSelected(false);
+        });
+
+        this.callback(this.actualTargets);
     }
 });
 
