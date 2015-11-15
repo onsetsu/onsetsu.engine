@@ -236,7 +236,7 @@ GUI.Game = ig.Game.extend({
         targets.push(side2.mages[0]);
 
         return new Promise(function(resolve, reject) {
-            selectTarget(targets, 1).then(function(combatant2) {
+            selectTarget(targets, 1).spread(function(combatant2) {
                 GUI.game.animatedBattle(combatant1, combatant2).then(function() {
                     resolve([combatant1, combatant2]);
                 });

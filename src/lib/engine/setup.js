@@ -27,7 +27,7 @@ createStandardSyllablePool = function() {
 
 function selectTarget(targets, numTargets) {
     return new Promise(function(resolve, reject) {
-        new GUI.SelectTarget(targets, numTargets, ts => resolve(...ts));
+        new GUI.SelectTarget(targets, numTargets, resolve);
     });
 }
 
@@ -45,20 +45,25 @@ var dealDamage = function(mage, damage, spellIndex, numTargets) {
       var targets = game.battlefield.getCharactersMatching(function(character) {
         return true;
       });
-      selectTarget(targets, numTargets).then(function(target) {
-      env.conn.send({
-        command: 'targetForDamage',
-        targetId: target.id,
-        damage: damage,
-        spellIndex: spellIndex
-      });
-      GUI.game.spellBook.spellEntities[spellIndex]
-        .drawBattleLine(GUI.game.battlefield.getEntityFor(target), 2)
-        .then(function() {
-          game.eventManager.execute(EVENT_DEAL_DAMAGE, target, damage);
-          resolve();
-        });
-      });
+
+      selectTarget(targets, numTargets)
+        .reduce(function(_, target) {
+
+          env.conn.send({
+            command: 'targetForDamage',
+            targetId: target.id,
+            damage: damage,
+            spellIndex: spellIndex
+          });
+
+          return GUI.game.spellBook.spellEntities[spellIndex]
+            .drawBattleLine(GUI.game.battlefield.getEntityFor(target), 2)
+            .then(function() {
+              game.eventManager.execute(EVENT_DEAL_DAMAGE, target, damage);
+            });
+
+        }, 0)
+        .then(resolve);
     });
   });
 };
