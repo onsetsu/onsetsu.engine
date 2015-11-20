@@ -39,32 +39,38 @@ function ifEnemyResolveElseDo(mage, els) {
     return Promise.resolve(isEnemy ? null : els());
 }
 
+var getAllCharacters = function() {
+    return game.battlefield.getCharactersMatching(function(character) {
+        return true;
+    });
+};
+
 // TODO: extract choosing a target(s) and actual dealing damage
 var dealDamage = function(mage, damage, spellIndex, minNumTargets, maxNumTargets) {
   return ifEnemyResolveElseDo(mage, function() {
-    var targets = game.battlefield.getCharactersMatching(function(character) {
-      return true;
-    });
-
-    return selectTarget(targets, minNumTargets, maxNumTargets)
+    return selectTarget(getAllCharacters(), minNumTargets, maxNumTargets)
       // this is a sequential forEach
       .reduce(function(_, target) {
-
-        env.conn.send({
-          command: 'targetForDamage',
-          targetId: target.id,
-          damage: damage,
-          spellIndex: spellIndex
-        });
-
-        return GUI.game.spellBook.spellEntities[spellIndex]
-          .drawBattleLine(GUI.game.battlefield.getEntityFor(target), 2)
-          .then(function() {
-            game.eventManager.execute(EVENT_DEAL_DAMAGE, target, damage);
-          });
-     }, 0);
-  });
+        return dealDamageToTarget(target);
+      }, 0);
+    }
+  );
 };
+
+function dealDamageToTarget(target) {
+    env.conn.send({
+        command: 'targetForDamage',
+        targetId: target.id,
+        damage: damage,
+        spellIndex: spellIndex
+    });
+
+    return GUI.game.spellBook.spellEntities[spellIndex]
+        .drawBattleLine(GUI.game.battlefield.getEntityFor(target), 2)
+        .then(function() {
+            game.eventManager.execute(EVENT_DEAL_DAMAGE, target, damage);
+        });
+}
 
 createTestSpellbook = function() {
   /*
