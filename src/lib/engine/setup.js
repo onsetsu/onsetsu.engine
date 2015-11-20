@@ -45,11 +45,6 @@ var getAllCharacters = function() {
     });
 };
 
-// TODO: extract choosing a target(s) and actual dealing damage
-var dealDamage = function(mage, damage, spellIndex, minNumTargets, maxNumTargets) {
-  return selectTarget(getAllCharacters(), minNumTargets, maxNumTargets);
-};
-
 function generateDealDamageToSingleTarget(damage, spellIndex) {
     return function(target) {
         env.conn.send({
@@ -87,7 +82,7 @@ Deal 2 Damage.`,
       var damage = 2;
 
       return ifEnemyResolveElseDo(mage, function() {
-          return dealDamage(mage, damage, Fireball.index, 1, 1)
+          return selectTarget(getAllCharacters(), 1, 1)
             .spread(generateDealDamageToSingleTarget(damage, Fireball.index));
       });
     }
@@ -110,7 +105,7 @@ Deal 2 Damage to 2 different targets.`,
       var damage = 2;
 
       return ifEnemyResolveElseDo(mage, function() {
-          return dealDamage(mage, damage, ForkedBolt.index, 2, 2)
+          return selectTarget(getAllCharacters(), 2, 2)
             // TODO: this is a sequential forEach
             .reduce(function(_, target) {
               return generateDealDamageToSingleTarget(damage, ForkedBolt.index)(target);
@@ -135,7 +130,7 @@ Target up to 5 Familiars: Deal 1 Damage to each.`,
         var damage = 1;
         // TODO: limit targeting to Familiars-only
         return ifEnemyResolveElseDo(mage, function() {
-            return dealDamage(mage, damage, SkyFire.index, 0, 5)
+            return selectTarget(getAllCharacters(), 0, 5)
               .reduce(function(_, target) {
                   return generateDealDamageToSingleTarget(damage, SkyFire.index)(target);
               }, 0);
@@ -365,7 +360,7 @@ Deal Damage equal to the number of friendly Characters.`,
       }).length;
 
       return ifEnemyResolveElseDo(mage, function() {
-          return dealDamage(mage, damage, PurgeRay.index, 1, 1)
+          return selectTarget(getAllCharacters(), 1, 1)
             .spread(generateDealDamageToSingleTarget(damage, PurgeRay.index));
       });
     }
