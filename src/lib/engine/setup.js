@@ -47,29 +47,24 @@ var getAllCharacters = function() {
 
 // TODO: extract choosing a target(s) and actual dealing damage
 var dealDamage = function(mage, damage, spellIndex, minNumTargets, maxNumTargets) {
-  return ifEnemyResolveElseDo(mage, function() {
-    return selectTarget(getAllCharacters(), minNumTargets, maxNumTargets)
-      // this is a sequential forEach
-      .reduce(function(_, target) {
-        return dealDamageToTarget(target);
-      }, 0);
-    }
-  );
+  return selectTarget(getAllCharacters(), minNumTargets, maxNumTargets);
 };
 
-function dealDamageToTarget(target) {
-    env.conn.send({
-        command: 'targetForDamage',
-        targetId: target.id,
-        damage: damage,
-        spellIndex: spellIndex
-    });
-
-    return GUI.game.spellBook.spellEntities[spellIndex]
-        .drawBattleLine(GUI.game.battlefield.getEntityFor(target), 2)
-        .then(function() {
-            game.eventManager.execute(EVENT_DEAL_DAMAGE, target, damage);
+function generateDealDamageToSingleTarget(damage, spellIndex) {
+    return function(target) {
+        env.conn.send({
+            command: 'targetForDamage',
+            targetId: target.id,
+            damage: damage,
+            spellIndex: spellIndex
         });
+
+        return GUI.game.spellBook.spellEntities[spellIndex]
+            .drawBattleLine(GUI.game.battlefield.getEntityFor(target), 2)
+            .then(function() {
+                game.eventManager.execute(EVENT_DEAL_DAMAGE, target, damage);
+            });
+    }
 }
 
 createTestSpellbook = function() {
@@ -90,7 +85,11 @@ createTestSpellbook = function() {
 Deal 2 Damage.`,
     function resolve(mage) {
       var damage = 2;
-      return dealDamage(mage, damage, Fireball.index, 1, 1);
+
+      return ifEnemyResolveElseDo(mage, function() {
+          return dealDamage(mage, damage, Fireball.index, 1, 1)
+            .spread(generateDealDamageToSingleTarget(damage, Fireball.index));
+      });
     }
   );
 
@@ -109,7 +108,14 @@ Deal 2 Damage.`,
 Deal 2 Damage to 2 different targets.`,
     function resolve(mage) {
       var damage = 2;
-      return dealDamage(mage, damage, Fireball.index, 2, 2);
+
+      return ifEnemyResolveElseDo(mage, function() {
+          return dealDamage(mage, damage, ForkedBolt.index, 2, 2)
+            // TODO: this is a sequential forEach
+            .reduce(function(_, target) {
+              return generateDealDamageToSingleTarget(damage, ForkedBolt.index)(target);
+            }, 0);
+      });
     }
   );
 
@@ -128,7 +134,12 @@ Target up to 5 Familiars: Deal 1 Damage to each.`,
       function resolve(mage) {
         var damage = 1;
         // TODO: limit targeting to Familiars-only
-        return dealDamage(mage, damage, Fireball.index, 0, 5);
+        return ifEnemyResolveElseDo(mage, function() {
+            return dealDamage(mage, damage, SkyFire.index, 0, 5)
+              .reduce(function(_, target) {
+                  return generateDealDamageToSingleTarget(damage, SkyFire.index)(target);
+              }, 0);
+        });
       }
     );
 
@@ -353,7 +364,10 @@ Deal Damage equal to the number of friendly Characters.`,
         return character === mage || character.mage === mage;
       }).length;
 
-      return dealDamage(mage, damage, PurgeRay.index, 1, 1);
+      return ifEnemyResolveElseDo(mage, function() {
+          return dealDamage(mage, damage, PurgeRay.index, 1, 1)
+            .spread(generateDealDamageToSingleTarget(damage, PurgeRay.index));
+      });
     }
   );
 
