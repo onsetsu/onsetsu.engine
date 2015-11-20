@@ -45,6 +45,13 @@ var getAllCharacters = function() {
     });
 };
 
+// TODO: find a convenient way for this kind of checks
+const CHECK = {
+    IS_PERMANENT: function(character) {
+        return character instanceof Permanent;
+    }
+};
+
 function generateDealDamageToSingleTarget(damage, spellIndex) {
     return function(target) {
         env.conn.send({
@@ -114,25 +121,49 @@ Deal 2 Damage to 2 different targets.`,
     }
   );
 
-  var SkyFire = Spell.createSpell(
-    'Sky Fire',
+    var SkyFire = Spell.createSpell(
+        'Sky Fire',
+        [
+            new SyllableSequence([
+                //Syllables.FIRE,
+                Syllables.CHI,
+                Syllables.EX,
+                //Syllables.NIF
+            ], SyllableSequence.ordered),
+        ],
+        `Sorcery
+Target up to 5 Characters: Deal 1 Damage to each.`,
+        function resolve(mage) {
+            var damage = 1;
+            return ifEnemyResolveElseDo(mage, function() {
+                return selectTarget(getAllCharacters(), 0, 5)
+                    // TODO: this is a sequential forEach
+                    .reduce(function(_, target) {
+                        return generateDealDamageToSingleTarget(damage, SkyFire.index)(target);
+                    }, 0);
+            });
+        }
+    );
+
+    var FireRain = Spell.createSpell(
+    'Fire Rain',
       [
         new SyllableSequence([
           //Syllables.FIRE,
           Syllables.CHI,
-          Syllables.EX,
+          Syllables.REN,
           //Syllables.NIF
         ], SyllableSequence.ordered),
       ],
       `Sorcery
-Target up to 5 Familiars: Deal 1 Damage to each.`,
+Target 2 to 4 Familiars: Deal 1 Damage to each.`,
       function resolve(mage) {
         var damage = 1;
-        // TODO: limit targeting to Familiars-only
         return ifEnemyResolveElseDo(mage, function() {
-            return selectTarget(getAllCharacters(), 0, 5)
+            return selectTarget(getAllCharacters().filter(CHECK.IS_PERMANENT), 2, 4)
+              // TODO: this is a sequential forEach
               .reduce(function(_, target) {
-                  return generateDealDamageToSingleTarget(damage, SkyFire.index)(target);
+                  return generateDealDamageToSingleTarget(damage, FireRain.index)(target);
               }, 0);
         });
       }
@@ -484,6 +515,7 @@ At the start of its turn: Gain 1 AT.`,
     Fireball,
     ForkedBolt,
     SkyFire,
+    FireRain,
     WildPyromancer,
     GoblinAttackSquad,
     RaidLeader,

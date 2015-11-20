@@ -227,6 +227,7 @@ GUI.Game = ig.Game.extend({
 	startBattle: function(combatant1) {
         // Simulate a whole battle
 
+        // TODO: use game.battlefield.getAllCharactersMatching or getAllCharacters.filter
         // Get possible targets
         var side2 = game.battlefield.sides.get(combatant1.mage.controller.opponent);
         var targets = _(side2.permanents).filter(function(permanent) {
