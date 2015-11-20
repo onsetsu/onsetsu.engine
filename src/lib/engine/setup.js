@@ -169,39 +169,27 @@ Target 2 to 4 Familiars: Deal 1 Damage to each.`,
       }
     );
 
-  var WildPyromancer = Spell.createSpell(
-    'Wild Pyromancer',
+  var HungryDemon = Spell.createSpell(
+    'Hungry Demon',
     [
       new SyllableSequence([
-        Syllables.FIRE,
-        Syllables.XAU,
-        Syllables.CHI,
-        Syllables.CHI,
-        Syllables.NIF,
+        Syllables.SHADOW,
+        Syllables.MA,
       ], SyllableSequence.ordered),
     ],
-`3/2 (5) Goblin Shaman Familiar
-When [this] enters the Battlefield: Cast Fireball.`,
+`5/0 (5) Demon Familiar
+Choose 2 or more Familiars when you cast/resolve? [this]:
+Sacrify them, [this] gets HP equal to the sum of the sacrified familiars HP.`,
     function resolve(mage) {
       return new Promise(function(resolve, reject) {
         var permanent = new Permanent({
           spellTypes: [SpellType.Familiar],
-          subTypes: [SUBTYPE_GOBLIN, SUBTYPE_SHAMAN],
-          hp: 2,
-          at: 3,
+          subTypes: [SUBTYPE_DEMON],
+          hp: 0,
+          at: 5,
           delay: 5
         }, mage);
-        permanent.index = WildPyromancer.index;
-        permanent.afterTriggers = [
-            new Trigger(
-                (event, newPermanent, mage, ...args) => {
-                  return event === EVENT_ENTER_BATTLEFIELD && newPermanent === permanent
-                },
-                (event, permanent, mage, ...args) => {
-                  game.eventManager.execute(EVENT_CAST_SPELL, Fireball, mage);
-                }
-            )
-        ];
+        permanent.index = HungryDemon.index;
 
         game.eventManager.execute(EVENT_ENTER_BATTLEFIELD, permanent, mage);
 
@@ -210,7 +198,48 @@ When [this] enters the Battlefield: Cast Fireball.`,
     }
   );
 
-  var GoblinAttackSquad = Spell.createSpell(
+    var WildPyromancer = Spell.createSpell(
+        'Wild Pyromancer',
+        [
+            new SyllableSequence([
+                Syllables.FIRE,
+                Syllables.XAU,
+                Syllables.CHI,
+                Syllables.CHI,
+                Syllables.NIF,
+            ], SyllableSequence.ordered),
+        ],
+        `3/2 (5) Goblin Shaman Familiar
+When [this] enters the Battlefield: Cast Fireball.`,
+        function resolve(mage) {
+            return new Promise(function(resolve, reject) {
+                var permanent = new Permanent({
+                    spellTypes: [SpellType.Familiar],
+                    subTypes: [SUBTYPE_GOBLIN, SUBTYPE_SHAMAN],
+                    hp: 2,
+                    at: 3,
+                    delay: 5
+                }, mage);
+                permanent.index = WildPyromancer.index;
+                permanent.afterTriggers = [
+                    new Trigger(
+                        (event, newPermanent, mage, ...args) => {
+                            return event === EVENT_ENTER_BATTLEFIELD && newPermanent === permanent
+                        },
+                        (event, permanent, mage, ...args) => {
+                            game.eventManager.execute(EVENT_CAST_SPELL, Fireball, mage);
+                        }
+                    )
+                ];
+
+                game.eventManager.execute(EVENT_ENTER_BATTLEFIELD, permanent, mage);
+
+                resolve();
+            });
+        }
+    );
+
+    var GoblinAttackSquad = Spell.createSpell(
      'Goblin Attack Squad',
      [
        new SyllableSequence([
@@ -516,6 +545,7 @@ At the start of its turn: Gain 1 AT.`,
     ForkedBolt,
     SkyFire,
     FireRain,
+    HungryDemon,
     WildPyromancer,
     GoblinAttackSquad,
     RaidLeader,
