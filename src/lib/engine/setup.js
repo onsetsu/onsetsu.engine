@@ -178,8 +178,8 @@ Target 2 to 4 Familiars: Deal 1 Damage to each.`,
       ], SyllableSequence.ordered),
     ],
 `5/0 (5) Demon Familiar
-Choose 2 or more Familiars when you cast/resolve? [this]:
-Sacrify them, [this] gets HP equal to the sum of the sacrified familiars HP.`,
+Choose 2 or more friendly Familiars when you cast/resolve? [this]:
+Sacrifice them, [this] gets HP equal to the sum of the sacrified familiars HP.`,
     function resolve(mage) {
       return new Promise(function(resolve, reject) {
         var permanent = new Permanent({
@@ -191,9 +191,20 @@ Sacrify them, [this] gets HP equal to the sum of the sacrified familiars HP.`,
         }, mage);
         permanent.index = HungryDemon.index;
 
-        game.eventManager.execute(EVENT_ENTER_BATTLEFIELD, permanent, mage);
+        var friendlyFamiliars = getAllCharacters()
+            .filter(CHECK.IS_PERMANENT)
+            // TODO: are Familiars of an allied player/mage also friendly Familiars?
+            .filter(permanent => permanent.mage === mage);
 
-        resolve();
+          selectTarget(friendlyFamiliars, 2, Number.POSITIVE_INFINITY)
+              .reduce(function(_, target) {
+                  permanent.hp += target.hp;
+                  return game.eventManager.execute(EVENT_SACRIFICE, target);
+              }, 0)
+              .then(() => {
+                  game.eventManager.execute(EVENT_ENTER_BATTLEFIELD, permanent, mage);
+                  resolve();
+              });
       });
     }
   );

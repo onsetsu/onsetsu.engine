@@ -63,6 +63,7 @@ const EVENT_START_TURN = 'EVENT_START_TURN';
 const EVENT_DEAL_DAMAGE = 'EVENT_DEAL_DAMAGE';
 const EVENT_ENTER_BATTLEFIELD = 'EVENT_ENTER_BATTLEFIELD';
 const EVENT_CAST_SPELL = 'EVENT_CAST_SPELL';
+const EVENT_SACRIFICE = 'EVENT_SACRIFICE';
 
 const EVENT_MAP = new Map();
 EVENT_MAP.set(EVENT_NOOP, function() {});
@@ -78,6 +79,9 @@ EVENT_MAP.set(EVENT_CAST_SPELL, function(ConcreteSpellClass, mage) {
     var spell = new ConcreteSpellClass();
     spell.mage = mage;
     game.stack.push(spell);
+});
+EVENT_MAP.set(EVENT_SACRIFICE, function(permanent) {
+    permanent.removeFromBattlefield();
 });
 
 class ONS_Event {
