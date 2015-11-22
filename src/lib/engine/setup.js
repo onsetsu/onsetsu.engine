@@ -85,7 +85,7 @@ createTestSpellbook = function() {
     ],
 `Sorcery
 Deal 2 Damage.`,
-    function resolve(mage) {
+    function resolveSpell(mage) {
       var damage = 2;
 
       return ifEnemyResolveElseDo(mage, function() {
@@ -108,7 +108,7 @@ Deal 2 Damage.`,
     // TODO: Lightning subtype
     `Lightning Sorcery
 Deal 2 Damage to 2 different targets.`,
-    function resolve(mage) {
+    function resolveSpell(mage) {
       var damage = 2;
 
       return ifEnemyResolveElseDo(mage, function() {
@@ -133,7 +133,7 @@ Deal 2 Damage to 2 different targets.`,
         ],
         `Sorcery
 Target up to 5 Characters: Deal 1 Damage to each.`,
-        function resolve(mage) {
+        function resolveSpell(mage) {
             var damage = 1;
             return ifEnemyResolveElseDo(mage, function() {
                 return selectTarget(getAllCharacters(), 0, 5)
@@ -157,7 +157,7 @@ Target up to 5 Characters: Deal 1 Damage to each.`,
       ],
       `Sorcery
 Target 2 to 4 Familiars: Deal 1 Damage to each.`,
-      function resolve(mage) {
+      function resolveSpell(mage) {
         var damage = 1;
         return ifEnemyResolveElseDo(mage, function() {
             return selectTarget(getAllCharacters().filter(CHECK.IS_PERMANENT), 2, 4)
@@ -180,7 +180,7 @@ Target 2 to 4 Familiars: Deal 1 Damage to each.`,
 `5/0 (5) Demon Familiar
 Choose 2 or more friendly Familiars when you cast/resolve? [this]:
 Sacrifice them, [this] gets HP equal to the sum of the sacrified familiars HP.`,
-    function resolve(mage) {
+    function resolveSpell(mage) {
       return new Promise(function(resolve, reject) {
         var permanent = new Permanent({
           spellTypes: [SpellType.Familiar],
@@ -220,7 +220,7 @@ Sacrifice them, [this] gets HP equal to the sum of the sacrified familiars HP.`,
         ],
         `3/2 (4) Human Knight Familiar
 Battlecry: Target another Familiar: [this] gets additional HP equal to targets HP.`,
-        function resolve(mage) {
+        function resolveSpell(mage) {
             return new Promise(function(resolve, reject) {
                 var permanent = new Permanent({
                     spellTypes: [SpellType.Familiar],
@@ -255,6 +255,34 @@ Battlecry: Target another Familiar: [this] gets additional HP equal to targets H
         }
     );
 
+    var Overheat = Spell.createSpell(
+        'Overheat',
+        [
+            new SyllableSequence([
+                Syllables.FIRE,
+                Syllables.TO,
+                //Syllables.EX,
+                //Syllables.NIF
+            ], SyllableSequence.ordered),
+        ],
+        `Sorcery
+Target up to 3 Familiars: Deal 3 Damage to each. Loose 1 HP for each beyond the first one.`,
+        function resolveSpell(mage) {
+            var damage = 3;
+            return ifEnemyResolveElseDo(mage, function() {
+                // TODO: only damage Familiars
+                return selectTarget(getAllCharacters(), 0, 3)
+                    .each(generateDealDamageToSingleTarget(damage, Overheat.index))
+                    .then((targets) => {
+                        if(targets.length > 1) {
+                            // TODO: as EVENT_LOSE_HP
+                            mage.hp -= targets.length - 1;
+                        }
+                    });
+            });
+        }
+    );
+
     var WildPyromancer = Spell.createSpell(
         'Wild Pyromancer',
         [
@@ -268,7 +296,7 @@ Battlecry: Target another Familiar: [this] gets additional HP equal to targets H
         ],
         `3/2 (5) Goblin Shaman Familiar
 When [this] enters the Battlefield: Cast Fireball.`,
-        function resolve(mage) {
+        function resolveSpell(mage) {
             return new Promise(function(resolve, reject) {
                 var permanent = new Permanent({
                     spellTypes: [SpellType.Familiar],
@@ -309,7 +337,7 @@ When [this] enters the Battlefield: Cast Fireball.`,
      ],
 `Sorcery
 Summon 3 1/1 (3) Goblin Familiars.`,
-    function resolve(mage) {
+    function resolveSpell(mage) {
       return new Promise(function(resolve, reject) {
         _(3).times(function() {
           var permanent = new Permanent({
@@ -341,7 +369,7 @@ Summon 3 1/1 (3) Goblin Familiars.`,
 `3/3 (4) Ogre Familiar
 When a friendly Goblin Familiar enters the battlefield: Give it +1/+1.
 (= Your Goblin Familiars enter the battlefield with +1/+1.)`,
-    function resolve(mage) {
+    function resolveSpell(mage) {
       return new Promise(function(resolve, reject) {
         var permanent = new Permanent({
           spellTypes: [SpellType.Familiar],
@@ -388,7 +416,7 @@ When a friendly Goblin Familiar enters the battlefield: Give it +1/+1.
       ],
       `2/6 (5) Human Wizard Familiar
 When a Spell is casted: Cast Fireball instead.`,
-      function resolve(mage) {
+      function resolveSpell(mage) {
         return new Promise(function(resolve, reject) {
           var permanent = new Permanent({
             spellTypes: [SpellType.Familiar],
@@ -428,7 +456,7 @@ When a Spell is casted: Cast Fireball instead.`,
      ],
 `2/5 (7) Golem Artifact Familiar
 Reduce Damage [this] receives by 1.`,
-    function resolve(mage) {
+    function resolveSpell(mage) {
       return new Promise(function(resolve, reject) {
         var brocky = new Permanent({
           spellTypes: [SpellType.Artifact, SpellType.Familiar],
@@ -470,7 +498,7 @@ Reduce Damage [this] receives by 1.`,
      ],
 `Lightning Sorcery
 Deal Damage equal to the number of friendly Characters.`,
-    function resolve(mage) {
+    function resolveSpell(mage) {
       // TODO: use SUBTYPE_LIGHTNING
       var damage = game.battlefield.getCharactersMatching(function(character) {
         return character === mage || character.mage === mage;
@@ -497,7 +525,7 @@ Deal Damage equal to the number of friendly Characters.`,
 `2/? (4) Spirit Enchantment Familiar
 When [this] enters the Battlefield:
 Its HP become the number of your Light Syllables.`,
-    function resolve(mage) {
+    function resolveSpell(mage) {
       return new Promise(function(resolve, reject) {
         var lightSyllableCount = 0;
         mage.syllableBoard.syllableStones.forEach(function(row) {
@@ -538,7 +566,7 @@ Its HP become the number of your Light Syllables.`,
      ],
 `1/3 (5) Human Priest Familiar
 At the start of your turn: Get 1 SP.`,
-    function resolve(mage) {
+    function resolveSpell(mage) {
       return new Promise(function(resolve, reject) {
         var permanent = new Permanent({
           spellTypes: [SpellType.Familiar],
@@ -573,7 +601,7 @@ At the start of your turn: Get 1 SP.`,
      ],
 `2/3 (4) Human Knight Familiar
 At the start of its turn: Gain 1 AT.`,
-    function resolve(mage) {
+    function resolveSpell(mage) {
       return new Promise(function(resolve, reject) {
         var permanent = new Permanent({
           spellTypes: [SpellType.Familiar],
@@ -604,6 +632,7 @@ At the start of its turn: Gain 1 AT.`,
     FireRain,
     HungryDemon,
     ShieldKnight,
+    Overheat,
     WildPyromancer,
     GoblinAttackSquad,
     RaidLeader,
