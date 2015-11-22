@@ -209,6 +209,52 @@ Sacrifice them, [this] gets HP equal to the sum of the sacrified familiars HP.`,
     }
   );
 
+
+    var ShieldKnight = Spell.createSpell(
+        'Shield Knight',
+        [
+            new SyllableSequence([
+                Syllables.LIGHT,
+                Syllables.KUN,
+            ], SyllableSequence.ordered),
+        ],
+        `3/2 (4) Human Knight Familiar
+Battlecry: Target another Familiar: [this] gets additional HP equal to targets HP.`,
+        function resolve(mage) {
+            return new Promise(function(resolve, reject) {
+                var permanent = new Permanent({
+                    spellTypes: [SpellType.Familiar],
+                    subTypes: [SUBTYPE_HUMAN, SUBTYPE_KNIGHT],
+                    hp: 2,
+                    at: 3,
+                    delay: 4
+                }, mage);
+                permanent.index = ShieldKnight.index;
+
+                permanent.afterTriggers = [
+                    new Trigger(
+                        (event, newPermanent, mage, ...args) => {
+                            return event === EVENT_ENTER_BATTLEFIELD && newPermanent === permanent
+                        },
+                        (event, permanent, mage, ...args) => {
+                            var otherFamiliars = getAllCharacters()
+                                .filter(CHECK.IS_PERMANENT)
+                                .filter(target => target !== permanent);
+
+                            return selectTarget(otherFamiliars, 1, 1)
+                                .spread(target => {
+                                    permanent.hp += target.hp;
+                                });
+                        }
+                    )
+                ];
+
+                game.eventManager.execute(EVENT_ENTER_BATTLEFIELD, permanent, mage)
+                    .then(resolve);
+            });
+        }
+    );
+
     var WildPyromancer = Spell.createSpell(
         'Wild Pyromancer',
         [
@@ -557,6 +603,7 @@ At the start of its turn: Gain 1 AT.`,
     SkyFire,
     FireRain,
     HungryDemon,
+    ShieldKnight,
     WildPyromancer,
     GoblinAttackSquad,
     RaidLeader,

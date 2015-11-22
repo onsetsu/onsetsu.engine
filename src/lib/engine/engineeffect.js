@@ -95,7 +95,7 @@ class ONS_EventManager {
         console.log(eventIdentifier, '-------------------------------------');
         var replacedEventWithArgs = this.doReplacement(eventIdentifier, ...args);
         this.execEvent.apply(this, replacedEventWithArgs);
-        this.doAfterTrigger.apply(this, replacedEventWithArgs);
+        return this.doAfterTrigger.apply(this, replacedEventWithArgs);
     }
 
     doReplacement(...args) {
@@ -146,6 +146,10 @@ class ONS_EventManager {
 
     doAfterTrigger(eventIdentifier, ...args) {
         var activatedTriggers = this.checkTriggers(eventIdentifier, ...args);
+        return Promise.resolve(activatedTriggers)
+            .reduce((_, trigger) => {
+                return trigger.performAction(eventIdentifier, ...args);
+            }, 0);
         activatedTriggers.forEach(trigger => {
             trigger.performAction(eventIdentifier, ...args);
         });
