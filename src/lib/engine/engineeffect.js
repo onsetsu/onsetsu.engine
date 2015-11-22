@@ -147,10 +147,7 @@ class ONS_EventManager {
     doAfterTrigger(eventIdentifier, ...args) {
         var activatedTriggers = this.checkTriggers(eventIdentifier, ...args);
         return Promise.resolve(activatedTriggers)
-            // TODO: this is a sequential forEach
-            .reduce((_, trigger) => {
-                return trigger.performAction(eventIdentifier, ...args);
-            }, 0);
+            .each(trigger => trigger.performAction(eventIdentifier, ...args));
     }
 
     checkTriggers(eventIdentifier, ...args) {

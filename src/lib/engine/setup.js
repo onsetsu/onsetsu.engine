@@ -113,10 +113,7 @@ Deal 2 Damage to 2 different targets.`,
 
       return ifEnemyResolveElseDo(mage, function() {
           return selectTarget(getAllCharacters(), 2, 2)
-            // TODO: this is a sequential forEach
-            .reduce(function(_, target) {
-              return generateDealDamageToSingleTarget(damage, ForkedBolt.index)(target);
-            }, 0);
+            .each(generateDealDamageToSingleTarget(damage, ForkedBolt.index))
       });
     }
   );
@@ -137,10 +134,7 @@ Target up to 5 Characters: Deal 1 Damage to each.`,
             var damage = 1;
             return ifEnemyResolveElseDo(mage, function() {
                 return selectTarget(getAllCharacters(), 0, 5)
-                    // TODO: this is a sequential forEach
-                    .reduce(function(_, target) {
-                        return generateDealDamageToSingleTarget(damage, SkyFire.index)(target);
-                    }, 0);
+                    .each(generateDealDamageToSingleTarget(damage, SkyFire.index));
             });
         }
     );
@@ -162,10 +156,7 @@ Target 2 to 4 Familiars: Deal 1 Damage to each.`,
         return ifEnemyResolveElseDo(mage, function() {
             // TODO: this check is currently used as an IS_FAMILIAR
             return selectTarget(getAllCharacters().filter(CHECK.IS_PERMANENT), 2, 4)
-              // TODO: this is a sequential forEach
-              .reduce(function(_, target) {
-                  return generateDealDamageToSingleTarget(damage, FireRain.index)(target);
-              }, 0);
+              .each(generateDealDamageToSingleTarget(damage, FireRain.index));
         });
       }
     );
@@ -199,10 +190,10 @@ Sacrifice them, [this] gets HP equal to the sum of the sacrified familiars HP.`,
             .filter(permanent => permanent.mage === mage);
 
           selectTarget(friendlyFamiliars, 2, Number.POSITIVE_INFINITY)
-              .reduce(function(_, target) {
+              .each(target => {
                   permanent.hp += target.hp;
                   return game.eventManager.execute(EVENT_SACRIFICE, target);
-              }, 0)
+              })
               .then(() => {
                   game.eventManager.execute(EVENT_ENTER_BATTLEFIELD, permanent, mage);
                   resolve();
