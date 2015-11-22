@@ -160,6 +160,7 @@ Target 2 to 4 Familiars: Deal 1 Damage to each.`,
       function resolveSpell(mage) {
         var damage = 1;
         return ifEnemyResolveElseDo(mage, function() {
+            // TODO: this check is currently used as an IS_FAMILIAR
             return selectTarget(getAllCharacters().filter(CHECK.IS_PERMANENT), 2, 4)
               // TODO: this is a sequential forEach
               .reduce(function(_, target) {
@@ -192,6 +193,7 @@ Sacrifice them, [this] gets HP equal to the sum of the sacrified familiars HP.`,
         permanent.index = HungryDemon.index;
 
         var friendlyFamiliars = getAllCharacters()
+            // TODO: this check is currently used as an IS_FAMILIAR
             .filter(CHECK.IS_PERMANENT)
             // TODO: are Familiars of an allied player/mage also friendly Familiars?
             .filter(permanent => permanent.mage === mage);
@@ -238,6 +240,7 @@ Battlecry: Target another Familiar: [this] gets additional HP equal to targets H
                         },
                         (event, permanent, mage, ...args) => {
                             var otherFamiliars = getAllCharacters()
+                                // TODO: this check is currently used as an IS_FAMILIAR
                                 .filter(CHECK.IS_PERMANENT)
                                 .filter(target => target !== permanent);
 
@@ -270,8 +273,8 @@ Target up to 3 Familiars: Deal 3 Damage to each. Loose 1 HP for each beyond the 
         function resolveSpell(mage) {
             var damage = 3;
             return ifEnemyResolveElseDo(mage, function() {
-                // TODO: only damage Familiars
-                return selectTarget(getAllCharacters(), 0, 3)
+                // TODO: this check is currently used as an IS_FAMILIAR
+                return selectTarget(getAllCharacters().filter(CHECK.IS_PERMANENT), 0, 3)
                     .each(generateDealDamageToSingleTarget(damage, Overheat.index))
                     .then((targets) => {
                         if(targets.length > 1) {
