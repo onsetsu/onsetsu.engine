@@ -277,6 +277,31 @@ Target up to 3 Familiars: Deal 3 Damage to each. Loose 1 HP for each beyond the 
         }
     );
 
+    var ChainLightning = Spell.createSpell(
+        'Chain Lightning',
+        [
+            new SyllableSequence([
+                Syllables.LIGHT,
+                Syllables.REN,
+            ], SyllableSequence.ordered),
+        ],
+        // TODO: Lightning subtype
+        `Lightning Sorcery
+Target 3 Characters: Deal 3 Damage to the first target, 2 to the second, and 1 to the third.`,
+        function resolveSpell(mage) {
+            return ifEnemyResolveElseDo(mage, function() {
+                var damage = 3;
+
+                return selectTarget(getAllCharacters(), 3, 3)
+                    .each(target => {
+                        return generateDealDamageToSingleTarget(damage, ChainLightning.index)(target)
+                            .then(() => { damage -= 1; })
+                    });
+            });
+        }
+    );
+
+
     var WildPyromancer = Spell.createSpell(
         'Wild Pyromancer',
         [
@@ -627,6 +652,7 @@ At the start of its turn: Gain 1 AT.`,
     HungryDemon,
     ShieldKnight,
     Overheat,
+    ChainLightning,
     WildPyromancer,
     GoblinAttackSquad,
     RaidLeader,
