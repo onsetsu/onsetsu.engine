@@ -7,11 +7,12 @@ ig.module(
 .defines(function(){
 
 GUI.SelectTarget = ig.Class.extend({
-    init: function(possibleTargets, minNumTargets, maxNumTargets, callback) {
+    init: function(possibleTargets, minNumTargets, maxNumTargets, callback, special) {
         this.possibleTargets = possibleTargets;
         this.minNumTargets = minNumTargets;
         this.maxNumTargets = maxNumTargets;
         this.callback = callback;
+        this.special = special;
         this.actualTargets = [];
 
         this.targetEntities = possibleTargets.map(target => {

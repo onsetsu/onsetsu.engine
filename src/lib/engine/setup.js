@@ -28,9 +28,9 @@ createStandardSyllablePool = function() {
 /*
  * Returns a Promise for an Array of chosen targets.
  */
-function selectTarget(targets, minNumTargets, maxNumTargets) {
+function selectTarget(targets, minNumTargets, maxNumTargets, special) {
     return new Promise(function(resolve, reject) {
-        new GUI.SelectTarget(targets, minNumTargets, maxNumTargets, resolve);
+        new GUI.SelectTarget(targets, minNumTargets, maxNumTargets, resolve, special);
     });
 }
 
@@ -296,6 +296,33 @@ Target 3 Characters: Deal 3 Damage to the first target, 2 to the second, and 1 t
                     .each(target => {
                         return generateDealDamageToSingleTarget(damage, ChainLightning.index)(target)
                             .then(() => { damage -= 1; })
+                    });
+            });
+        }
+    );
+
+
+    var BreakDownPunch = Spell.createSpell(
+        'Break Down Punch',
+        [
+            new SyllableSequence([
+                Syllables.FIRE,
+                Syllables.NIF,
+            ], SyllableSequence.ordered),
+        ],
+        `Sorcery
+Target 2 Familiars with different AT:
+Deal Damage equal to the difference to all enemy Mages.`,
+        function resolveSpell(mage) {
+            return ifEnemyResolveElseDo(mage, function() {
+                // TODO: this check is currently used as an IS_FAMILIAR
+                var familiars = getAllCharacters().filter(CHECK.IS_PERMANENT);
+                return selectTarget(familiars, 2, 2, {
+                    getSelectibles: function(alreadySelected) {},
+                    isValidSelection: function (alreadySelected) {}
+                })
+                    .spread((target1, target2) => {
+                        return generateDealDamageToSingleTarget(Math.abs(target1.at - target2.at), BreakDownPunch.index)(mage);
                     });
             });
         }
@@ -653,6 +680,7 @@ At the start of its turn: Gain 1 AT.`,
     ShieldKnight,
     Overheat,
     ChainLightning,
+    BreakDownPunch,
     WildPyromancer,
     GoblinAttackSquad,
     RaidLeader,
