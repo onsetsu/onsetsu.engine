@@ -40,6 +40,22 @@ GUI.SelectTarget = ig.Class.extend({
                 }
                 this.updateSelectibles();
                 this.checkForTargetSelectionCompleted();
+            } else {
+                var hoveredOnSelected = _(this.actualTargets).find(target => {
+                    var targetEntity = GUI.game.battlefield.getEntityFor(target);
+                    return ig.input.hover(targetEntity);
+                }, this);
+
+                if(hoveredOnSelected) {
+                    var indexOfHoveredOn = this.actualTargets.indexOf(hoveredOnSelected);
+                    // is the hovered target already selected?
+                    if(indexOfHoveredOn >= 0) {
+                        // deselect target
+                        this.deselect(hoveredOnSelected, indexOfHoveredOn);
+                    }
+                    this.updateSelectibles();
+                    this.checkForTargetSelectionCompleted();
+                }
             }
         } else {
             if(ig.input.pressed('rightclick')) {
@@ -98,6 +114,10 @@ GUI.SelectTarget = ig.Class.extend({
     checkForTargetSelectionCompleted: function() {
         if(this.special) {
             // TODO: not for now
+            if(this.special.isValidSelection(this.actualTargets) &&
+                this.special.getSelectibles(this.actualTargets).length === 0) {
+                this.completeTargeting();
+            }
             return;
         }
         if(this.actualTargets.length === this.maxNumTargets) {
