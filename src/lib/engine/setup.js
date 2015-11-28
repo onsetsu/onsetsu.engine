@@ -318,6 +318,58 @@ Target 3 Characters: Deal 3 Damage to the first target, 2 to the second, and 1 t
         }
     );
 
+    var LifeDrain = Spell.createSpell(
+        'Life Drain',
+        [
+            new SyllableSequence([
+                Syllables.LIGHT,
+                Syllables.SHADOW,
+                Syllables.TO
+            ], SyllableSequence.ordered),
+        ],
+        `Sorcery
+Target a friendly and an enemy Character:
+Deal 2 Damage to the enemy Character and heal the friendly Character by 2 HP.`,
+        function resolveSpell(mage) {
+            return ifEnemyResolveElseDo(mage, function() {
+                var damage = 2;
+
+                function friendlyCharacter(character) {
+                    return character === mage || character.mage === mage;
+                }
+
+                var characters = getAllCharacters();
+                function getSelectibles(alreadySelected) {
+                    if(alreadySelected.length >= 2) {
+                        return [];
+                    } else if(alreadySelected.length === 1) {
+                        var selectedTarget = alreadySelected[0];
+                        var isSelectedTargetFriendly = friendlyCharacter(selectedTarget);
+                        return characters.filter(character => {
+                            return friendlyCharacter(character) !== isSelectedTargetFriendly;
+                        });
+                    } else {
+                        return characters;
+                    }
+                }
+
+                function isValidSelection(alreadySelected) {
+                    return alreadySelected.length === 2 &&
+                        friendlyCharacter(alreadySelected[0]) !== friendlyCharacter(alreadySelected[1]);
+                }
+
+                return selectTarget(getSelectibles, isValidSelection)
+                    .spread((target1, target2) => {
+                        var enemy = friendlyCharacter(target1) ? target2 : target1;
+                        var friend = friendlyCharacter(target1) ? target1 : target2;
+
+                        return generateDealDamageToSingleTarget(damage, LifeDrain.index)(enemy)
+                            // TODO: as EVENT_GAIN_HP
+                            .then(() => { friend.hp += 2; });
+                    });
+            });
+        }
+    );
 
     var BreakDownPunch = Spell.createSpell(
         'Break Down Punch',
@@ -754,6 +806,7 @@ At the start of its turn: Gain 1 AT.`,
     ShieldKnight,
     Overheat,
     ChainLightning,
+    LifeDrain,
     BreakDownPunch,
     HiddenStrength,
     WildPyromancer,
