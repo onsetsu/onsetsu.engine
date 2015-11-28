@@ -28,26 +28,27 @@ createStandardSyllablePool = function() {
 /*
  * Returns a Promise for an Array of chosen targets.
  */
-function selectTarget(special) {
+function selectTarget(getSelectibles, isValidSelection) {
     return new Promise(function(resolve, reject) {
-        new GUI.SelectTarget(resolve, special);
+        new GUI.SelectTarget(resolve, getSelectibles, isValidSelection);
     });
 }
 
 function selectNumberOfUniqueTargets(targets, minNumTargets, maxNumTargets) {
-    return selectTarget({
-        getSelectibles: function(alreadySelected) {
-            if(alreadySelected.length >= maxNumTargets) {
-                return [];
-            }
-            return _.difference(targets, alreadySelected);
-        },
-        isValidSelection: function (alreadySelected) {
-            return alreadySelected.length >= minNumTargets &&
-                alreadySelected.length <= maxNumTargets &&
-                alreadySelected.length === _.uniq(alreadySelected).length;
+    function getSelectibles(alreadySelected) {
+        if(alreadySelected.length >= maxNumTargets) {
+            return [];
         }
-    });
+        return _.difference(targets, alreadySelected);
+    }
+
+    function isValidSelection(alreadySelected) {
+        return alreadySelected.length >= minNumTargets &&
+            alreadySelected.length <= maxNumTargets &&
+            alreadySelected.length === _.uniq(alreadySelected).length;
+    }
+
+    return selectTarget(getSelectibles, isValidSelection);
 }
 
 function ifEnemyResolveElseDo(mage, els) {
@@ -333,23 +334,24 @@ Deal Damage equal to the difference to all enemy Mages.`,
             return ifEnemyResolveElseDo(mage, function() {
                 // TODO: this check is currently used as an IS_FAMILIAR
                 var familiars = getAllCharacters().filter(CHECK.IS_PERMANENT);
-                return selectTarget({
-                    getSelectibles: function(alreadySelected) {
-                        if(alreadySelected.length >= 2) {
-                            return [];
-                        } else if(alreadySelected.length === 1) {
-                            // should be 'let' variable declaration
-                            var firstTarget = alreadySelected[0];
-                            return familiars.filter(familiar => familiar.at !== firstTarget.at)
-                        } else if(alreadySelected.length === 0) {
-                            return familiars;
-                        }
-                    },
-                    isValidSelection: function (alreadySelected) {
-                        return alreadySelected.length === 2 &&
-                            alreadySelected[0].at !== alreadySelected[1].at;
+                function getSelectibles(alreadySelected) {
+                    if(alreadySelected.length >= 2) {
+                        return [];
+                    } else if(alreadySelected.length === 1) {
+                        // should be 'let' variable declaration
+                        var firstTarget = alreadySelected[0];
+                        return familiars.filter(familiar => familiar.at !== firstTarget.at)
+                    } else if(alreadySelected.length === 0) {
+                        return familiars;
                     }
-                })
+                }
+
+                function isValidSelection(alreadySelected) {
+                    return alreadySelected.length === 2 &&
+                        alreadySelected[0].at !== alreadySelected[1].at;
+                }
+
+                return selectTarget(getSelectibles, isValidSelection)
                     .spread((target1, target2) => {
                         return generateDealDamageToSingleTarget(Math.abs(target1.at - target2.at), BreakDownPunch.index)(mage);
                     });
