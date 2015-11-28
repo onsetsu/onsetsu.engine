@@ -12,8 +12,8 @@ GUI.SelectTarget = ig.Class.extend({
         this.getSelectibles = getSelectibles;
         this.isValidSelection = isValidSelection;
 
-        this.actualTargets = [];
-        this.selectibles = this.getSelectibles(this.actualTargets);
+        this.selectedTargets = [];
+        this.selectibles = this.getSelectibles(this.selectedTargets);
 
         this.targetEntities = this.selectibles.map(target => {
             var targetEntity = GUI.game.battlefield.getEntityFor(target);
@@ -25,15 +25,13 @@ GUI.SelectTarget = ig.Class.extend({
     },
     // TODO: could be static
     getHoveredEntityForTargets: function(targets) {
-        var hoveredOn = _(targets).find(target => {
+        return _(targets).find(target => {
             var targetEntity = GUI.game.battlefield.getEntityFor(target);
             return ig.input.hover(targetEntity);
         });
-
-        return hoveredOn;
     },
     isSelected: function(target) {
-        return this.actualTargets.indexOf(target) >= 0;
+        return this.selectedTargets.indexOf(target) >= 0;
     },
     doIt: function() {
         if(ig.input.pressed('leftclick')) {
@@ -46,7 +44,7 @@ GUI.SelectTarget = ig.Class.extend({
                 this.updateSelectibles();
                 this.checkForTargetSelectionCompleted();
             } else {
-                var hoveredOnSelected = this.getHoveredEntityForTargets(this.actualTargets);
+                var hoveredOnSelected = this.getHoveredEntityForTargets(this.selectedTargets);
 
                 if(hoveredOnSelected) {
                     // is the hovered target already selected?
@@ -59,7 +57,7 @@ GUI.SelectTarget = ig.Class.extend({
             }
         } else {
             if(ig.input.pressed('rightclick')) {
-                var hoveredOn = this.getHoveredEntityForTargets(this.actualTargets);
+                var hoveredOn = this.getHoveredEntityForTargets(this.selectedTargets);
 
                 if(hoveredOn) {
                     // is the hovered target already selected?
@@ -75,12 +73,12 @@ GUI.SelectTarget = ig.Class.extend({
         }
     },
     select: function(target) {
-        this.actualTargets.push(target);
+        this.selectedTargets.push(target);
         GUI.game.battlefield.getEntityFor(target).visualizeSelected(true);
     },
     deselect: function(target) {
-        var index = this.actualTargets.indexOf(target);
-        this.actualTargets.splice(index, 1);
+        var index = this.selectedTargets.indexOf(target);
+        this.selectedTargets.splice(index, 1);
         GUI.game.battlefield.getEntityFor(target).visualizeSelected(false);
     },
     clearSelectables: function() {
@@ -94,12 +92,12 @@ GUI.SelectTarget = ig.Class.extend({
         // TODO: selectibles and this.possibleTargets are out of sync
         // TODO: enable deselect of selected targets and
         // TODO: disable select of non-targetible entities
-        this.selectibles = this.getSelectibles(this.actualTargets);
+        this.selectibles = this.getSelectibles(this.selectedTargets);
         this.selectibles.forEach(selectible => {
             var entity = GUI.game.battlefield.getEntityFor(selectible);
             entity.visualizeSelectable(true);
         });
-        var selecteds = this.actualTargets;
+        var selecteds = this.selectedTargets;
         selecteds.forEach(selected => {
             var entity = GUI.game.battlefield.getEntityFor(selected);
             entity.visualizeSelected(true);
@@ -109,13 +107,13 @@ GUI.SelectTarget = ig.Class.extend({
     // e.g.: Choose up to 4 targets, but only 2 available
     // and those are already selected
     checkForTargetSelectionCompleted: function() {
-        if(this.isValidSelection(this.actualTargets) &&
-            this.getSelectibles(this.actualTargets).length === 0) {
+        if(this.isValidSelection(this.selectedTargets) &&
+            this.getSelectibles(this.selectedTargets).length === 0) {
             this.completeTargeting();
         }
     },
     cancelToComplete: function() {
-        if(this.isValidSelection(this.actualTargets)) {
+        if(this.isValidSelection(this.selectedTargets)) {
             this.completeTargeting();
         }
     },
@@ -124,7 +122,7 @@ GUI.SelectTarget = ig.Class.extend({
 
         this.clearSelectables();
 
-        this.callback(this.actualTargets);
+        this.callback(this.selectedTargets);
     }
 });
 
