@@ -88,52 +88,36 @@ GUI.SelectTarget = ig.Class.extend({
         GUI.game.battlefield.getEntityFor(target).visualizeSelected(false);
     },
     updateSelectibles: function() {
-        if(this.special) {
-            this.targetEntities.forEach(entity => {
-                entity.visualizeSelectable(false);
-                entity.visualizeSelected(false);
-            });
-            // TODO: selectibles and this.possibleTargets are out of sync
-            // TODO: enable deselect of selected targets and
-            // TODO: disable select of non-targetible entities
-            this.selectibles = this.special.getSelectibles(this.actualTargets);
-            this.selectibles.forEach(selectible => {
-                var entity = GUI.game.battlefield.getEntityFor(selectible);
-                entity.visualizeSelectable(true);
-            });
-            var selecteds = this.actualTargets;
-            selecteds.forEach(selected => {
-                var entity = GUI.game.battlefield.getEntityFor(selected);
-                entity.visualizeSelected(true);
-            });
-        }
+        this.targetEntities.forEach(entity => {
+            entity.visualizeSelectable(false);
+            entity.visualizeSelected(false);
+        });
+        // TODO: selectibles and this.possibleTargets are out of sync
+        // TODO: enable deselect of selected targets and
+        // TODO: disable select of non-targetible entities
+        this.selectibles = this.special.getSelectibles(this.actualTargets);
+        this.selectibles.forEach(selectible => {
+            var entity = GUI.game.battlefield.getEntityFor(selectible);
+            entity.visualizeSelectable(true);
+        });
+        var selecteds = this.actualTargets;
+        selecteds.forEach(selected => {
+            var entity = GUI.game.battlefield.getEntityFor(selected);
+            entity.visualizeSelected(true);
+        });
     },
-    // TODO: check for 'no more targets available!'
+    // automatically check for 'no more targets available!'
     // e.g.: Choose up to 4 targets, but only 2 available
     // and those are already selected
     checkForTargetSelectionCompleted: function() {
-        if(this.special) {
-            // TODO: not for now
-            if(this.special.isValidSelection(this.actualTargets) &&
-                this.special.getSelectibles(this.actualTargets).length === 0) {
-                this.completeTargeting();
-            }
-            return;
-        }
-        if(this.actualTargets.length === this.maxNumTargets) {
+        if(this.special.isValidSelection(this.actualTargets) &&
+            this.special.getSelectibles(this.actualTargets).length === 0) {
             this.completeTargeting();
         }
     },
     cancelToComplete: function() {
-        if(this.special) {
-            if(this.special.isValidSelection(this.actualTargets)) {
-                this.completeTargeting();
-            }
-        } else {
-            var numTargets = this.actualTargets.length;
-            if (numTargets >= this.minNumTargets && numTargets <= this.maxNumTargets) {
-                this.completeTargeting();
-            }
+        if(this.special.isValidSelection(this.actualTargets)) {
+            this.completeTargeting();
         }
     },
     completeTargeting: function() {
