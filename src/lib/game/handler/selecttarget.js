@@ -7,16 +7,13 @@ ig.module(
 .defines(function(){
 
 GUI.SelectTarget = ig.Class.extend({
-    init: function(possibleTargets, minNumTargets, maxNumTargets, callback, special) {
-        this.possibleTargets = possibleTargets;
-        this.minNumTargets = minNumTargets;
-        this.maxNumTargets = maxNumTargets;
+    init: function(callback, special) {
         this.callback = callback;
         this.special = special;
         this.actualTargets = [];
         this.selectibles = this.special.getSelectibles(this.actualTargets);
 
-        this.targetEntities = possibleTargets.map(target => {
+        this.targetEntities = this.selectibles.map(target => {
             var targetEntity = GUI.game.battlefield.getEntityFor(target);
             targetEntity.visualizeSelectable(true);
             return targetEntity;

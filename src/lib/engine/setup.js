@@ -28,15 +28,14 @@ createStandardSyllablePool = function() {
 /*
  * Returns a Promise for an Array of chosen targets.
  */
-function selectTarget(targets, minNumTargets, maxNumTargets, special) {
+function selectTarget(special) {
     return new Promise(function(resolve, reject) {
-        new GUI.SelectTarget(targets, minNumTargets, maxNumTargets, resolve, special);
+        new GUI.SelectTarget(resolve, special);
     });
 }
 
-// TODO: use this
 function selectNumberOfUniqueTargets(targets, minNumTargets, maxNumTargets) {
-    return selectTarget(targets, minNumTargets, maxNumTargets, {
+    return selectTarget({
         getSelectibles: function(alreadySelected) {
             if(alreadySelected.length >= maxNumTargets) {
                 return [];
@@ -334,7 +333,7 @@ Deal Damage equal to the difference to all enemy Mages.`,
             return ifEnemyResolveElseDo(mage, function() {
                 // TODO: this check is currently used as an IS_FAMILIAR
                 var familiars = getAllCharacters().filter(CHECK.IS_PERMANENT);
-                return selectTarget(familiars, 2, 2, {
+                return selectTarget({
                     getSelectibles: function(alreadySelected) {
                         if(alreadySelected.length >= 2) {
                             return [];
