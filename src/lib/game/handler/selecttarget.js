@@ -9,12 +9,11 @@ ig.module(
 GUI.SelectTarget = ig.Class.extend({
     init: function(callback, getSelectibles, isValidSelection) {
         this.callback = callback;
-        this.special = {
-            getSelectibles: getSelectibles,
-            isValidSelection: isValidSelection
-        };
+        this.getSelectibles = getSelectibles;
+        this.isValidSelection = isValidSelection;
+
         this.actualTargets = [];
-        this.selectibles = this.special.getSelectibles(this.actualTargets);
+        this.selectibles = this.getSelectibles(this.actualTargets);
 
         this.targetEntities = this.selectibles.map(target => {
             var targetEntity = GUI.game.battlefield.getEntityFor(target);
@@ -95,7 +94,7 @@ GUI.SelectTarget = ig.Class.extend({
         // TODO: selectibles and this.possibleTargets are out of sync
         // TODO: enable deselect of selected targets and
         // TODO: disable select of non-targetible entities
-        this.selectibles = this.special.getSelectibles(this.actualTargets);
+        this.selectibles = this.getSelectibles(this.actualTargets);
         this.selectibles.forEach(selectible => {
             var entity = GUI.game.battlefield.getEntityFor(selectible);
             entity.visualizeSelectable(true);
@@ -110,13 +109,13 @@ GUI.SelectTarget = ig.Class.extend({
     // e.g.: Choose up to 4 targets, but only 2 available
     // and those are already selected
     checkForTargetSelectionCompleted: function() {
-        if(this.special.isValidSelection(this.actualTargets) &&
-            this.special.getSelectibles(this.actualTargets).length === 0) {
+        if(this.isValidSelection(this.actualTargets) &&
+            this.getSelectibles(this.actualTargets).length === 0) {
             this.completeTargeting();
         }
     },
     cancelToComplete: function() {
-        if(this.special.isValidSelection(this.actualTargets)) {
+        if(this.isValidSelection(this.actualTargets)) {
             this.completeTargeting();
         }
     },
