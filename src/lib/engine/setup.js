@@ -359,6 +359,49 @@ Deal Damage equal to the difference to all enemy Mages.`,
         }
     );
 
+    var HiddenStrength = Spell.createSpell(
+        'Hidden Strength',
+        [
+            new SyllableSequence([
+                Syllables.LIGHT,
+                Syllables.MA,
+                Syllables.REN
+            ], SyllableSequence.ordered),
+        ],
+        `Sorcery
+Target 3 Familiars with different AT: Their AT becomes the highest of the 3.`,
+        function resolveSpell(mage) {
+            return ifEnemyResolveElseDo(mage, function() {
+                // TODO: this check is currently used as an IS_FAMILIAR
+                var familiars = getAllCharacters().filter(CHECK.IS_PERMANENT);
+                function getSelectibles(alreadySelected) {
+                    if(alreadySelected.length >= 3) {
+                        return [];
+                    }
+                    return familiars.filter(familiar => {
+                        return alreadySelected.reduce((acc, selectedTarget) => {
+                            return acc && familiar.at !== selectedTarget.at;
+                        }, true);
+                    });
+                }
+
+                function allDifferent(values) {
+                    return values.length === _.unique(values).length;
+                }
+
+                function isValidSelection(alreadySelected) {
+                    return alreadySelected.length === 3 &&
+                        allDifferent(alreadySelected.map(target => target.at));
+                }
+
+                return selectTarget(getSelectibles, isValidSelection)
+                    .then(targets => {
+                        var highestAT = _.max(targets, target => target.at).at;
+                        targets.forEach(target => target.at = highestAT);
+                    });
+            });
+        }
+    );
 
     var WildPyromancer = Spell.createSpell(
         'Wild Pyromancer',
@@ -712,6 +755,7 @@ At the start of its turn: Gain 1 AT.`,
     Overheat,
     ChainLightning,
     BreakDownPunch,
+    HiddenStrength,
     WildPyromancer,
     GoblinAttackSquad,
     RaidLeader,
