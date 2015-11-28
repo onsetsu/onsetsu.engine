@@ -23,34 +23,35 @@ GUI.SelectTarget = ig.Class.extend({
 
         GUI.SelectTarget.selectTarget = this;
     },
+    // TODO: could be static
+    getHoveredEntityForTargets: function(targets) {
+        var hoveredOn = _(targets).find(target => {
+            var targetEntity = GUI.game.battlefield.getEntityFor(target);
+            return ig.input.hover(targetEntity);
+        });
+
+        return hoveredOn;
+    },
+    isSelected: function(target) {
+        return this.actualTargets.indexOf(target) >= 0;
+    },
     doIt: function() {
         if(ig.input.pressed('leftclick')) {
             // only the selectible targets should be possible
-            var hoveredOn = _(this.selectibles).find(target => {
-                var targetEntity = GUI.game.battlefield.getEntityFor(target);
-                return ig.input.hover(targetEntity);
-            }, this);
-
+            var hoveredOn = this.getHoveredEntityForTargets(this.selectibles);
             if(hoveredOn) {
-                var indexOfHoveredOn = this.actualTargets.indexOf(hoveredOn);
-                if(indexOfHoveredOn < 0) {
-                    // new target
+                if(!this.isSelected(hoveredOn)) {
                     this.select(hoveredOn);
                 }
                 this.updateSelectibles();
                 this.checkForTargetSelectionCompleted();
             } else {
-                var hoveredOnSelected = _(this.actualTargets).find(target => {
-                    var targetEntity = GUI.game.battlefield.getEntityFor(target);
-                    return ig.input.hover(targetEntity);
-                }, this);
+                var hoveredOnSelected = this.getHoveredEntityForTargets(this.actualTargets);
 
                 if(hoveredOnSelected) {
-                    var indexOfHoveredOn = this.actualTargets.indexOf(hoveredOnSelected);
                     // is the hovered target already selected?
-                    if(indexOfHoveredOn >= 0) {
-                        // deselect target
-                        this.deselect(hoveredOnSelected, indexOfHoveredOn);
+                    if(this.isSelected(hoveredOnSelected)) {
+                        this.deselect(hoveredOnSelected);
                     }
                     this.updateSelectibles();
                     this.checkForTargetSelectionCompleted();
@@ -58,17 +59,12 @@ GUI.SelectTarget = ig.Class.extend({
             }
         } else {
             if(ig.input.pressed('rightclick')) {
-                var hoveredOn = _(this.actualTargets).find(target => {
-                    var targetEntity = GUI.game.battlefield.getEntityFor(target);
-                    return ig.input.hover(targetEntity);
-                }, this);
+                var hoveredOn = this.getHoveredEntityForTargets(this.actualTargets);
 
                 if(hoveredOn) {
-                    var indexOfHoveredOn = this.actualTargets.indexOf(hoveredOn);
                     // is the hovered target already selected?
-                    if(indexOfHoveredOn >= 0) {
-                        // deselect target
-                        this.deselect(hoveredOn, indexOfHoveredOn);
+                    if(this.isSelected(hoveredOn)) {
+                        this.deselect(hoveredOn);
                     }
                     this.updateSelectibles();
                 } else {
@@ -82,15 +78,19 @@ GUI.SelectTarget = ig.Class.extend({
         this.actualTargets.push(target);
         GUI.game.battlefield.getEntityFor(target).visualizeSelected(true);
     },
-    deselect: function(target, index) {
+    deselect: function(target) {
+        var index = this.actualTargets.indexOf(target);
         this.actualTargets.splice(index, 1);
         GUI.game.battlefield.getEntityFor(target).visualizeSelected(false);
     },
-    updateSelectibles: function() {
+    clearSelectables: function() {
         this.targetEntities.forEach(entity => {
             entity.visualizeSelectable(false);
             entity.visualizeSelected(false);
         });
+    },
+    updateSelectibles: function() {
+        this.clearSelectables();
         // TODO: selectibles and this.possibleTargets are out of sync
         // TODO: enable deselect of selected targets and
         // TODO: disable select of non-targetible entities
@@ -122,10 +122,7 @@ GUI.SelectTarget = ig.Class.extend({
     completeTargeting: function() {
         GUI.SelectTarget.selectTarget = undefined;
 
-        this.targetEntities.forEach(targetEntity => {
-            targetEntity.visualizeSelectable(false);
-            targetEntity.visualizeSelected(false);
-        });
+        this.clearSelectables();
 
         this.callback(this.actualTargets);
     }
