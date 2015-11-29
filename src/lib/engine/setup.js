@@ -371,6 +371,64 @@ Deal 2 Damage to the enemy Character and heal the friendly Character by 2 HP.`,
         }
     );
 
+    var StrengthDrain = Spell.createSpell(
+        'Strength Drain',
+        [
+            new SyllableSequence([
+                Syllables.FIRE,
+                Syllables.WATER,
+                Syllables.TO
+            ], SyllableSequence.ordered),
+        ],
+        `Sorcery
+Target a Mage and a Familiar:
+Deal 2 Damage to the first target and give +2/+2 to the other.`,
+        function resolveSpell(mage) {
+            return ifEnemyResolveElseDo(mage, function() {
+                var damage = 2;
+
+                // TODO: !CHECK:IS_PERMANENT is not the correct check for a mage
+                function isMage(character) { return !CHECK.IS_PERMANENT(character)}
+                // TODO: this check is currently used as an IS_FAMILIAR
+                var isFamiliar = CHECK.IS_PERMANENT;
+
+                var characters = getAllCharacters();
+                function getSelectibles(alreadySelected) {
+                    if(alreadySelected.length >= 2) {
+                        return [];
+                    } else if(alreadySelected.length === 1) {
+                        var selectedTarget = alreadySelected[0];
+                        var filterFunctionForNextTarget = isFamiliar(selectedTarget) ? isMage : isFamiliar;
+                        return characters.filter(filterFunctionForNextTarget);
+                    } else {
+                        return characters;
+                    }
+                }
+
+                function isValidSelection(alreadySelected) {
+                    return alreadySelected.length === 2 && (
+                            (isFamiliar(alreadySelected[0]) && isMage(alreadySelected[1])) ||
+                            (isMage(alreadySelected[0]) && isFamiliar(alreadySelected[1]))
+                        );
+                }
+
+                return selectTarget(getSelectibles, isValidSelection)
+                    .spread((target1, target2) => {
+                        var mage = isMage(target1) ? target1 : target2;
+                        var familiar = isMage(target1) ? target2 : target1;
+
+                        return generateDealDamageToSingleTarget(damage, StrengthDrain.index)(mage)
+                            .then(() => {
+                                // TODO: as EVENT_GAIN_AT
+                                familiar.at += 2;
+                                // TODO: as EVENT_GAIN_HP
+                                familiar.hp += 2;
+                            });
+                    });
+            });
+        }
+    );
+
     var BreakDownPunch = Spell.createSpell(
         'Break Down Punch',
         [
@@ -807,6 +865,7 @@ At the start of its turn: Gain 1 AT.`,
     Overheat,
     ChainLightning,
     LifeDrain,
+    StrengthDrain,
     BreakDownPunch,
     HiddenStrength,
     WildPyromancer,
