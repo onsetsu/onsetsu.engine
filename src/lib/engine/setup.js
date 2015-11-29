@@ -318,6 +318,63 @@ Target 3 Characters: Deal 3 Damage to the first target, 2 to the second, and 1 t
         }
     );
 
+    var SymphonyOfTheBindedSoul = Spell.createSpell(
+        'Symphony of the Binded Soul',
+        [
+            new SyllableSequence([
+                Syllables.LIGHT,
+                Syllables.REN
+            ], SyllableSequence.ordered),
+        ],
+        `Sorcery
+Target a mage and a familiar he/she controls: Both gain 2 HP.`,
+        function resolveSpell(mage) {
+            return ifEnemyResolveElseDo(mage, function() {
+                var damage = 2;
+
+                // TODO: !CHECK:IS_PERMANENT is not the correct check for a mage
+                function isMage(character) { return !CHECK.IS_PERMANENT(character)}
+                // TODO: this check is currently used as an IS_FAMILIAR
+                var isFamiliar = CHECK.IS_PERMANENT;
+
+                // TODO: duplicated check: put into CHECK.IS_FRIENDLY(mage)(character)
+                function isFriendly(character) { return character === mage || character.mage === mage}
+                var isEnemy = character => !isFriendly(character);
+
+                var numFriendlyFamiliars = getAllCharacters().filter(isFamiliar).filter(isFriendly).length,
+                    numEnemyFamiliars = getAllCharacters().filter(isFamiliar).filter(isEnemy).length;
+
+                var allTargets = (numFriendlyFamiliars >= 1 ? getAllCharacters().filter(isFriendly) : []).concat(
+                    numEnemyFamiliars >= 1 ? getAllCharacters().filter(isEnemy) : []
+                );
+
+                function getSelectibles(alreadySelected) {
+                    if(alreadySelected.length >= 2) {
+                        return [];
+                    } else if(alreadySelected.length === 1) {
+                        return allTargets
+                            .filter(isFriendly(alreadySelected[0]) ? isFriendly : isEnemy)
+                            .filter(isMage(alreadySelected[0]) ? isFamiliar : isMage);
+                    } else {
+                        return allTargets;
+                    }
+                }
+
+                function isValidSelection(alreadySelected) {
+                    return alreadySelected.length === 2 &&
+                        isFriendly(alreadySelected[0]) === isFriendly(alreadySelected[1]) && (
+                            (isMage(alreadySelected[0]) && isFamiliar(alreadySelected[1])) ||
+                            (isFamiliar(alreadySelected[0]) && isMage(alreadySelected[1]))
+                        );
+                }
+
+                return selectTarget(getSelectibles, isValidSelection)
+                    // TODO: as EVENT_GAIN_HP
+                    .each(target => target.hp += 2);
+            });
+        }
+    );
+
     var FerociousAssault = Spell.createSpell(
         'Ferocious Assault',
         [
@@ -911,6 +968,7 @@ At the start of its turn: Gain 1 AT.`,
     ShieldKnight,
     Overheat,
     ChainLightning,
+    SymphonyOfTheBindedSoul,
     FerociousAssault,
     LifeDrain,
     StrengthDrain,
