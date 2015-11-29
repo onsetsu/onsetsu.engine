@@ -318,6 +318,53 @@ Target 3 Characters: Deal 3 Damage to the first target, 2 to the second, and 1 t
         }
     );
 
+    var FerociousAssault = Spell.createSpell(
+        'Ferocious Assault',
+        [
+            new SyllableSequence([
+                Syllables.FIRE,
+                Syllables.REN,
+                Syllables.CHI
+            ], SyllableSequence.ordered),
+        ],
+        `Sorcery
+Target an equal number of friendly and enemy characters: Deal 2 Damage to each.`,
+        function resolveSpell(mage) {
+            return ifEnemyResolveElseDo(mage, function() {
+                var damage = 2;
+
+                // TODO: duplicated check: put into CHECK.IS_FRIENDLY(mage)(character)
+                function isFriendly(character) { return character === mage || character.mage === mage}
+                var isEnemy = character => !isFriendly(character);
+
+                var characters = getAllCharacters(),
+                    numFriendlyCharacters = characters.filter(isFriendly).length,
+                    numEnemyCharacters = characters.filter(isEnemy).length;
+
+                function getSelectibles(alreadySelected) {
+                    var numFriendlyTargets = alreadySelected.filter(isFriendly).length,
+                        numEnemyTargets = alreadySelected.filter(isEnemy).length;
+
+                    var selectables = (numFriendlyTargets >= numEnemyCharacters ? [] : characters.filter(isFriendly)).concat(
+                        numEnemyTargets >= numFriendlyCharacters ? [] : characters.filter(isEnemy)
+                    );
+
+                    return _.difference(selectables, alreadySelected);
+                }
+
+                function isValidSelection(alreadySelected) {
+                    var numFriendlyTargets = alreadySelected.filter(isFriendly).length,
+                        numEnemyTargets = alreadySelected.filter(isEnemy).length;
+                    return numFriendlyTargets === numEnemyTargets &&
+                        numFriendlyTargets + numEnemyTargets === alreadySelected.length;
+                }
+
+                return selectTarget(getSelectibles, isValidSelection)
+                    .each(generateDealDamageToSingleTarget(damage, FerociousAssault.index));
+            });
+        }
+    );
+
     var LifeDrain = Spell.createSpell(
         'Life Drain',
         [
@@ -864,6 +911,7 @@ At the start of its turn: Gain 1 AT.`,
     ShieldKnight,
     Overheat,
     ChainLightning,
+    FerociousAssault,
     LifeDrain,
     StrengthDrain,
     BreakDownPunch,
