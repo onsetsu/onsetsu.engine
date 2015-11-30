@@ -318,8 +318,8 @@ Target 3 Characters: Deal 3 Damage to the first target, 2 to the second, and 1 t
         }
     );
 
-    var SymphonyOfTheBindedSoul = Spell.createSpell(
-        'Symphony of the Binded Soul',
+    var SymphonyOfTheBoundSoul = Spell.createSpell(
+        'Symphony of the Bound Soul',
         [
             new SyllableSequence([
                 Syllables.LIGHT,
@@ -968,7 +968,7 @@ At the start of its turn: Gain 1 AT.`,
     ShieldKnight,
     Overheat,
     ChainLightning,
-    SymphonyOfTheBindedSoul,
+    SymphonyOfTheBoundSoul,
     FerociousAssault,
     LifeDrain,
     StrengthDrain,
