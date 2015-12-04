@@ -375,6 +375,119 @@ Target a mage and a familiar he/she controls: Both gain 2 HP.`,
         }
     );
 
+
+    var GoblinBombardment = Spell.createSpell(
+        'Goblin Bombardment',
+        [
+            new SyllableSequence([
+                Syllables.FIRE,
+                Syllables.REN,
+                Syllables.NIF
+            ], SyllableSequence.ordered),
+        ],
+        `Sorcery
+Target an enemy character and one or more friendly Goblin Familiars.
+Deal 1 Damage to each Goblin and Damage to target enemy equal to each Goblins AT.`,
+    function resolveSpell(mage) {
+            return ifEnemyResolveElseDo(mage, function() {
+                var damage = 1;
+                // TODO: this check is currently used as an IS_FAMILIAR
+                var isFamiliar = CHECK.IS_PERMANENT;
+                function isGoblin(character) {
+                    return character.subTypes && _(character.subTypes).contains(SUBTYPE_GOBLIN);
+                }
+
+                // TODO: duplicated check: put into CHECK.IS_FRIENDLY(mage)(character)
+                function isFriendly(character) { return character === mage || character.mage === mage}
+                var isEnemy = character => !isFriendly(character);
+
+                function filterForFriendlyGoblinFamiliars(baseSet) {
+                    return baseSet
+                        .filter(isFriendly)
+                        .filter(isFamiliar)
+                        .filter(isGoblin);
+                }
+
+                var friendlyGoblinFamiliars = filterForFriendlyGoblinFamiliars(getAllCharacters());
+                var allTargets = getAllCharacters()
+                    .filter(isEnemy)
+                    .concat(friendlyGoblinFamiliars);
+
+                function getSelectibles(alreadySelected) {
+                    var possibleTargets = allTargets;
+
+                    // is enemy character already selected?
+                    if(alreadySelected.filter(isEnemy).length >= 1) {
+                        possibleTargets = friendlyGoblinFamiliars;
+                    }
+
+                    // without already selected targets
+                    return possibleTargets.filter(target => {
+                        return !_(alreadySelected).contains(target);
+                    });
+                }
+
+                function isValidSelection(alreadySelected) {
+                    if(alreadySelected.length <= 1) { return false; }
+
+                    var enemyCharacters = alreadySelected.filter(isEnemy);
+                    var goblins = filterForFriendlyGoblinFamiliars(alreadySelected);
+
+                    return enemyCharacters.length === 1 &&
+                            goblins.length >= 1 &&
+                        goblins.length + enemyCharacters.length === alreadySelected.length;
+                }
+
+                return selectTarget(getSelectibles, isValidSelection)
+                    .then(targets => {
+                        var enemy = targets.find(isEnemy);
+
+                        return Promise.resolve(targets.filter(target => target !== enemy))
+                            .each(goblin => {
+                                return generateDealDamageToSingleTarget(damage, GoblinBombardment.index)(goblin)
+                                    .then(() => {
+                                        // TODO: should the enemy not be removed from battlefield even though
+                                        // it has 0 or less HP?
+                                        if(!enemy.onBattlefield) { return; }
+                                        return generateDealDamageToSingleTarget(goblin.at, GoblinBombardment.index)(enemy)
+                                    });
+                            })
+                    });
+            });
+        }
+    );
+
+    var BlessingAndCurse = Spell.createSpell(
+        'Blessing and Curse',
+        [
+            new SyllableSequence([
+                Syllables.LIGHT,
+                Syllables.SHADOW,
+                Syllables.REN
+            ], SyllableSequence.ordered),
+        ],
+        `Sorcery
+Target 3 Characters: Deal 2 Damage to each enemy target and all friendly Targets get 2 HP.`,
+        function resolveSpell(mage) {
+            return ifEnemyResolveElseDo(mage, function() {
+                var damageAndHPGain = 2;
+
+                // TODO: duplicated check: put into CHECK.IS_FRIENDLY(mage)(character)
+                function isFriendly(character) { return character === mage || character.mage === mage}
+
+                return selectNumberOfUniqueTargets(getAllCharacters(), 3, 3)
+                    .each(target => {
+                        if(isFriendly(target)) {
+                            // TODO: EVENT_GAIN HP
+                            target.hp += damageAndHPGain;
+                        } else {
+                            return generateDealDamageToSingleTarget(damageAndHPGain, BlessingAndCurse.index)(target);
+                        }
+                    });
+            });
+        }
+    );
+
     var FerociousAssault = Spell.createSpell(
         'Ferocious Assault',
         [
@@ -969,6 +1082,8 @@ At the start of its turn: Gain 1 AT.`,
     Overheat,
     ChainLightning,
     SymphonyOfTheBoundSoul,
+    GoblinBombardment,
+    BlessingAndCurse,
     FerociousAssault,
     LifeDrain,
     StrengthDrain,
