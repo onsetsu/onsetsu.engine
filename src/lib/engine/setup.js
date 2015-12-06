@@ -323,7 +323,8 @@ Target 3 Characters: Deal 3 Damage to the first target, 2 to the second, and 1 t
         [
             new SyllableSequence([
                 Syllables.LIGHT,
-                Syllables.REN
+                Syllables.MA,
+                Syllables.MA
             ], SyllableSequence.ordered),
         ],
         `Sorcery
@@ -371,6 +372,80 @@ Target a mage and a familiar he/she controls: Both gain 2 HP.`,
                 return selectTarget(getSelectibles, isValidSelection)
                     // TODO: as EVENT_GAIN_HP
                     .each(target => target.hp += 2);
+            });
+        }
+    );
+
+    var FlameThrower = Spell.createSpell(
+        'Flame Thrower',
+        [
+            new SyllableSequence([
+                Syllables.FIRE,
+                Syllables.PAI,
+                Syllables.NIF
+            ], SyllableSequence.ordered),
+        ],
+        // TODO: currently, no dragon is availabe, so we use sunlit eidolon instead
+        `Sorcery
+Target a Dragon or 2 FIRE Familiars (currently: target a Spirit or 2 LIGHT):
+Deal Damage equal to the sum of their AT to all enemy Mages.`,
+        function resolveSpell(mage) {
+            return ifEnemyResolveElseDo(mage, function() {
+                // TODO: this check is currently used as an IS_FAMILIAR
+                var isFamiliar = CHECK.IS_PERMANENT;
+                function isSpirit(character) {
+                    return character.subTypes && _(character.subTypes).contains(SUBTYPE_SPIRIT);
+                }
+
+                // TODO: This is horrible;
+                // TODO: permanents need to know their (concrete) summon spell
+                // TODO: not just check for first Syllable, what about multi-element spells?
+                // -> create Facility for checking a spell elements
+                function isLight(character) {
+                    // mages have no .index property currently
+                    if(!_.isNumber(character.index)) { return false; }
+
+                    // TODO TODO: this does not work!!!!!!
+                    var characterSpell = mage.spellBook.spells[character.index],
+                    // TODO TODO: this does not work!!!!!!
+                        firstSyllable = characterSpell.getBaseSequence(0).syllables[0];
+
+                    return firstSyllable.isA(Syllables.LIGHT);
+                }
+
+                var allTargets = getAllCharacters()
+                    .filter(character => isSpirit(character) || isLight(character));
+
+                function getSelectibles(alreadySelected) {
+                    if(alreadySelected.length >= 2) {
+                        return [];
+                    } else if(alreadySelected.length === 1) {
+                        if(isLight(alreadySelected[0])) {
+                            return allTargets
+                                .filter(isLight)
+                                .filter(target => !_(alreadySelected).contains(target))
+                        } else {
+                            // non-Light Spirit selected:
+                            return [];
+                        }
+                    } else {
+                        return allTargets;
+                    }
+                }
+
+                function isValidSelection(alreadySelected) {
+                    var twoLightFamiliars = alreadySelected.length === 2 && alreadySelected.every(isLight);
+                    var singleSpiritFamiliar = alreadySelected.length === 1 && isSpirit(alreadySelected[0]);
+
+                    return twoLightFamiliars || singleSpiritFamiliar;
+                }
+
+                return selectTarget(getSelectibles, isValidSelection)
+                    .reduce((sumOfATs, target) => sumOfATs + target.at, 0)
+                    .then(sumOfATs => {
+                        // TODO: currently damages own mage, not opponents
+                        return generateDealDamageToSingleTarget(sumOfATs, FlameThrower.index)(mage);
+                    });
             });
         }
     );
@@ -680,6 +755,7 @@ Deal Damage equal to the difference to all enemy Mages.`,
 
                 return selectTarget(getSelectibles, isValidSelection)
                     .spread((target1, target2) => {
+                        // TODO: currently damages own mage, not opponents
                         return generateDealDamageToSingleTarget(Math.abs(target1.at - target2.at), BreakDownPunch.index)(mage);
                     });
             });
@@ -963,9 +1039,9 @@ Deal Damage equal to the number of friendly Characters.`,
      [
        new SyllableSequence([
          Syllables.LIGHT,
-         Syllables.KUN,
-         Syllables.MA,
-         Syllables.REN,
+         //Syllables.KUN,
+         //Syllables.MA,
+         //Syllables.REN,
          Syllables.XAU,
        ], SyllableSequence.ordered),
      ],
@@ -1082,6 +1158,7 @@ At the start of its turn: Gain 1 AT.`,
     Overheat,
     ChainLightning,
     SymphonyOfTheBoundSoul,
+    FlameThrower,
     GoblinBombardment,
     BlessingAndCurse,
     FerociousAssault,
