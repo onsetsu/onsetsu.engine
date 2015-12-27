@@ -405,9 +405,7 @@ Deal Damage equal to the sum of their AT to all enemy Mages.`,
                     // mages have no .index property currently
                     if(!_.isNumber(character.index)) { return false; }
 
-                    // TODO TODO: this does not work!!!!!!
                     var characterSpell = mage.spellBook.spells[character.index],
-                    // TODO TODO: this does not work!!!!!!
                         firstSyllable = characterSpell.getBaseSequence(0).syllables[0];
 
                     return firstSyllable.isA(Syllables.LIGHT);
