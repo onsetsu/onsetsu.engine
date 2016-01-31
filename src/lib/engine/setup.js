@@ -112,7 +112,277 @@ Deal 2 Damage.`,
     }
   );
 
-  var ForkedBolt = Spell.createSpell(
+    var WildPyromancer = Spell.createSpell(
+        'Wild Pyromancer',
+        [
+            new SyllableSequence([
+                Syllables.FIRE,
+                Syllables.XAU,
+                Syllables.CHI,
+                Syllables.CHI,
+                Syllables.NIF,
+            ], SyllableSequence.ordered),
+        ],
+        `3/2 (5) Goblin Shaman Familiar
+When [this] enters the Battlefield: Cast Fireball.`,
+        function resolveSpell(mage) {
+            return new Promise(function(resolve, reject) {
+                var permanent = new Permanent({
+                    creatingSpell: WildPyromancer,
+                    spellTypes: [SpellType.Familiar],
+                    subTypes: [SUBTYPE_GOBLIN, SUBTYPE_SHAMAN],
+                    hp: 2,
+                    at: 3,
+                    delay: 5
+                }, mage);
+                permanent.index = WildPyromancer.index;
+                permanent.afterTriggers = [
+                    new Trigger(
+                        (event, newPermanent, mage, ...args) => {
+                            return event === EVENT_ENTER_BATTLEFIELD && newPermanent === permanent
+                        },
+                        (event, permanent, mage, ...args) => {
+                            game.eventManager.execute(EVENT_CAST_SPELL, Fireball, mage);
+                        }
+                    )
+                ];
+
+                game.eventManager.execute(EVENT_ENTER_BATTLEFIELD, permanent, mage);
+
+                resolve();
+            });
+        }
+    );
+
+    var GoblinAttackSquad = Spell.createSpell(
+        'Goblin Attack Squad',
+        [
+            new SyllableSequence([
+                Syllables.FIRE,
+                //Syllables.XAU,
+                //Syllables.CHI,
+                //Syllables.REN,
+                Syllables.REN,
+            ], SyllableSequence.ordered),
+        ],
+        `Sorcery
+Summon 3 1/1 (3) Goblin Familiars.`,
+        function resolveSpell(mage) {
+            return new Promise(function(resolve, reject) {
+                _(3).times(function() {
+                    var permanent = new Permanent({
+                        creatingSpell: GoblinAttackSquad,
+                        spellTypes: [SpellType.Familiar],
+                        subTypes: [SUBTYPE_GOBLIN],
+                        hp: 1,
+                        at: 1,
+                        delay: 3
+                    }, mage);
+                    permanent.index = GoblinAttackSquad.index;
+                    game.eventManager.execute(EVENT_ENTER_BATTLEFIELD, permanent, mage);
+                });
+
+                resolve();
+            });
+        }
+    );
+
+    var RaidLeader = Spell.createSpell(
+        'Raid Leader',
+        [
+            new SyllableSequence([
+                Syllables.FIRE,
+                //Syllables.XAU,
+                Syllables.MA,
+                //Syllables.EX,
+            ], SyllableSequence.ordered),
+        ],
+        `3/3 (4) Ogre Familiar
+When a friendly Goblin Familiar enters the battlefield: Give it +1/+1.
+(= Your Goblin Familiars enter the battlefield with +1/+1.)`,
+        function resolveSpell(mage) {
+            return new Promise(function(resolve, reject) {
+                var permanent = new Permanent({
+                    creatingSpell: RaidLeader,
+                    spellTypes: [SpellType.Familiar],
+                    subTypes: [SUBTYPE_OGRE],
+                    hp: 3,
+                    at: 3,
+                    delay: 4
+                }, mage);
+                permanent.index = RaidLeader.index;
+                permanent.afterTriggers = [
+                    new Trigger(
+                        (event, newPermanent, itsController, ...args) => {
+                            return event === EVENT_ENTER_BATTLEFIELD &&
+                                newPermanent.subTypes &&
+                                newPermanent.subTypes.indexOf(SUBTYPE_GOBLIN) >= 0 &&
+                                itsController === permanent.mage
+                        },
+                        (event, newPermanent, itsController, ...args) => {
+                            newPermanent.at++;
+                            newPermanent.hp++;
+                            newPermanent.maxHp++;
+                        }
+                    )
+
+                ];
+                game.eventManager.execute(EVENT_ENTER_BATTLEFIELD, permanent, mage);
+
+                resolve();
+            });
+        }
+    );
+
+    var MediumOfFire = Spell.createSpell(
+        'Medium of Fire/Elder of Flame',
+        [
+            new SyllableSequence([
+                Syllables.FIRE,
+                //Syllables.LIGHT,
+                //Syllables.XAU,
+                Syllables.YUN,
+                //Syllables.CHI,
+                //Syllables.NIF,
+            ], SyllableSequence.ordered),
+        ],
+        `2/6 (5) Human Wizard Familiar
+When a Spell is casted: Cast Fireball instead.`,
+        function resolveSpell(mage) {
+            return new Promise(function(resolve, reject) {
+                var permanent = new Permanent({
+                    creatingSpell: MediumOfFire,
+                    spellTypes: [SpellType.Familiar],
+                    subTypes: [SUBTYPE_HUMAN, SUBTYPE_WIZARD],
+                    hp: 6,
+                    at: 2,
+                    delay: 5
+                }, mage);
+                permanent.index = MediumOfFire.index;
+                permanent.replacementEffects = [
+                    new ReplacementEffect(
+                        (event, Spell, mage, ...args) => event === EVENT_CAST_SPELL,
+                        (event, Spell, mage, ...args) => [event, Fireball, mage, ...args]
+                    )
+                ];
+
+                // TODO: Effect: On its turn: you may cast a Fireball.
+
+                game.eventManager.execute(EVENT_ENTER_BATTLEFIELD, permanent, mage);
+                resolve();
+            });
+        }
+    );
+
+    var Brocky = Spell.createSpell(
+        `Brocky, Cynthia's Guardian`,
+        [
+            new SyllableSequence([
+                Syllables.EARTH,
+                //Syllables.GAM,
+                //Syllables.KUN,
+                //Syllables.KUN,
+                //Syllables.XAU,
+
+                Syllables.MA
+            ], SyllableSequence.ordered),
+        ],
+        `2/5 (7) Golem Artifact Familiar
+Reduce Damage [this] receives by 1.`,
+        function resolveSpell(mage) {
+            return new Promise(function(resolve, reject) {
+                var brocky = new Permanent({
+                    creatingSpell: Brocky,
+                    spellTypes: [SpellType.Artifact, SpellType.Familiar],
+                    subTypes: [SUBTYPE_GOLEM],
+                    hp: 5,
+                    at: 2,
+                    delay: 7
+                }, mage);
+                brocky.index = Brocky.index;
+                brocky.replacementEffects = [
+                    new ReplacementEffect(
+                        (event, target) => event === EVENT_DEAL_DAMAGE && target === brocky,
+                        (event, target, amount, ...args) => [event, target.mage, amount, ...args]
+                    ),
+                    new ReplacementEffect(
+                        (event, target) => event === EVENT_DEAL_DAMAGE && target === brocky,
+                        (event, target, amount, ...args) => [event, target, amount-1, ...args]
+                    ),
+                    new ReplacementEffect(
+                        (event, target) => event === EVENT_DEAL_DAMAGE && target === brocky,
+                        (event, target, amount, ...args) => [event, target, amount-1, ...args]
+                    ),
+                ];
+                game.eventManager.execute(EVENT_ENTER_BATTLEFIELD, brocky, mage);
+                resolve();
+            });
+        }
+    );
+
+    var Roast = Spell.createSpell(
+        'Roast',
+        [
+            new SyllableSequence([
+                Syllables.FIRE,
+                Syllables.MA,
+                Syllables.TO
+            ], SyllableSequence.ordered),
+        ],
+        `Sorcery:
+Target a Goblin and a Fire Familiar. Sacrifice both: Get HP equal to the sum of their HP.`,
+        function resolveSpell(mage) {
+            return ifEnemyResolveElseDo(mage, function() {
+                // TODO: duplicated check
+                function isGoblin(character) {
+                    return character.subTypes && _(character.subTypes).contains(SUBTYPE_GOBLIN);
+                }
+
+                function isFire(character) {
+                    debugger;
+                }
+
+                var allTargets = getAllCharacters()
+                    // TODO: this check is currently used as an IS_FAMILIAR
+                    .filter(CHECK.IS_PERMANENT)
+                    // TODO: are Familiars of an allied player/mage also friendly Familiars?
+                    .filter(permanent => permanent.mage === mage)
+                    .filter(familiar => isGoblin(familiar) || isFire(familiar));
+
+                function getSelectibles(alreadySelected) {
+                    if(alreadySelected.length >= 2) {
+                        return [];
+                    } else if(alreadySelected.length === 1) {
+                        let firstTarget = alreadySelected[0];
+                        if(isGoblin(firstTarget) && isFire(firstTarget)) {
+                            return allTargets.filter(target => target !== firstTarget);
+                        }
+                        return allTargets
+                            .filter(isGoblin(firstTarget) ? isFire : isGoblin);
+                    } else {
+                        return allTargets;
+                    }
+                }
+
+                function allDifferent(values) {
+                    return values.length === _.unique(values).length;
+                }
+
+                function isValidSelection(alreadySelected) {
+                    return alreadySelected.length === 3 &&
+                        allDifferent(alreadySelected.map(target => target.at));
+                }
+
+                return selectTarget(getSelectibles, isValidSelection)
+                    .then(targets => {
+                        var highestAT = _.max(targets, target => target.at).at;
+                        targets.forEach(target => target.at = highestAT);
+                    });
+            });
+        }
+    );
+
+    var ForkedBolt = Spell.createSpell(
     'Forked Bolt',
     [
       new SyllableSequence([
@@ -192,6 +462,7 @@ Sacrifice them, [this] gets HP equal to the sum of the sacrified familiars HP.`,
     function resolveSpell(mage) {
       return new Promise(function(resolve, reject) {
         var permanent = new Permanent({
+          creatingSpell: HungryDemon,
           spellTypes: [SpellType.Familiar],
           subTypes: [SUBTYPE_DEMON],
           hp: 0,
@@ -233,6 +504,7 @@ Battlecry: Target another Familiar: [this] gets additional HP equal to targets H
         function resolveSpell(mage) {
             return new Promise(function(resolve, reject) {
                 var permanent = new Permanent({
+                    creatingSpell: ShieldKnight,
                     spellTypes: [SpellType.Familiar],
                     subTypes: [SUBTYPE_HUMAN, SUBTYPE_KNIGHT],
                     hp: 2,
@@ -250,6 +522,7 @@ Battlecry: Target another Familiar: [this] gets additional HP equal to targets H
                             var otherFamiliars = getAllCharacters()
                                 // TODO: this check is currently used as an IS_FAMILIAR
                                 .filter(CHECK.IS_PERMANENT)
+                                // TODO: extract as IS_NOT(identity)
                                 .filter(target => target !== permanent);
 
                             return selectNumberOfUniqueTargets(otherFamiliars, 1, 1)
@@ -466,6 +739,7 @@ Deal 1 Damage to each Goblin and Damage to target enemy equal to each Goblins AT
                 var damage = 1;
                 // TODO: this check is currently used as an IS_FAMILIAR
                 var isFamiliar = CHECK.IS_PERMANENT;
+                // TODO: duplicated check
                 function isGoblin(character) {
                     return character.subTypes && _(character.subTypes).contains(SUBTYPE_GOBLIN);
                 }
@@ -804,209 +1078,6 @@ Target 3 Familiars with different AT: Their AT becomes the highest of the 3.`,
         }
     );
 
-    var WildPyromancer = Spell.createSpell(
-        'Wild Pyromancer',
-        [
-            new SyllableSequence([
-                Syllables.FIRE,
-                Syllables.XAU,
-                Syllables.CHI,
-                Syllables.CHI,
-                Syllables.NIF,
-            ], SyllableSequence.ordered),
-        ],
-        `3/2 (5) Goblin Shaman Familiar
-When [this] enters the Battlefield: Cast Fireball.`,
-        function resolveSpell(mage) {
-            return new Promise(function(resolve, reject) {
-                var permanent = new Permanent({
-                    spellTypes: [SpellType.Familiar],
-                    subTypes: [SUBTYPE_GOBLIN, SUBTYPE_SHAMAN],
-                    hp: 2,
-                    at: 3,
-                    delay: 5
-                }, mage);
-                permanent.index = WildPyromancer.index;
-                permanent.afterTriggers = [
-                    new Trigger(
-                        (event, newPermanent, mage, ...args) => {
-                            return event === EVENT_ENTER_BATTLEFIELD && newPermanent === permanent
-                        },
-                        (event, permanent, mage, ...args) => {
-                            game.eventManager.execute(EVENT_CAST_SPELL, Fireball, mage);
-                        }
-                    )
-                ];
-
-                game.eventManager.execute(EVENT_ENTER_BATTLEFIELD, permanent, mage);
-
-                resolve();
-            });
-        }
-    );
-
-    var GoblinAttackSquad = Spell.createSpell(
-     'Goblin Attack Squad',
-     [
-       new SyllableSequence([
-         Syllables.FIRE,
-         //Syllables.XAU,
-         //Syllables.CHI,
-         //Syllables.REN,
-         Syllables.REN,
-       ], SyllableSequence.ordered),
-     ],
-`Sorcery
-Summon 3 1/1 (3) Goblin Familiars.`,
-    function resolveSpell(mage) {
-      return new Promise(function(resolve, reject) {
-        _(3).times(function() {
-          var permanent = new Permanent({
-            spellTypes: [SpellType.Familiar],
-            subTypes: [SUBTYPE_GOBLIN],
-            hp: 1,
-            at: 1,
-            delay: 3
-          }, mage);
-          permanent.index = GoblinAttackSquad.index;
-          game.eventManager.execute(EVENT_ENTER_BATTLEFIELD, permanent, mage);
-        });
-
-        resolve();
-      });
-    }
-  );
-
-  var RaidLeader = Spell.createSpell(
-     'Raid Leader',
-     [
-       new SyllableSequence([
-         Syllables.FIRE,
-         //Syllables.XAU,
-         Syllables.MA,
-         //Syllables.EX,
-       ], SyllableSequence.ordered),
-     ],
-`3/3 (4) Ogre Familiar
-When a friendly Goblin Familiar enters the battlefield: Give it +1/+1.
-(= Your Goblin Familiars enter the battlefield with +1/+1.)`,
-    function resolveSpell(mage) {
-      return new Promise(function(resolve, reject) {
-        var permanent = new Permanent({
-          spellTypes: [SpellType.Familiar],
-          subTypes: [SUBTYPE_OGRE],
-          hp: 3,
-          at: 3,
-          delay: 4
-        }, mage);
-        permanent.index = RaidLeader.index;
-        permanent.afterTriggers = [
-          new Trigger(
-              (event, newPermanent, itsController, ...args) => {
-                return event === EVENT_ENTER_BATTLEFIELD &&
-                    newPermanent.subTypes &&
-                    newPermanent.subTypes.indexOf(SUBTYPE_GOBLIN) >= 0 &&
-                    itsController === permanent.mage
-              },
-              (event, newPermanent, itsController, ...args) => {
-                newPermanent.at++;
-                newPermanent.hp++;
-                newPermanent.maxHp++;
-              }
-          )
-
-        ];
-        game.eventManager.execute(EVENT_ENTER_BATTLEFIELD, permanent, mage);
-
-        resolve();
-      });
-    }
-  );
-
-  var MediumOfFire = Spell.createSpell(
-      'Medium of Fire/Elder of Flame',
-      [
-        new SyllableSequence([
-          Syllables.FIRE,
-          //Syllables.LIGHT,
-          //Syllables.XAU,
-          Syllables.YUN,
-          //Syllables.CHI,
-          //Syllables.NIF,
-        ], SyllableSequence.ordered),
-      ],
-      `2/6 (5) Human Wizard Familiar
-When a Spell is casted: Cast Fireball instead.`,
-      function resolveSpell(mage) {
-        return new Promise(function(resolve, reject) {
-          var permanent = new Permanent({
-            spellTypes: [SpellType.Familiar],
-            subTypes: [SUBTYPE_HUMAN, SUBTYPE_WIZARD],
-            hp: 6,
-            at: 2,
-            delay: 5
-          }, mage);
-          permanent.index = MediumOfFire.index;
-          permanent.replacementEffects = [
-            new ReplacementEffect(
-                (event, Spell, mage, ...args) => event === EVENT_CAST_SPELL,
-                (event, Spell, mage, ...args) => [event, Fireball, mage, ...args]
-            )
-          ];
-
-          // TODO: Effect: On its turn: you may cast a Fireball.
-
-          game.eventManager.execute(EVENT_ENTER_BATTLEFIELD, permanent, mage);
-          resolve();
-        });
-      }
-  );
-
-  var Brocky = Spell.createSpell(
-     `Brocky, Cynthia's Guardian`,
-     [
-       new SyllableSequence([
-         Syllables.EARTH,
-         //Syllables.GAM,
-         //Syllables.KUN,
-         //Syllables.KUN,
-         //Syllables.XAU,
-
-           Syllables.MA
-       ], SyllableSequence.ordered),
-     ],
-`2/5 (7) Golem Artifact Familiar
-Reduce Damage [this] receives by 1.`,
-    function resolveSpell(mage) {
-      return new Promise(function(resolve, reject) {
-        var brocky = new Permanent({
-          spellTypes: [SpellType.Artifact, SpellType.Familiar],
-          subTypes: [SUBTYPE_GOLEM],
-          hp: 5,
-          at: 2,
-          delay: 7
-        }, mage);
-        brocky.index = Brocky.index;
-        brocky.replacementEffects = [
-          new ReplacementEffect(
-              (event, target) => event === EVENT_DEAL_DAMAGE && target === brocky,
-              (event, target, amount, ...args) => [event, target.mage, amount, ...args]
-          ),
-          new ReplacementEffect(
-              (event, target) => event === EVENT_DEAL_DAMAGE && target === brocky,
-              (event, target, amount, ...args) => [event, target, amount-1, ...args]
-          ),
-          new ReplacementEffect(
-              (event, target) => event === EVENT_DEAL_DAMAGE && target === brocky,
-              (event, target, amount, ...args) => [event, target, amount-1, ...args]
-          ),
-        ];
-        game.eventManager.execute(EVENT_ENTER_BATTLEFIELD, brocky, mage);
-        resolve();
-       });
-    }
-  );
-
   var PurgeRay = Spell.createSpell(
      'Purge Ray',
      [
@@ -1061,6 +1132,7 @@ Its HP become the number of your Light Syllables.`,
           })
         });
         var permanent = new Permanent({
+          creatingSpell: SunlitEidolon,
           spellTypes: [SpellType.Enchantment, SpellType.Familiar],
           subTypes: [SUBTYPE_SPIRIT],
           hp: lightSyllableCount,
@@ -1090,6 +1162,7 @@ At the start of your turn: Get 1 SP.`,
     function resolveSpell(mage) {
       return new Promise(function(resolve, reject) {
         var permanent = new Permanent({
+          creatingSpell: LightWeaver,
           spellTypes: [SpellType.Familiar],
           subTypes: [SUBTYPE_HUMAN, SUBTYPE_PRIEST],
           hp: 3,
@@ -1125,6 +1198,7 @@ At the start of its turn: Gain 1 AT.`,
     function resolveSpell(mage) {
       return new Promise(function(resolve, reject) {
         var permanent = new Permanent({
+          creatingSpell: AdlezTheSilverFang,
           spellTypes: [SpellType.Familiar],
           subTypes: [SUBTYPE_HUMAN, SUBTYPE_KNIGHT],
           hp: 3,
@@ -1148,7 +1222,16 @@ At the start of its turn: Gain 1 AT.`,
   var spellBook = new SpellBook();
   [
     Fireball,
+    WildPyromancer,
+    GoblinAttackSquad,
+    RaidLeader,
+
+    MediumOfFire,
+
+    Brocky,
+
     ForkedBolt,
+    Roast,
     SkyFire,
     FireRain,
     HungryDemon,
@@ -1164,14 +1247,6 @@ At the start of its turn: Gain 1 AT.`,
     StrengthDrain,
     BreakDownPunch,
     HiddenStrength,
-    WildPyromancer,
-    GoblinAttackSquad,
-    RaidLeader,
-
-    MediumOfFire,
-
-    Brocky,
-
     PurgeRay,
     SunlitEidolon,
     LightWeaver,
