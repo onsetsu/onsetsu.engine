@@ -440,6 +440,56 @@ Target Goblins with combined AT of 6 or less: Each target gets +1/+1.`,
         }
     );
 
+    var BrothersInArms = Spell.createSpell(
+        'Brothers in Arms ',
+        [
+            new SyllableSequence([
+                Syllables.FIRE,
+                Syllables.MA,
+                Syllables.REN
+            ], SyllableSequence.ordered),
+        ],
+        `Sorcery:
+Target two or more Familiars with the same AT: Their AT becomes doubled.`,
+        function resolveSpell(mage) {
+            return ifEnemyResolveElseDo(mage, function() {
+                // TODO: duplicated check
+                function isGoblin(character) {
+                    return character.subTypes && _(character.subTypes).contains(SUBTYPE_GOBLIN);
+                }
+
+                // TODO: this check is currently used as an IS_FAMILIAR
+                var allFamiliars = getAllCharacters().filter(CHECK.IS_PERMANENT),
+                    groups = _.groupBy(allFamiliars, familiar => familiar.at),
+                    largeGroups = _.filter(groups, group => group.length >= 2),
+                    allTargets = _.flatten(largeGroups, true);
+
+                function getSumOfATs(targets) {
+                    return targets.reduce((acc, target) => acc + target.at, 0);
+                }
+
+                function getSelectibles(alreadySelected) {
+                    if(alreadySelected.length >= 1) {
+                        return _.difference(allTargets, alreadySelected)
+                            .filter(target => target.at === alreadySelected[0].at);
+                    }
+                    return allTargets;
+                }
+
+                function isValidSelection(alreadySelected) {
+                    return alreadySelected.length >= 2 &&
+                        alreadySelected.every(target => target.at === alreadySelected[0].at);
+                }
+
+                return selectTarget(getSelectibles, isValidSelection)
+                    .each(target => {
+                        // TODO: apply as AT modifier
+                        target.at *= 2;
+                    });
+            });
+        }
+    );
+
     var ForkedBolt = Spell.createSpell(
     'Forked Bolt',
     [
@@ -1290,6 +1340,7 @@ At the start of its turn: Gain 1 AT.`,
 
     Roast,
     Enrage,
+    BrothersInArms,
     ForkedBolt,
     SkyFire,
     FireRain,
