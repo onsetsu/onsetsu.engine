@@ -390,6 +390,56 @@ Target a Goblin and a Fire Familiar. Sacrifice both: Get HP equal to the sum of 
         }
     );
 
+    var Enrage = Spell.createSpell(
+        'Enrage',
+        [
+            new SyllableSequence([
+                Syllables.FIRE,
+                Syllables.RYO,
+                Syllables.MA
+            ], SyllableSequence.ordered),
+        ],
+        `Sorcery:
+Target Goblins with combined AT of 6 or less: Each target gets +1/+1.`,
+        function resolveSpell(mage) {
+            return ifEnemyResolveElseDo(mage, function() {
+                // TODO: duplicated check
+                function isGoblin(character) {
+                    return character.subTypes && _(character.subTypes).contains(SUBTYPE_GOBLIN);
+                }
+
+                var allTargets = getAllCharacters()
+                    // TODO: this check is currently used as an IS_FAMILIAR
+                    .filter(CHECK.IS_PERMANENT)
+                    .filter(isGoblin);
+
+                function getSumOfATs(targets) {
+                    return targets.reduce((acc, target) => acc + target.at, 0);
+                }
+
+                function getSelectibles(alreadySelected) {
+                    var sumOfATs = getSumOfATs(alreadySelected);
+                    return _.difference(allTargets, alreadySelected)
+                        .filter(target => 6 >= sumOfATs + target.at);
+                }
+
+                function isValidSelection(alreadySelected) {
+                    return 6 >= getSumOfATs(alreadySelected);
+                }
+
+                // TODO: automatically accept selection only if the sum of ATs is exactly 6.
+
+                return selectTarget(getSelectibles, isValidSelection)
+                    .each(target => {
+                        // TODO: as EVENT_GAIN_AT
+                        target.at += 1;
+                        // TODO: as EVENT_GAIN_HP
+                        target.hp += 1;
+                    });
+            });
+        }
+    );
+
     var ForkedBolt = Spell.createSpell(
     'Forked Bolt',
     [
@@ -1238,8 +1288,9 @@ At the start of its turn: Gain 1 AT.`,
 
     Brocky,
 
-    ForkedBolt,
     Roast,
+    Enrage,
+    ForkedBolt,
     SkyFire,
     FireRain,
     HungryDemon,
