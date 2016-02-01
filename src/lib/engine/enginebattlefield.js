@@ -91,6 +91,7 @@ class Permanent {
     this.at = settings.at;
     this.baseAt = settings.at;
     this.delay = settings.delay;
+    this.creatingSpell = settings.creatingSpell;
 
     this.mage = mage;
     this.action = new Action({}, this.delay, Action.recurring, this);

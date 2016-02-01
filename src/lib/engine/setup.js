@@ -158,7 +158,7 @@ When [this] enters the Battlefield: Cast Fireball.`,
         'Goblin Attack Squad',
         [
             new SyllableSequence([
-                Syllables.FIRE,
+                Syllables.EARTH,
                 //Syllables.XAU,
                 //Syllables.CHI,
                 //Syllables.REN,
@@ -338,8 +338,10 @@ Target a Goblin and a Fire Familiar. Sacrifice both: Get HP equal to the sum of 
                     return character.subTypes && _(character.subTypes).contains(SUBTYPE_GOBLIN);
                 }
 
+                // TODO: replace with a proper check on .elements property (elements could be modified once a permanent is on field)
                 function isFire(character) {
-                    debugger;
+                    var syllableSequence = character.creatingSpell.getBaseSequences()[0];
+                    return _.any(syllableSequence.getSyllables(), syllable => syllable.isA(Syllables.FIRE));
                 }
 
                 var allTargets = getAllCharacters()
@@ -364,20 +366,26 @@ Target a Goblin and a Fire Familiar. Sacrifice both: Get HP equal to the sum of 
                     }
                 }
 
-                function allDifferent(values) {
-                    return values.length === _.unique(values).length;
+                function implies(a, b) {
+                    return (a && b) || !a;
                 }
-
                 function isValidSelection(alreadySelected) {
-                    return alreadySelected.length === 3 &&
-                        allDifferent(alreadySelected.map(target => target.at));
+                    return alreadySelected.length === 2 &&
+                        implies(!isFire(alreadySelected[0]), isFire(alreadySelected[1])) &&
+                        implies(!isGoblin(alreadySelected[0]), isGoblin(alreadySelected[1]));
                 }
 
-                return selectTarget(getSelectibles, isValidSelection)
-                    .then(targets => {
-                        var highestAT = _.max(targets, target => target.at).at;
-                        targets.forEach(target => target.at = highestAT);
-                    });
+                return (function() {
+                    var sum = 0;
+                    return selectTarget(getSelectibles, isValidSelection)
+                        .each(target => {
+                            sum += target.hp;
+                            return game.eventManager.execute(EVENT_SACRIFICE, target);
+                        })
+                        .then(() => {
+                            mage.hp += sum;
+                        });
+                })();
             });
         }
     );
