@@ -330,7 +330,8 @@ Reduce Damage [this] receives by 1.`,
             ], SyllableSequence.ordered),
         ],
         `Sorcery:
-Target a Goblin and a Fire Familiar. Sacrifice both: Get HP equal to the sum of their HP.`,
+Target a Goblin and a Fire Familiar.
+Sacrifice both: Get HP equal to the sum of their HP.`,
         function resolveSpell(mage) {
             return ifEnemyResolveElseDo(mage, function() {
                 // TODO: duplicated check
@@ -486,6 +487,98 @@ Target two or more Familiars with the same AT: Their AT becomes doubled.`,
                         // TODO: apply as AT modifier
                         target.at *= 2;
                     });
+            });
+        }
+    );
+
+    var RaiseStruggle = Spell.createSpell(
+        'Raise Struggle  ',
+        [
+            new SyllableSequence([
+                Syllables.SHADOW,
+                Syllables.CHI
+            ], SyllableSequence.ordered),
+        ],
+        `Sorcery:
+Target a number of friendly Familiars and a number of enemy Familiars with the same sum of HP:
+Deal 2 Damage to each target.`,
+        function resolveSpell(mage) {
+            return ifEnemyResolveElseDo(mage, function() {
+                // TODO: duplicated check: put into CHECK.IS_FRIENDLY(mage)(character)
+                function isFriendly(character) { return character === mage || character.mage === mage}
+                var isEnemy = character => !isFriendly(character);
+                // TODO: this check is currently used as an IS_FAMILIAR
+                var isFamiliar = CHECK.IS_PERMANENT;
+
+                var familiars = getAllCharacters().filter(isFamiliar),
+                    friendlyFamiliars = familiars.filter(isFriendly),
+                    enemyFamiliars = familiars.filter(isEnemy);
+
+                function getSumOfHP(familiars) {
+                    return familiars.reduce(function(acc, familiar) {
+                        return acc + familiar.hp;
+                    }, 0);
+                }
+
+                function getSelectibles(alreadySelected) {
+                    var selectedFriendlyFamiliars = alreadySelected.filter(isFriendly),
+                        selectedEnemyFamiliars = alreadySelected.filter(isEnemy),
+                        currentSumOfHPSelectedFriendlyFamiliars = getSumOfHP(selectedFriendlyFamiliars),
+                        currentSumOfHPSelectedEnemyFamiliars = getSumOfHP(selectedEnemyFamiliars),
+                        // TODO: power operator returns [undefined] on empty arrays, but map to identity solves the issue!?
+                        powerSetOfMissingFriendlyFamiliars = Combinatorics.power(_.difference(friendlyFamiliars, selectedFriendlyFamiliars)).map(a=>a),
+                        powerSetOfMissingEnemyFamiliars = Combinatorics.power(_.difference(enemyFamiliars, selectedEnemyFamiliars)).map(a=>a),
+                        sumsOfMissingFriendlyFamiliars = powerSetOfMissingFriendlyFamiliars.map(getSumOfHP),
+                        sumsOfMissingEnemyFamiliars = powerSetOfMissingEnemyFamiliars.map(getSumOfHP);
+
+                    // one has to map 'friendly' and 'enemy' to 'own' and 'opposing' here
+                    function filterForMatchingSubgroups(
+                        powerSetOfMissingOwnFamiliars,
+                        sumsOfMissingOpposingFamiliars,
+                        currentSumOfHPSelectedOpposingFamiliars,
+                        currentSumOfHPSelectedOwnFamiliars
+                    ) {
+                        // filter subsets that do not have a matching group on the other side
+                        return powerSetOfMissingOwnFamiliars.filter(ownFamiliarSubset => {
+                            var sumOfHPOwnFamiliarSubset = getSumOfHP(ownFamiliarSubset);
+                            return sumsOfMissingOpposingFamiliars.some(sumOfOpposingSubset => {
+                                // take sum of HPs of currently selected familiars into account
+                                return sumOfOpposingSubset + currentSumOfHPSelectedOpposingFamiliars ===
+                                    sumOfHPOwnFamiliarSubset + currentSumOfHPSelectedOwnFamiliars;
+                            });
+                        });
+                    }
+                    var filteredPowerSetOfMissingFriendlyFamiliars = filterForMatchingSubgroups(
+                        powerSetOfMissingFriendlyFamiliars,
+                        sumsOfMissingEnemyFamiliars,
+                        currentSumOfHPSelectedEnemyFamiliars,
+                        currentSumOfHPSelectedFriendlyFamiliars
+                    );
+                    var filteredPowerSetOfMissingEnemyFamiliars = filterForMatchingSubgroups(
+                        powerSetOfMissingEnemyFamiliars,
+                        sumsOfMissingFriendlyFamiliars,
+                        currentSumOfHPSelectedFriendlyFamiliars,
+                        currentSumOfHPSelectedEnemyFamiliars
+                    );
+
+                    var flattenedPowerSetOfMissingFriendlyFamiliars = _.flatten(filteredPowerSetOfMissingFriendlyFamiliars, true),
+                        flattenedPowerSetOfMissingEnemyFamiliars = _.flatten(filteredPowerSetOfMissingEnemyFamiliars, true),
+                        uniqueSetOfMissingFriendlyFamiliars = _.unique(flattenedPowerSetOfMissingFriendlyFamiliars),
+                        uniqueSetOfMissingEnemyFamiliars = _.unique(flattenedPowerSetOfMissingEnemyFamiliars);
+
+                    return uniqueSetOfMissingFriendlyFamiliars.concat(uniqueSetOfMissingEnemyFamiliars);
+                }
+
+                function isValidSelection(alreadySelected) {
+                    var selectedFriendlyFamiliars = alreadySelected.filter(isFriendly),
+                        selectedEnemyFamiliars = alreadySelected.filter(isEnemy);
+
+                    return getSumOfHP(selectedFriendlyFamiliars) === getSumOfHP(selectedEnemyFamiliars);
+                }
+
+                var damage = 2;
+                return selectTarget(getSelectibles, isValidSelection)
+                    .each(generateDealDamageToSingleTarget(damage, RaiseStruggle.index));
             });
         }
     );
@@ -1341,6 +1434,8 @@ At the start of its turn: Gain 1 AT.`,
     Roast,
     Enrage,
     BrothersInArms,
+    RaiseStruggle,
+
     ForkedBolt,
     SkyFire,
     FireRain,
