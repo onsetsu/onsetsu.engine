@@ -22,6 +22,8 @@ GUI.SelectTarget = ig.Class.extend({
         });
 
         GUI.SelectTarget.selectTarget = this;
+
+        this.checkForTargetSelectionCompleted();
     },
     // TODO: could be static
     getHoveredEntityForTargets: function(targets) {
