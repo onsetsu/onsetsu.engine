@@ -7,10 +7,11 @@ ig.module(
 .defines(function(){
 
 GUI.SelectTarget = ig.Class.extend({
-    init: function(callback, getSelectibles, isValidSelection) {
+    init: function(callback, getSelectibles, isValidSelection, parameters) {
         this.callback = callback;
         this.getSelectibles = getSelectibles;
         this.isValidSelection = isValidSelection;
+        this.parameters = parameters || {};
 
         this.selectedTargets = [];
         this.selectibles = this.getSelectibles(this.selectedTargets);

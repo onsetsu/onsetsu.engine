@@ -28,9 +28,9 @@ createStandardSyllablePool = function() {
 /*
  * Returns a Promise for an Array of chosen targets.
  */
-function selectTarget(getSelectibles, isValidSelection) {
+function selectTarget(getSelectibles, isValidSelection, parameters) {
     return new Promise(function(resolve, reject) {
-        new GUI.SelectTarget(resolve, getSelectibles, isValidSelection);
+        new GUI.SelectTarget(resolve, getSelectibles, isValidSelection, parameters);
     });
 }
 
@@ -270,6 +270,48 @@ When a Spell is casted: Cast Fireball instead.`,
 
                 game.eventManager.execute(EVENT_ENTER_BATTLEFIELD, permanent, mage);
                 resolve();
+            });
+        }
+    );
+
+    // TODO: implement
+    var ShatteredGrowth = Spell.createSpell(
+        'Shattered Growth',
+        [
+            new SyllableSequence([
+                Syllables.EARTH,
+                Syllables.REN,
+                Syllables.MA
+            ], SyllableSequence.ordered),
+        ],
+        `Sorcery:
+Target 5 Familiars. Each target gets +1/+1.
+You may choose the same target multiple times.`,
+        function resolveSpell(mage) {
+            return ifEnemyResolveElseDo(mage, function() {
+                // TODO: this check is currently used as an IS_FAMILIAR
+                var isFamiliar = CHECK.IS_PERMANENT;
+
+                var allTargets = getAllCharacters()
+                    .filter(isFamiliar);
+
+                function getSelectibles(alreadySelected) {
+                    if(alreadySelected.length >= 5) {
+                        return [];
+                    } else {
+                        return allTargets;
+                    }
+                }
+
+                function isValidSelection(alreadySelected) {
+                    return alreadySelected.length === 5;
+                }
+
+                return selectTarget(getSelectibles, isValidSelection)
+                    .each(familiar => {
+                        familiar.at++;
+                        familiar.hp++;
+                    });
             });
         }
     );
@@ -1429,6 +1471,7 @@ At the start of its turn: Gain 1 AT.`,
 
     MediumOfFire,
 
+    ShatteredGrowth,
     Brocky,
 
     Roast,
