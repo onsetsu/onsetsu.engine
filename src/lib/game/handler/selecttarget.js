@@ -39,9 +39,9 @@ GUI.SelectTarget = ig.Class.extend({
     doIt: function() {
         if(ig.input.pressed('leftclick')) {
             // only the selectible targets should be possible
-            var hoveredOn = this.getHoveredEntityForTargets(this.selectibles);
+            let hoveredOn = this.getHoveredEntityForTargets(this.selectibles);
             if(hoveredOn) {
-                if(!this.isSelected(hoveredOn)) {
+                if(!this.isSelected(hoveredOn) || this.parameters.multiTargeting) {
                     this.select(hoveredOn);
                 }
                 this.updateSelectibles();
@@ -60,8 +60,7 @@ GUI.SelectTarget = ig.Class.extend({
             }
         } else {
             if(ig.input.pressed('rightclick')) {
-                var hoveredOn = this.getHoveredEntityForTargets(this.selectedTargets);
-
+                let hoveredOn = this.getHoveredEntityForTargets(this.selectedTargets);
                 if(hoveredOn) {
                     // is the hovered target already selected?
                     if(this.isSelected(hoveredOn)) {
@@ -80,7 +79,7 @@ GUI.SelectTarget = ig.Class.extend({
         GUI.game.battlefield.getEntityFor(target).visualizeSelected(true);
     },
     deselect: function(target) {
-        var index = this.selectedTargets.indexOf(target);
+        var index = this.selectedTargets.lastIndexOf(target);
         this.selectedTargets.splice(index, 1);
         GUI.game.battlefield.getEntityFor(target).visualizeSelected(false);
     },
