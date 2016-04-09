@@ -307,7 +307,7 @@ You may choose the same target multiple times.`,
                     return alreadySelected.length === 5;
                 }
 
-                return selectTarget(getSelectibles, isValidSelection)
+                return selectTarget(getSelectibles, isValidSelection, { multiTargeting: true })
                     .each(familiar => {
                         familiar.at++;
                         familiar.hp++;

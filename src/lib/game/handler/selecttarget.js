@@ -88,6 +88,7 @@ GUI.SelectTarget = ig.Class.extend({
         this.targetEntities.forEach(entity => {
             entity.visualizeSelectable(false);
             entity.visualizeSelected(false);
+            entity.clearSelectedNumbers();
         });
     },
     updateSelectibles: function() {
@@ -101,9 +102,10 @@ GUI.SelectTarget = ig.Class.extend({
             entity.visualizeSelectable(true);
         });
         var selecteds = this.selectedTargets;
-        selecteds.forEach(selected => {
+        selecteds.forEach((selected, index) => {
             var entity = GUI.game.battlefield.getEntityFor(selected);
             entity.visualizeSelected(true);
+            entity.addSelectedNumbers(index);
         });
     },
     // automatically check for 'no more targets available!'

@@ -89,6 +89,13 @@ ig.Entity.inject({
     visualizeSelected: function(value) {
         this.shouldVisualizeSelected = value;
     },
+    addSelectedNumbers: function(number) {
+        this.shouldVisualizeSelectedNumbers = this.shouldVisualizeSelectedNumbers || [];
+        this.shouldVisualizeSelectedNumbers.push(number);
+    },
+    clearSelectedNumbers: function() {
+        this.shouldVisualizeSelectedNumbers = undefined;
+    },
 	drawBattleLine: function(target, duration) {
 	    var battleLine = this.battleLine = {
 	        target: target,
@@ -148,6 +155,25 @@ ig.Entity.inject({
             ig.system.context.restore();
         }
 
+        if(this.shouldVisualizeSelectedNumbers) {
+            let numbers = this.shouldVisualizeSelectedNumbers;
+            ig.system.context.save();
+
+            // styling
+            ig.system.context.fillStyle = this.colors.selectedNumbers;
+            ig.system.context.font = "8px Arial";
+            ig.system.context.textAlign = "left";
+            ig.system.context.textBaseline = 'bottom';
+
+            ig.system.context.fillText(
+                numbers.join(', '),
+                ig.system.getDrawPos(this.pos.x.round() - ig.game.screen.x) - 0.5,
+                ig.system.getDrawPos(this.pos.y.round() - ig.game.screen.y) - 0.5
+            );
+
+            ig.system.context.restore();
+        }
+
         if(this.battleLine) {
             // TODO: duplicated logic
             ig.system.context.save();
@@ -198,6 +224,7 @@ ig.Entity.inject({
 		velocities: '#0f0',
         onTurn: '#0ff',
         selectable: '#ff0',
+        selectedNumbers: '#ff0',
         battleLine: '#f00',
         related: '#0f0',
 		boxes: '#f00'
