@@ -312,6 +312,7 @@ You may choose the same target up to two times.`,
 
                 return selectTarget(getSelectibles, isValidSelection, { multiTargeting: true })
                     .each(target => {
+                        // TODO: should move this check into the DEAL_DAMAGE event itself
                         if(!target.isOnBattlefield()) { return; }
                         return generateDealDamageToSingleTarget(damage, RockSlide.index)(target);
                     });
@@ -319,27 +320,41 @@ You may choose the same target up to two times.`,
         }
     );
 
+    function doDistributionOncePerUniqueTarget(targets, callback) {
+        // TODO: overly complicated logic due to incompatibility of promises, maps and underscore
+        var targetCountMapping = new Map();
+        targets.forEach((target) => {
+            if(targetCountMapping.has(target)) {
+                targetCountMapping.set(target, targetCountMapping.get(target) + 1);
+            } else {
+                targetCountMapping.set(target, 1);
+            }
+        });
+
+        return Promise.resolve(_.unique(targets))
+            .each(target => callback(target, targetCountMapping.get(target)));
+    }
+
+
     var RagingFlames = Spell.createSpell(
         'Raging Flames',
         [
             new SyllableSequence([
-                Syllables.EARTH,
+                Syllables.FIRE,
                 Syllables.REN,
-                Syllables.MA
+                // TODO: KUN has incorrect flavor
+                Syllables.KUN
             ], SyllableSequence.ordered),
         ],
         `Sorcery:
- (Sorcery): Distribute 3 Damage amoung Familiars or Mages`,
+Distribute 3 Damage amoung Familiars or Mages`,
         function resolveSpell(mage) {
             return ifEnemyResolveElseDo(mage, function() {
-                // TODO: this check is currently used as an IS_FAMILIAR
-                var isFamiliar = CHECK.IS_PERMANENT;
-
-                var allTargets = getAllCharacters()
-                    .filter(isFamiliar);
+                // TODO: get only mages and familiars
+                var allTargets = getAllCharacters();
 
                 function getSelectibles(alreadySelected) {
-                    if(alreadySelected.length >= 5) {
+                    if(alreadySelected.length >= 3) {
                         return [];
                     } else {
                         return allTargets;
@@ -347,14 +362,13 @@ You may choose the same target up to two times.`,
                 }
 
                 function isValidSelection(alreadySelected) {
-                    return alreadySelected.length === 5;
+                    return alreadySelected.length === 3;
                 }
 
                 return selectTarget(getSelectibles, isValidSelection, { multiTargeting: true })
-                    .each(familiar => {
-                        familiar.at++;
-                        familiar.hp++;
-                    });
+                    .then(targets => doDistributionOncePerUniqueTarget(targets, (target, count) => {
+                        return generateDealDamageToSingleTarget(count, RockSlide.index)(target);
+                    }));
             });
         }
     );
@@ -364,12 +378,13 @@ You may choose the same target up to two times.`,
         [
             new SyllableSequence([
                 Syllables.EARTH,
-                Syllables.REN,
-                Syllables.MA
+                Syllables.PAI,
+                Syllables.REN
             ], SyllableSequence.ordered),
         ],
         `Sorcery:
-(Sorcery): Distribute X +1/+1 counters among up to 3 familiars. X is the number of friendly characters.`,
+Distribute X +1/+1 counters among up to 3 familiars.
+X is the number of friendly characters.`,
         function resolveSpell(mage) {
             return ifEnemyResolveElseDo(mage, function() {
                 // TODO: this check is currently used as an IS_FAMILIAR
@@ -378,23 +393,34 @@ You may choose the same target up to two times.`,
                 var allTargets = getAllCharacters()
                     .filter(isFamiliar);
 
+                // TODO: duplicated logic
+                function friendlyCharacter(character) {
+                    return character === mage || character.mage === mage;
+                }
+
+                var numberOfCountersToDistribute = getAllCharacters().filter(friendlyCharacter).length;
+
                 function getSelectibles(alreadySelected) {
-                    if(alreadySelected.length >= 5) {
+                    if(alreadySelected.length >= numberOfCountersToDistribute) {
                         return [];
+                    } else if(_(alreadySelected).unique().length >= 3) {
+                        return _(alreadySelected).unique();
                     } else {
                         return allTargets;
                     }
                 }
 
                 function isValidSelection(alreadySelected) {
-                    return alreadySelected.length === 5;
+                    return alreadySelected.length === numberOfCountersToDistribute &&
+                        _(alreadySelected).unique().length <= 3;
                 }
 
                 return selectTarget(getSelectibles, isValidSelection, { multiTargeting: true })
-                    .each(familiar => {
-                        familiar.at++;
-                        familiar.hp++;
-                    });
+                    .then(familiars => doDistributionOncePerUniqueTarget(familiars, (familiar, count) => {
+                        // do not forget this when unifying Counter distribution
+                        familiar.at += count;
+                        familiar.hp += count;
+                    }));
             });
         }
     );
