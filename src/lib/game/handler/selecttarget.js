@@ -104,7 +104,7 @@ GUI.SelectTarget = ig.Class.extend({
         selecteds.forEach((selected, index) => {
             var entity = GUI.game.battlefield.getEntityFor(selected);
             entity.visualizeSelected(true);
-            entity.addSelectedNumbers(index);
+            entity.addSelectedNumbers(index, this.parameters && this.parameters.showOnlyTargetQuantity);
         });
     },
     // automatically check for 'no more targets available!'

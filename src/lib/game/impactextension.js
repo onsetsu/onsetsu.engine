@@ -89,8 +89,9 @@ ig.Entity.inject({
     visualizeSelected: function(value) {
         this.shouldVisualizeSelected = value;
     },
-    addSelectedNumbers: function(number) {
+    addSelectedNumbers: function(number, shouldShowOnlyTargetQuantity) {
         this.shouldVisualizeSelectedNumbers = this.shouldVisualizeSelectedNumbers || [];
+        this.shouldShowOnlyTargetQuantity = shouldShowOnlyTargetQuantity;
         this.shouldVisualizeSelectedNumbers.push(number);
     },
     clearSelectedNumbers: function() {
@@ -156,7 +157,9 @@ ig.Entity.inject({
         }
 
         if(this.shouldVisualizeSelectedNumbers) {
-            let numbers = this.shouldVisualizeSelectedNumbers;
+            let targetingInfo = this.shouldShowOnlyTargetQuantity ?
+                this.shouldVisualizeSelectedNumbers.map(() => 'O').join('') :
+                this.shouldVisualizeSelectedNumbers.join(', ');
             ig.system.context.save();
 
             // styling
@@ -166,7 +169,7 @@ ig.Entity.inject({
             ig.system.context.textBaseline = 'bottom';
 
             ig.system.context.fillText(
-                numbers.join(', '),
+                targetingInfo,
                 ig.system.getDrawPos(this.pos.x.round() - ig.game.screen.x) - 0.5,
                 ig.system.getDrawPos(this.pos.y.round() - ig.game.screen.y) - 0.5
             );

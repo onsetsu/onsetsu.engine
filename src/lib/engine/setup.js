@@ -365,7 +365,7 @@ Distribute 3 Damage amoung Familiars or Mages`,
                     return alreadySelected.length === 3;
                 }
 
-                return selectTarget(getSelectibles, isValidSelection, { multiTargeting: true })
+                return selectTarget(getSelectibles, isValidSelection, { multiTargeting: true, showOnlyTargetQuantity: true })
                     .then(targets => doDistributionOncePerUniqueTarget(targets, (target, count) => {
                         return generateDealDamageToSingleTarget(count, RockSlide.index)(target);
                     }));
@@ -415,7 +415,7 @@ X is the number of friendly characters.`,
                         _(alreadySelected).unique().length <= 3;
                 }
 
-                return selectTarget(getSelectibles, isValidSelection, { multiTargeting: true })
+                return selectTarget(getSelectibles, isValidSelection, { multiTargeting: true, showOnlyTargetQuantity: true })
                     .then(familiars => doDistributionOncePerUniqueTarget(familiars, (familiar, count) => {
                         // TODO: do not forget this when unifying Counter distribution
                         familiar.at += count;
