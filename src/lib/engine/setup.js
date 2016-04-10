@@ -274,7 +274,211 @@ When a Spell is casted: Cast Fireball instead.`,
         }
     );
 
-    // TODO: implement
+    var RockSlide = Spell.createSpell(
+        'Rock Slide',
+        [
+            new SyllableSequence([
+                Syllables.EARTH,
+                Syllables.CHI,
+                Syllables.KUN
+            ], SyllableSequence.ordered),
+        ],
+        `Sorcery:
+Target 4 Familiars. Deal 2 Damage to each target.
+You may choose the same target up to two times.`,
+        function resolveSpell(mage) {
+            return ifEnemyResolveElseDo(mage, function() {
+                var damage = 2;
+
+                // TODO: this check is currently used as an IS_FAMILIAR
+                var isFamiliar = CHECK.IS_PERMANENT;
+
+                var allTargets = getAllCharacters()
+                    .filter(isFamiliar);
+
+                function getSelectibles(alreadySelected) {
+                    if(alreadySelected.length >= 4) {
+                        return [];
+                    } else {
+                        return allTargets.filter(target => {
+                            return alreadySelected.filter(selected => selected === target).length <= 1;
+                        });
+                    }
+                }
+
+                function isValidSelection(alreadySelected) {
+                    return alreadySelected.length === 4;
+                }
+
+                return selectTarget(getSelectibles, isValidSelection, { multiTargeting: true })
+                    .each(target => {
+                        if(!target.isOnBattlefield()) { return; }
+                        return generateDealDamageToSingleTarget(damage, RockSlide.index)(target);
+                    });
+            });
+        }
+    );
+
+    var RagingFlames = Spell.createSpell(
+        'Raging Flames',
+        [
+            new SyllableSequence([
+                Syllables.EARTH,
+                Syllables.REN,
+                Syllables.MA
+            ], SyllableSequence.ordered),
+        ],
+        `Sorcery:
+ (Sorcery): Distribute 3 Damage amoung Familiars or Mages`,
+        function resolveSpell(mage) {
+            return ifEnemyResolveElseDo(mage, function() {
+                // TODO: this check is currently used as an IS_FAMILIAR
+                var isFamiliar = CHECK.IS_PERMANENT;
+
+                var allTargets = getAllCharacters()
+                    .filter(isFamiliar);
+
+                function getSelectibles(alreadySelected) {
+                    if(alreadySelected.length >= 5) {
+                        return [];
+                    } else {
+                        return allTargets;
+                    }
+                }
+
+                function isValidSelection(alreadySelected) {
+                    return alreadySelected.length === 5;
+                }
+
+                return selectTarget(getSelectibles, isValidSelection, { multiTargeting: true })
+                    .each(familiar => {
+                        familiar.at++;
+                        familiar.hp++;
+                    });
+            });
+        }
+    );
+
+    var Cultivate = Spell.createSpell(
+        'Cultivate',
+        [
+            new SyllableSequence([
+                Syllables.EARTH,
+                Syllables.REN,
+                Syllables.MA
+            ], SyllableSequence.ordered),
+        ],
+        `Sorcery:
+(Sorcery): Distribute X +1/+1 counters among up to 3 familiars. X is the number of friendly characters.`,
+        function resolveSpell(mage) {
+            return ifEnemyResolveElseDo(mage, function() {
+                // TODO: this check is currently used as an IS_FAMILIAR
+                var isFamiliar = CHECK.IS_PERMANENT;
+
+                var allTargets = getAllCharacters()
+                    .filter(isFamiliar);
+
+                function getSelectibles(alreadySelected) {
+                    if(alreadySelected.length >= 5) {
+                        return [];
+                    } else {
+                        return allTargets;
+                    }
+                }
+
+                function isValidSelection(alreadySelected) {
+                    return alreadySelected.length === 5;
+                }
+
+                return selectTarget(getSelectibles, isValidSelection, { multiTargeting: true })
+                    .each(familiar => {
+                        familiar.at++;
+                        familiar.hp++;
+                    });
+            });
+        }
+    );
+
+    var GeneModification = Spell.createSpell(
+        'Gene Modification',
+        [
+            new SyllableSequence([
+                Syllables.EARTH,
+                Syllables.REN,
+                Syllables.MA
+            ], SyllableSequence.ordered),
+        ],
+        `Sorcery:
+ (Sorcery): Target 2 to 5 Familiars. Each target gets +1/-1. You may choose the same target up to 3 times.`,
+        function resolveSpell(mage) {
+            return ifEnemyResolveElseDo(mage, function() {
+                // TODO: this check is currently used as an IS_FAMILIAR
+                var isFamiliar = CHECK.IS_PERMANENT;
+
+                var allTargets = getAllCharacters()
+                    .filter(isFamiliar);
+
+                function getSelectibles(alreadySelected) {
+                    if(alreadySelected.length >= 5) {
+                        return [];
+                    } else {
+                        return allTargets;
+                    }
+                }
+
+                function isValidSelection(alreadySelected) {
+                    return alreadySelected.length === 5;
+                }
+
+                return selectTarget(getSelectibles, isValidSelection, { multiTargeting: true })
+                    .each(familiar => {
+                        familiar.at++;
+                        familiar.hp++;
+                    });
+            });
+        }
+    );
+
+    var ChainBuff = Spell.createSpell(
+        'Chain Buff',
+        [
+            new SyllableSequence([
+                Syllables.EARTH,
+                Syllables.REN,
+                Syllables.MA
+            ], SyllableSequence.ordered),
+        ],
+        `Sorcery:
+ (Sorcery): Target 4 Familiars. The first target gets +1/+1. The second target gets +2/+2. ... You may choose the same target multiple times.`,
+        function resolveSpell(mage) {
+            return ifEnemyResolveElseDo(mage, function() {
+                // TODO: this check is currently used as an IS_FAMILIAR
+                var isFamiliar = CHECK.IS_PERMANENT;
+
+                var allTargets = getAllCharacters()
+                    .filter(isFamiliar);
+
+                function getSelectibles(alreadySelected) {
+                    if(alreadySelected.length >= 5) {
+                        return [];
+                    } else {
+                        return allTargets;
+                    }
+                }
+
+                function isValidSelection(alreadySelected) {
+                    return alreadySelected.length === 5;
+                }
+
+                return selectTarget(getSelectibles, isValidSelection, { multiTargeting: true })
+                    .each(familiar => {
+                        familiar.at++;
+                        familiar.hp++;
+                    });
+            });
+        }
+    );
+
     var ShatteredGrowth = Spell.createSpell(
         'Shattered Growth',
         [
@@ -1471,6 +1675,11 @@ At the start of its turn: Gain 1 AT.`,
 
     MediumOfFire,
 
+    RockSlide,
+    RagingFlames,
+    Cultivate,
+    GeneModification,
+    ChainBuff,
     ShatteredGrowth,
     Brocky,
 
