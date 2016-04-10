@@ -429,13 +429,13 @@ X is the number of friendly characters.`,
         'Gene Modification',
         [
             new SyllableSequence([
-                Syllables.EARTH,
-                Syllables.REN,
+                Syllables.WATER,
+                Syllables.MA,
                 Syllables.MA
             ], SyllableSequence.ordered),
         ],
         `Sorcery:
- (Sorcery): Target 2 to 5 Familiars. Each target gets +1/-1. You may choose the same target up to 3 times.`,
+Target 2 to 5 Familiars. Each target gets +1/-1. You may choose the same target up to 3 times.`,
         function resolveSpell(mage) {
             return ifEnemyResolveElseDo(mage, function() {
                 // TODO: this check is currently used as an IS_FAMILIAR
@@ -444,22 +444,29 @@ X is the number of friendly characters.`,
                 var allTargets = getAllCharacters()
                     .filter(isFamiliar);
 
+                function numberOfOccurences(array, item) {
+                    return array.filter(i => i === item).length;
+                }
                 function getSelectibles(alreadySelected) {
                     if(alreadySelected.length >= 5) {
                         return [];
                     } else {
-                        return allTargets;
+                        return allTargets.filter(target => numberOfOccurences(alreadySelected, target) <= 2);
                     }
                 }
 
                 function isValidSelection(alreadySelected) {
-                    return alreadySelected.length === 5;
+                    return 2 <= alreadySelected.length &&
+                        alreadySelected.length <= 5 &&
+                        alreadySelected.every(target => {
+                            return numberOfOccurences(alreadySelected, target) <= 3;
+                        });
                 }
 
                 return selectTarget(getSelectibles, isValidSelection, { multiTargeting: true })
                     .each(familiar => {
                         familiar.at++;
-                        familiar.hp++;
+                        familiar.hp--;
                     });
             });
         }
