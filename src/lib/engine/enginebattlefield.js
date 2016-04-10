@@ -56,11 +56,12 @@ class Battlefield {
 
   removeDefeatedPermanents() {
     this.sides.forEach(function(side) {
-      side.permanents.forEach(function(permanent) {
+      // TODO: find a cleaner way for the issue of modifying the data structure you are iterating over
+      side.permanents.reduceRight(function(_, permanent) {
         if(permanent.hp <= 0) {
           permanent.removeFromBattlefield();
         }
-      });
+      }, undefined);
     });
     console.log('removed defeated permanents');
   }
