@@ -417,7 +417,7 @@ X is the number of friendly characters.`,
 
                 return selectTarget(getSelectibles, isValidSelection, { multiTargeting: true })
                     .then(familiars => doDistributionOncePerUniqueTarget(familiars, (familiar, count) => {
-                        // do not forget this when unifying Counter distribution
+                        // TODO: do not forget this when unifying Counter distribution
                         familiar.at += count;
                         familiar.hp += count;
                     }));
@@ -476,13 +476,16 @@ Target 2 to 5 Familiars. Each target gets +1/-1. You may choose the same target 
         'Chain Buff',
         [
             new SyllableSequence([
-                Syllables.EARTH,
+                Syllables.LIGHT,
+                Syllables.PAI,
                 Syllables.REN,
                 Syllables.MA
             ], SyllableSequence.ordered),
         ],
         `Sorcery:
- (Sorcery): Target 4 Familiars. The first target gets +1/+1. The second target gets +2/+2. ... You may choose the same target multiple times.`,
+Target 4 Familiars.
+The first target gets +1/+1, the second target gets +2/+2, etc.
+You may choose the same target multiple times.`,
         function resolveSpell(mage) {
             return ifEnemyResolveElseDo(mage, function() {
                 // TODO: this check is currently used as an IS_FAMILIAR
@@ -492,7 +495,7 @@ Target 2 to 5 Familiars. Each target gets +1/-1. You may choose the same target 
                     .filter(isFamiliar);
 
                 function getSelectibles(alreadySelected) {
-                    if(alreadySelected.length >= 5) {
+                    if(alreadySelected.length >= 4) {
                         return [];
                     } else {
                         return allTargets;
@@ -500,14 +503,22 @@ Target 2 to 5 Familiars. Each target gets +1/-1. You may choose the same target 
                 }
 
                 function isValidSelection(alreadySelected) {
-                    return alreadySelected.length === 5;
+                    return alreadySelected.length === 4;
                 }
 
                 return selectTarget(getSelectibles, isValidSelection, { multiTargeting: true })
-                    .each(familiar => {
-                        familiar.at++;
-                        familiar.hp++;
+                    .then(targets => {
+                        var x = 1;
+
+                        return Promise.resolve(targets)
+                            .each(familiar => {
+                                // TODO: do not forget this when unifying +X/+X distribution
+                                familiar.at += x;
+                                familiar.hp += x;
+                                x++;
+                            });
                     });
+
             });
         }
     );
