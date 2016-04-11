@@ -3,26 +3,26 @@
 // --------------------------------------------------------------------------------
 
 createStandardSyllablePool = function() {
-  return new SyllablePool([
-    Syllables.CHI,
-    Syllables.MA,
-    Syllables.PAI,
-    Syllables.NIF,
-    Syllables.KUN,
-    Syllables.RYO,
-    Syllables.YUN,
-    Syllables.REN,
-    Syllables.TO,
-    Syllables.GAM,
-    Syllables.XAU,
-    Syllables.EX,
-    Syllables.FIRE,
-    Syllables.WATER,
-    Syllables.EARTH,
-    Syllables.WIND,
-    Syllables.LIGHT,
-    Syllables.SHADOW
-  ]);
+    return new SyllablePool([
+        Syllables.CHI,
+        Syllables.MA,
+        Syllables.PAI,
+        Syllables.NIF,
+        Syllables.KUN,
+        Syllables.RYO,
+        Syllables.YUN,
+        Syllables.REN,
+        Syllables.TO,
+        Syllables.GAM,
+        Syllables.XAU,
+        Syllables.EX,
+        Syllables.FIRE,
+        Syllables.WATER,
+        Syllables.EARTH,
+        Syllables.WIND,
+        Syllables.LIGHT,
+        Syllables.SHADOW
+    ]);
 };
 
 /*
@@ -87,30 +87,30 @@ function generateDealDamageToSingleTarget(damage, spellIndex) {
 }
 
 createTestSpellbook = function() {
-  /*
-   * Currently used Spells
-   */
-  var Fireball = Spell.createSpell(
-    'Fireball',
-    [
-      new SyllableSequence([
-        Syllables.FIRE,
-        Syllables.CHI,
-        //Syllables.CHI,
-        //Syllables.NIF
-      ], SyllableSequence.ordered),
-    ],
-`Sorcery
+    /*
+     * Currently used Spells
+     */
+    var Fireball = Spell.createSpell(
+        'Fireball',
+        [
+            new SyllableSequence([
+                Syllables.FIRE,
+                Syllables.CHI,
+                //Syllables.CHI,
+                //Syllables.NIF
+            ], SyllableSequence.ordered),
+        ],
+        `Sorcery
 Deal 2 Damage.`,
-    function resolveSpell(mage) {
-      var damage = 2;
+        function resolveSpell(mage) {
+            var damage = 2;
 
-      return ifEnemyResolveElseDo(mage, function() {
-          return selectNumberOfUniqueTargets(getAllCharacters(), 1, 1)
-            .spread(generateDealDamageToSingleTarget(damage, Fireball.index));
-      });
-    }
-  );
+            return ifEnemyResolveElseDo(mage, function() {
+                return selectNumberOfUniqueTargets(getAllCharacters(), 1, 1)
+                    .spread(generateDealDamageToSingleTarget(damage, Fireball.index));
+            });
+        }
+    );
 
     var WildPyromancer = Spell.createSpell(
         'Wild Pyromancer',
@@ -270,6 +270,47 @@ When a Spell is casted: Cast Fireball instead.`,
 
                 game.eventManager.execute(EVENT_ENTER_BATTLEFIELD, permanent, mage);
                 resolve();
+            });
+        }
+    );
+
+    var ShatteredGrowth = Spell.createSpell(
+        'Shattered Growth',
+        [
+            new SyllableSequence([
+                Syllables.EARTH,
+                Syllables.REN,
+                Syllables.MA
+            ], SyllableSequence.ordered),
+        ],
+        `Sorcery:
+Target 5 Familiars. Each target gets +1/+1.
+You may choose the same target multiple times.`,
+        function resolveSpell(mage) {
+            return ifEnemyResolveElseDo(mage, function() {
+                // TODO: this check is currently used as an IS_FAMILIAR
+                var isFamiliar = CHECK.IS_PERMANENT;
+
+                var allTargets = getAllCharacters()
+                    .filter(isFamiliar);
+
+                function getSelectibles(alreadySelected) {
+                    if(alreadySelected.length >= 5) {
+                        return [];
+                    } else {
+                        return allTargets;
+                    }
+                }
+
+                function isValidSelection(alreadySelected) {
+                    return alreadySelected.length === 5;
+                }
+
+                return selectTarget(getSelectibles, isValidSelection, { multiTargeting: true })
+                    .each(familiar => {
+                        familiar.at++;
+                        familiar.hp++;
+                    });
             });
         }
     );
@@ -523,47 +564,6 @@ You may choose the same target multiple times.`,
         }
     );
 
-    var ShatteredGrowth = Spell.createSpell(
-        'Shattered Growth',
-        [
-            new SyllableSequence([
-                Syllables.EARTH,
-                Syllables.REN,
-                Syllables.MA
-            ], SyllableSequence.ordered),
-        ],
-        `Sorcery:
-Target 5 Familiars. Each target gets +1/+1.
-You may choose the same target multiple times.`,
-        function resolveSpell(mage) {
-            return ifEnemyResolveElseDo(mage, function() {
-                // TODO: this check is currently used as an IS_FAMILIAR
-                var isFamiliar = CHECK.IS_PERMANENT;
-
-                var allTargets = getAllCharacters()
-                    .filter(isFamiliar);
-
-                function getSelectibles(alreadySelected) {
-                    if(alreadySelected.length >= 5) {
-                        return [];
-                    } else {
-                        return allTargets;
-                    }
-                }
-
-                function isValidSelection(alreadySelected) {
-                    return alreadySelected.length === 5;
-                }
-
-                return selectTarget(getSelectibles, isValidSelection, { multiTargeting: true })
-                    .each(familiar => {
-                        familiar.at++;
-                        familiar.hp++;
-                    });
-            });
-        }
-    );
-
     var Brocky = Spell.createSpell(
         `Brocky, Cynthia's Guardian`,
         [
@@ -636,7 +636,7 @@ Sacrifice both: Get HP equal to the sum of their HP.`,
                 }
 
                 var allTargets = getAllCharacters()
-                    // TODO: this check is currently used as an IS_FAMILIAR
+                // TODO: this check is currently used as an IS_FAMILIAR
                     .filter(CHECK.IS_PERMANENT)
                     // TODO: are Familiars of an allied player/mage also friendly Familiars?
                     .filter(permanent => permanent.mage === mage)
@@ -700,7 +700,7 @@ Target Goblins with combined AT of 6 or less: Each target gets +1/+1.`,
                 }
 
                 var allTargets = getAllCharacters()
-                    // TODO: this check is currently used as an IS_FAMILIAR
+                // TODO: this check is currently used as an IS_FAMILIAR
                     .filter(CHECK.IS_PERMANENT)
                     .filter(isGoblin);
 
@@ -815,7 +815,7 @@ Deal 2 Damage to each target.`,
                         selectedEnemyFamiliars = alreadySelected.filter(isEnemy),
                         currentSumOfHPSelectedFriendlyFamiliars = getSumOfHP(selectedFriendlyFamiliars),
                         currentSumOfHPSelectedEnemyFamiliars = getSumOfHP(selectedEnemyFamiliars),
-                        // TODO: power operator returns [undefined] on empty arrays, but map to identity solves the issue!?
+                    // TODO: power operator returns [undefined] on empty arrays, but map to identity solves the issue!?
                         powerSetOfMissingFriendlyFamiliars = Combinatorics.power(_.difference(friendlyFamiliars, selectedFriendlyFamiliars)).map(a=>a),
                         powerSetOfMissingEnemyFamiliars = Combinatorics.power(_.difference(enemyFamiliars, selectedEnemyFamiliars)).map(a=>a),
                         sumsOfMissingFriendlyFamiliars = powerSetOfMissingFriendlyFamiliars.map(getSumOfHP),
@@ -874,27 +874,27 @@ Deal 2 Damage to each target.`,
     );
 
     var ForkedBolt = Spell.createSpell(
-    'Forked Bolt',
-    [
-      new SyllableSequence([
-        //Syllables.FIRE,
-        Syllables.CHI,
-        Syllables.CHI,
-        //Syllables.NIF
-      ], SyllableSequence.ordered),
-    ],
-    // TODO: Lightning subtype
-    `Lightning Sorcery
+        'Forked Bolt',
+        [
+            new SyllableSequence([
+                //Syllables.FIRE,
+                Syllables.CHI,
+                Syllables.CHI,
+                //Syllables.NIF
+            ], SyllableSequence.ordered),
+        ],
+        // TODO: Lightning subtype
+        `Lightning Sorcery
 Deal 2 Damage to 2 different targets.`,
-    function resolveSpell(mage) {
-      var damage = 2;
+        function resolveSpell(mage) {
+            var damage = 2;
 
-      return ifEnemyResolveElseDo(mage, function() {
-          return selectNumberOfUniqueTargets(getAllCharacters(), 2, 2)
-            .each(generateDealDamageToSingleTarget(damage, ForkedBolt.index))
-      });
-    }
-  );
+            return ifEnemyResolveElseDo(mage, function() {
+                return selectNumberOfUniqueTargets(getAllCharacters(), 2, 2)
+                    .each(generateDealDamageToSingleTarget(damage, ForkedBolt.index))
+            });
+        }
+    );
 
     var SkyFire = Spell.createSpell(
         'Sky Fire',
@@ -918,68 +918,68 @@ Target up to 5 Characters: Deal 1 Damage to each.`,
     );
 
     var FireRain = Spell.createSpell(
-    'Fire Rain',
-      [
-        new SyllableSequence([
-          //Syllables.FIRE,
-          Syllables.CHI,
-          Syllables.REN,
-          //Syllables.NIF
-        ], SyllableSequence.ordered),
-      ],
-      `Sorcery
+        'Fire Rain',
+        [
+            new SyllableSequence([
+                //Syllables.FIRE,
+                Syllables.CHI,
+                Syllables.REN,
+                //Syllables.NIF
+            ], SyllableSequence.ordered),
+        ],
+        `Sorcery
 Target 2 to 4 Familiars: Deal 1 Damage to each.`,
-      function resolveSpell(mage) {
-        var damage = 1;
-        return ifEnemyResolveElseDo(mage, function() {
-            // TODO: this check is currently used as an IS_FAMILIAR
-            return selectNumberOfUniqueTargets(getAllCharacters().filter(CHECK.IS_PERMANENT), 2, 4)
-              .each(generateDealDamageToSingleTarget(damage, FireRain.index));
-        });
-      }
+        function resolveSpell(mage) {
+            var damage = 1;
+            return ifEnemyResolveElseDo(mage, function() {
+                // TODO: this check is currently used as an IS_FAMILIAR
+                return selectNumberOfUniqueTargets(getAllCharacters().filter(CHECK.IS_PERMANENT), 2, 4)
+                    .each(generateDealDamageToSingleTarget(damage, FireRain.index));
+            });
+        }
     );
 
-  var HungryDemon = Spell.createSpell(
-    'Hungry Demon',
-    [
-      new SyllableSequence([
-        Syllables.SHADOW,
-        Syllables.MA,
-      ], SyllableSequence.ordered),
-    ],
-`5/0 (5) Demon Familiar
+    var HungryDemon = Spell.createSpell(
+        'Hungry Demon',
+        [
+            new SyllableSequence([
+                Syllables.SHADOW,
+                Syllables.MA,
+            ], SyllableSequence.ordered),
+        ],
+        `5/0 (5) Demon Familiar
 Choose 2 or more friendly Familiars when you cast/resolve? [this]:
 Sacrifice them, [this] gets HP equal to the sum of the sacrified familiars HP.`,
-    function resolveSpell(mage) {
-      return new Promise(function(resolve, reject) {
-        var permanent = new Permanent({
-          creatingSpell: HungryDemon,
-          spellTypes: [SpellType.Familiar],
-          subTypes: [SUBTYPE_DEMON],
-          hp: 0,
-          at: 5,
-          delay: 5
-        }, mage);
-        permanent.index = HungryDemon.index;
+        function resolveSpell(mage) {
+            return new Promise(function(resolve, reject) {
+                var permanent = new Permanent({
+                    creatingSpell: HungryDemon,
+                    spellTypes: [SpellType.Familiar],
+                    subTypes: [SUBTYPE_DEMON],
+                    hp: 0,
+                    at: 5,
+                    delay: 5
+                }, mage);
+                permanent.index = HungryDemon.index;
 
-        var friendlyFamiliars = getAllCharacters()
-            // TODO: this check is currently used as an IS_FAMILIAR
-            .filter(CHECK.IS_PERMANENT)
-            // TODO: are Familiars of an allied player/mage also friendly Familiars?
-            .filter(permanent => permanent.mage === mage);
+                var friendlyFamiliars = getAllCharacters()
+                // TODO: this check is currently used as an IS_FAMILIAR
+                    .filter(CHECK.IS_PERMANENT)
+                    // TODO: are Familiars of an allied player/mage also friendly Familiars?
+                    .filter(permanent => permanent.mage === mage);
 
-          selectNumberOfUniqueTargets(friendlyFamiliars, 2, Number.POSITIVE_INFINITY)
-              .each(target => {
-                  permanent.hp += target.hp;
-                  return game.eventManager.execute(EVENT_SACRIFICE, target);
-              })
-              .then(() => {
-                  game.eventManager.execute(EVENT_ENTER_BATTLEFIELD, permanent, mage);
-                  resolve();
-              });
-      });
-    }
-  );
+                selectNumberOfUniqueTargets(friendlyFamiliars, 2, Number.POSITIVE_INFINITY)
+                    .each(target => {
+                        permanent.hp += target.hp;
+                        return game.eventManager.execute(EVENT_SACRIFICE, target);
+                    })
+                    .then(() => {
+                        game.eventManager.execute(EVENT_ENTER_BATTLEFIELD, permanent, mage);
+                        resolve();
+                    });
+            });
+        }
+    );
 
 
     var ShieldKnight = Spell.createSpell(
@@ -1011,7 +1011,7 @@ Battlecry: Target another Familiar: [this] gets additional HP equal to targets H
                         },
                         (event, permanent, mage, ...args) => {
                             var otherFamiliars = getAllCharacters()
-                                // TODO: this check is currently used as an IS_FAMILIAR
+                            // TODO: this check is currently used as an IS_FAMILIAR
                                 .filter(CHECK.IS_PERMANENT)
                                 // TODO: extract as IS_NOT(identity)
                                 .filter(target => target !== permanent);
@@ -1134,7 +1134,7 @@ Target a mage and a familiar he/she controls: Both gain 2 HP.`,
                 }
 
                 return selectTarget(getSelectibles, isValidSelection)
-                    // TODO: as EVENT_GAIN_HP
+                // TODO: as EVENT_GAIN_HP
                     .each(target => target.hp += 2);
             });
         }
@@ -1225,7 +1225,7 @@ Deal Damage equal to the sum of their AT to all enemy Mages.`,
         `Sorcery
 Target an enemy character and one or more friendly Goblin Familiars.
 Deal 1 Damage to each Goblin and Damage to target enemy equal to each Goblins AT.`,
-    function resolveSpell(mage) {
+        function resolveSpell(mage) {
             return ifEnemyResolveElseDo(mage, function() {
                 var damage = 1;
                 // TODO: this check is currently used as an IS_FAMILIAR
@@ -1272,7 +1272,7 @@ Deal 1 Damage to each Goblin and Damage to target enemy equal to each Goblins AT
                     var goblins = filterForFriendlyGoblinFamiliars(alreadySelected);
 
                     return enemyCharacters.length === 1 &&
-                            goblins.length >= 1 &&
+                        goblins.length >= 1 &&
                         goblins.length + enemyCharacters.length === alreadySelected.length;
                 }
 
@@ -1419,7 +1419,7 @@ Deal 2 Damage to the enemy Character and heal the friendly Character by 2 HP.`,
                         var friend = friendlyCharacter(target1) ? target1 : target2;
 
                         return generateDealDamageToSingleTarget(damage, LifeDrain.index)(enemy)
-                            // TODO: as EVENT_GAIN_HP
+                        // TODO: as EVENT_GAIN_HP
                             .then(() => { friend.hp += 2; });
                     });
             });
@@ -1569,226 +1569,227 @@ Target 3 Familiars with different AT: Their AT becomes the highest of the 3.`,
         }
     );
 
-  var PurgeRay = Spell.createSpell(
-     'Purge Ray',
-     [
-       new SyllableSequence([
-         Syllables.LIGHT,
-         Syllables.CHI,
-         Syllables.REN,
-         Syllables.NIF,
-       ], SyllableSequence.ordered),
-     ],
-`Lightning Sorcery
+    var PurgeRay = Spell.createSpell(
+        'Purge Ray',
+        [
+            new SyllableSequence([
+                Syllables.LIGHT,
+                Syllables.CHI,
+                Syllables.REN,
+                Syllables.NIF,
+            ], SyllableSequence.ordered),
+        ],
+        `Lightning Sorcery
 Deal Damage equal to the number of friendly Characters.`,
-    function resolveSpell(mage) {
-      // TODO: use SUBTYPE_LIGHTNING
-      var damage = game.battlefield.getCharactersMatching(function(character) {
-        return character === mage || character.mage === mage;
-      }).length;
+        function resolveSpell(mage) {
+            // TODO: use SUBTYPE_LIGHTNING
+            var damage = game.battlefield.getCharactersMatching(function(character) {
+                return character === mage || character.mage === mage;
+            }).length;
 
-      return ifEnemyResolveElseDo(mage, function() {
-          return selectNumberOfUniqueTargets(getAllCharacters(), 1, 1)
-            .spread(generateDealDamageToSingleTarget(damage, PurgeRay.index));
-      });
-    }
-  );
+            return ifEnemyResolveElseDo(mage, function() {
+                return selectNumberOfUniqueTargets(getAllCharacters(), 1, 1)
+                    .spread(generateDealDamageToSingleTarget(damage, PurgeRay.index));
+            });
+        }
+    );
 
-  var SunlitEidolon = Spell.createSpell(
-     'Sunlit Eidolon',
-     [
-       new SyllableSequence([
-         Syllables.LIGHT,
-         //Syllables.KUN,
-         //Syllables.MA,
-         //Syllables.REN,
-         Syllables.XAU,
-       ], SyllableSequence.ordered),
-     ],
-`2/? (4) Spirit Enchantment Familiar
+    var SunlitEidolon = Spell.createSpell(
+        'Sunlit Eidolon',
+        [
+            new SyllableSequence([
+                Syllables.LIGHT,
+                //Syllables.KUN,
+                //Syllables.MA,
+                //Syllables.REN,
+                Syllables.XAU,
+            ], SyllableSequence.ordered),
+        ],
+        `2/? (4) Spirit Enchantment Familiar
 When [this] enters the Battlefield:
 Its HP become the number of your Light Syllables.`,
-    function resolveSpell(mage) {
-      return new Promise(function(resolve, reject) {
-        var lightSyllableCount = 0;
-        mage.syllableBoard.syllableStones.forEach(function(row) {
-          row.forEach(function(stone) {
-            if(stone &&
-                stone.syllable &&
-                stone.syllable.isA &&
-                stone.syllable.isA(Syllables.LIGHT)
-            ) {
-              lightSyllableCount += 1;
-            }
-          })
-        });
-        var permanent = new Permanent({
-          creatingSpell: SunlitEidolon,
-          spellTypes: [SpellType.Enchantment, SpellType.Familiar],
-          subTypes: [SUBTYPE_SPIRIT],
-          hp: lightSyllableCount,
-          at: 2,
-          delay: 4
-        }, mage);
-        permanent.index = SunlitEidolon.index;
-        game.eventManager.execute(EVENT_ENTER_BATTLEFIELD, permanent, mage);
+        function resolveSpell(mage) {
+            return new Promise(function(resolve, reject) {
+                var lightSyllableCount = 0;
+                mage.syllableBoard.syllableStones.forEach(function(row) {
+                    row.forEach(function(stone) {
+                        if(stone &&
+                            stone.syllable &&
+                            stone.syllable.isA &&
+                            stone.syllable.isA(Syllables.LIGHT)
+                        ) {
+                            lightSyllableCount += 1;
+                        }
+                    })
+                });
+                var permanent = new Permanent({
+                    creatingSpell: SunlitEidolon,
+                    spellTypes: [SpellType.Enchantment, SpellType.Familiar],
+                    subTypes: [SUBTYPE_SPIRIT],
+                    hp: lightSyllableCount,
+                    at: 2,
+                    delay: 4
+                }, mage);
+                permanent.index = SunlitEidolon.index;
+                game.eventManager.execute(EVENT_ENTER_BATTLEFIELD, permanent, mage);
 
-        resolve();
-       });
-    }
-  );
+                resolve();
+            });
+        }
+    );
 
-  var LightWeaver = Spell.createSpell(
-     'Light Weaver',
-     [
-       new SyllableSequence([
-         Syllables.LIGHT,
-         //Syllables.XAU,
-         Syllables.MA,
-         //Syllables.RYO,
-       ], SyllableSequence.ordered),
-     ],
-`1/3 (5) Human Priest Familiar
+    var LightWeaver = Spell.createSpell(
+        'Light Weaver',
+        [
+            new SyllableSequence([
+                Syllables.LIGHT,
+                //Syllables.XAU,
+                Syllables.MA,
+                //Syllables.RYO,
+            ], SyllableSequence.ordered),
+        ],
+        `1/3 (5) Human Priest Familiar
 At the start of your turn: Get 1 SP.`,
-    function resolveSpell(mage) {
-      return new Promise(function(resolve, reject) {
-        var permanent = new Permanent({
-          creatingSpell: LightWeaver,
-          spellTypes: [SpellType.Familiar],
-          subTypes: [SUBTYPE_HUMAN, SUBTYPE_PRIEST],
-          hp: 3,
-          at: 1,
-          delay: 5
-        }, mage);
-        permanent.index = LightWeaver.index;
-        permanent.afterTriggers = [
-          new Trigger(
-              (event, ...args) => { return event === EVENT_START_TURN && args[0] === permanent.mage},
-              (event, ...args) => { args[0].sp += 1; }
-          )
-        ];
-        game.eventManager.execute(EVENT_ENTER_BATTLEFIELD, permanent, mage);
+        function resolveSpell(mage) {
+            return new Promise(function(resolve, reject) {
+                var permanent = new Permanent({
+                    creatingSpell: LightWeaver,
+                    spellTypes: [SpellType.Familiar],
+                    subTypes: [SUBTYPE_HUMAN, SUBTYPE_PRIEST],
+                    hp: 3,
+                    at: 1,
+                    delay: 5
+                }, mage);
+                permanent.index = LightWeaver.index;
+                permanent.afterTriggers = [
+                    new Trigger(
+                        (event, ...args) => { return event === EVENT_START_TURN && args[0] === permanent.mage},
+                        (event, ...args) => { args[0].sp += 1; }
+                    )
+                ];
+                game.eventManager.execute(EVENT_ENTER_BATTLEFIELD, permanent, mage);
 
-        resolve();
-       });
-    }
-  );
+                resolve();
+            });
+        }
+    );
 
-  var AdlezTheSilverFang = Spell.createSpell(
-     'Adlez, the Silver Fang',
-     [
-       new SyllableSequence([
-         Syllables.LIGHT,
-         //Syllables.GAM,
-         Syllables.MA,
-         //Syllables.XAU,
-       ], SyllableSequence.ordered),
-     ],
-`2/3 (4) Human Knight Familiar
+    var AdlezTheSilverFang = Spell.createSpell(
+        'Adlez, the Silver Fang',
+        [
+            new SyllableSequence([
+                Syllables.LIGHT,
+                //Syllables.GAM,
+                Syllables.MA,
+                //Syllables.XAU,
+            ], SyllableSequence.ordered),
+        ],
+        `2/3 (4) Human Knight Familiar
 At the start of its turn: Gain 1 AT.`,
-    function resolveSpell(mage) {
-      return new Promise(function(resolve, reject) {
-        var permanent = new Permanent({
-          creatingSpell: AdlezTheSilverFang,
-          spellTypes: [SpellType.Familiar],
-          subTypes: [SUBTYPE_HUMAN, SUBTYPE_KNIGHT],
-          hp: 3,
-          at: 2,
-          delay: 4
-        }, mage);
-        permanent.index = AdlezTheSilverFang.index;
-        permanent.afterTriggers = [
-          new Trigger(
-              (event, ...args) => { return event === EVENT_START_TURN && args[0] === permanent},
-              event => { permanent.at++; }
-          )
-        ];
-        game.eventManager.execute(EVENT_ENTER_BATTLEFIELD, permanent, mage);
+        function resolveSpell(mage) {
+            return new Promise(function(resolve, reject) {
+                var permanent = new Permanent({
+                    creatingSpell: AdlezTheSilverFang,
+                    spellTypes: [SpellType.Familiar],
+                    subTypes: [SUBTYPE_HUMAN, SUBTYPE_KNIGHT],
+                    hp: 3,
+                    at: 2,
+                    delay: 4
+                }, mage);
+                permanent.index = AdlezTheSilverFang.index;
+                permanent.afterTriggers = [
+                    new Trigger(
+                        (event, ...args) => { return event === EVENT_START_TURN && args[0] === permanent},
+                        event => { permanent.at++; }
+                    )
+                ];
+                game.eventManager.execute(EVENT_ENTER_BATTLEFIELD, permanent, mage);
 
-        resolve();
-       });
-    }
-  );
+                resolve();
+            });
+        }
+    );
 
-  var spellBook = new SpellBook();
-  [
-    Fireball,
-    WildPyromancer,
-    GoblinAttackSquad,
-    RaidLeader,
+    var spellBook = new SpellBook();
+    [
+        Fireball,
+        WildPyromancer,
+        GoblinAttackSquad,
+        RaidLeader,
 
-    MediumOfFire,
+        MediumOfFire,
 
-    RockSlide,
-    RagingFlames,
-    Cultivate,
-    GeneModification,
-    ChainBuff,
-    ShatteredGrowth,
-    Brocky,
+        ShatteredGrowth,
+        RockSlide,
+        RagingFlames,
+        Cultivate,
+        GeneModification,
+        ChainBuff,
 
-    Roast,
-    Enrage,
-    BrothersInArms,
-    RaiseStruggle,
+        Brocky,
 
-    ForkedBolt,
-    SkyFire,
-    FireRain,
-    HungryDemon,
-    ShieldKnight,
-    Overheat,
-    ChainLightning,
-    SymphonyOfTheBoundSoul,
-    FlameThrower,
-    GoblinBombardment,
-    BlessingAndCurse,
-    FerociousAssault,
-    LifeDrain,
-    StrengthDrain,
-    BreakDownPunch,
-    HiddenStrength,
-    PurgeRay,
-    SunlitEidolon,
-    LightWeaver,
-    AdlezTheSilverFang
-  ].forEach(spellBook.addSpell.bind(spellBook));
-  spellBook.spells.forEach(function(spellClass, index) {
-    spellClass.index = index;
-  });
-  return spellBook;
+        Roast,
+        Enrage,
+        BrothersInArms,
+        RaiseStruggle,
+
+        ForkedBolt,
+        SkyFire,
+        FireRain,
+        HungryDemon,
+        ShieldKnight,
+        Overheat,
+        ChainLightning,
+        SymphonyOfTheBoundSoul,
+        FlameThrower,
+        GoblinBombardment,
+        BlessingAndCurse,
+        FerociousAssault,
+        LifeDrain,
+        StrengthDrain,
+        BreakDownPunch,
+        HiddenStrength,
+        PurgeRay,
+        SunlitEidolon,
+        LightWeaver,
+        AdlezTheSilverFang
+    ].forEach(spellBook.addSpell.bind(spellBook));
+    spellBook.spells.forEach(function(spellClass, index) {
+        spellClass.index = index;
+    });
+    return spellBook;
 };
 
 configureGameForTwoPlayers = function() {
-  var players = [new Player(), new Player()];
-  var mages = [
-    new Mage(
-      players[0],
-      20,
-      8, // 0
-      6,
-      new SyllableBoard({ x: 8, y: 8 }),
-      createTestSpellbook(),
-      createStandardSyllablePool()
-    ),
-    new Mage(
-      players[1],
-      20,
-      0,
-      6,
-      new SyllableBoard({ x: 8, y: 8 }),
-      createTestSpellbook(),
-      createStandardSyllablePool()
-    )
-  ];
+    var players = [new Player(), new Player()];
+    var mages = [
+        new Mage(
+            players[0],
+            20,
+            8, // 0
+            6,
+            new SyllableBoard({ x: 8, y: 8 }),
+            createTestSpellbook(),
+            createStandardSyllablePool()
+        ),
+        new Mage(
+            players[1],
+            20,
+            0,
+            6,
+            new SyllableBoard({ x: 8, y: 8 }),
+            createTestSpellbook(),
+            createStandardSyllablePool()
+        )
+    ];
 
-  players.forEach(game.addPlayer.bind(game));
+    players.forEach(game.addPlayer.bind(game));
 
-  mages[0].putOntoBattlefield();
-  game.timeline.advance();
-  game.timeline.advance();
-  game.timeline.advance();
-  mages[1].putOntoBattlefield();
+    mages[0].putOntoBattlefield();
+    game.timeline.advance();
+    game.timeline.advance();
+    game.timeline.advance();
+    mages[1].putOntoBattlefield();
 };
 
 game = new Game();
