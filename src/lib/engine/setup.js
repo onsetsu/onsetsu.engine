@@ -2,7 +2,7 @@
 // Variants
 // --------------------------------------------------------------------------------
 
-createStandardSyllablePool = function() {
+var createStandardSyllablePool = function() {
     return new SyllablePool([
         Syllables.CHI,
         Syllables.MA,
@@ -92,7 +92,7 @@ const CHECK = {
     }
 };
 
-function generateDealDamageToSingleTarget(damage, spellIndex) {
+window.generateDealDamageToSingleTarget = function generateDealDamageToSingleTarget(damage, spellIndex) {
     return function(target) {
         env.conn.send({
             command: 'targetForDamage',
@@ -119,7 +119,7 @@ class InfoMessage {
     }
 }
 
-createTestSpellbook = function() {
+window.createTestSpellbook = function() {
     /*
      * Currently used Spells
      */
@@ -1951,7 +1951,7 @@ At the start of its turn: Gain 1 AT.`,
     return spellBook;
 };
 
-configureGameForTwoPlayers = function() {
+window.configureGameForTwoPlayers = function() {
     var players = [new Player(), new Player()];
     var mages = [
         new Mage(
@@ -1983,4 +1983,4 @@ configureGameForTwoPlayers = function() {
     mages[1].putOntoBattlefield();
 };
 
-game = new Game();
+window.game = new Game();

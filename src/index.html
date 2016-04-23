@@ -44,7 +44,9 @@
 	<script type="text/javascript" src="external/dat.gui.js"></script>
 	<script type="text/javascript" src="external/combinatorics.js"></script>
 
-    <script type="text/javascript" src="testfacility.js"></script>
+	<script type="text/javascript" src="lib/impact/impact.full.js"></script>
+
+	<script type="text/javascript" src="testfacility.js"></script>
 
     <script type="text/javascript" src="lib/game/databindings/databindings.js"></script>
     <script type="text/javascript" src="lib/game/databindings/testdatabindings.js"></script>
@@ -56,14 +58,11 @@
     <script type="text/javascript" src="lib/engine/enginetimeline.js"></script>
 	<script type="text/javascript" src="lib/engine/engineutilities.js"></script>
 	<script type="text/javascript" src="lib/engine/engineeffect.js"></script>
-    <script type="text/javascript" src="lib/engine/setup.js"></script>
-
-    <script type="text/javascript" src="lib/impact/impact.full.js"></script>
-
-    <script type="text/javascript" src="test.js"></script>
 
 	<script>
-		System.import('main.js');
+		System.import("lib/engine/setup.js")
+			.then(() => System.import("test.js"))
+		    .then(() => System.import('main.js'));
 	</script>
 
 </head>
