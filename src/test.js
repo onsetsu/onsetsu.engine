@@ -1,6 +1,9 @@
 // --------------------------------------------------------------------------------
 // Tests
 // --------------------------------------------------------------------------------
+
+import { test, assert } from './testfacility.js';
+
 test(function() {
   assert(Syllables.CHI.isA(Syllables.CHI));
   assert(!Syllables.CHI.isA(Syllables.FIRE));

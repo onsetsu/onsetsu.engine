@@ -1,16 +1,16 @@
 // --------------------------------------------------------------------------------
 // Test facility
 // --------------------------------------------------------------------------------
-var test = function test(func) {
+export function test(func) {
   try {
     func();
   } catch(e) {
     console.log(e);
   }
-};
+}
 
-var assert = function assert(bool, message) {
+export function assert(bool, message) {
   if(!bool) {
     throw new Error(message);
   }
-};
+}
