@@ -34,6 +34,17 @@ function selectTarget(getSelectibles, isValidSelection, parameters) {
     });
 }
 
+/*
+ * Checks whether targeting is even possible to complete
+ * (using a simple back-tracking mechanism)
+ */
+function secureSelectTarget(getSelectibles, isValidSelection, parameters, then) {
+    if(!targetingPossible(getSelectibles, isValidSelection, parameters, [])) {
+        return Promise.resolve();
+    }
+    return then(selectTarget(getSelectibles, isValidSelection, parameters));
+}
+
 function selectNumberOfUniqueTargets(targets, minNumTargets, maxNumTargets, parameters) {
     function getSelectibles(alreadySelected) {
         if(alreadySelected.length >= maxNumTargets) {
@@ -54,6 +65,17 @@ function selectNumberOfUniqueTargets(targets, minNumTargets, maxNumTargets, para
 function ifEnemyResolveElseDo(mage, els) {
     var isEnemy = mage.controller !== GUI.game.visualizedMainPlayer;
     return Promise.resolve(isEnemy ? null : els());
+}
+
+function targetingPossible(getSelectibles, isValidSelection, parameters, alreadySelected) {
+    if(isValidSelection(alreadySelected)) {
+        return true;
+    } else {
+        return getSelectibles(alreadySelected).some(newTarget => {
+            var newSelectedTargets = alreadySelected.concat(newTarget);
+            return targetingPossible(getSelectibles, isValidSelection, parameters, newSelectedTargets);
+        });
+    }
 }
 
 var getAllCharacters = function() {
@@ -382,14 +404,15 @@ You may choose the same target multiple times.`,
                     return alreadySelected.length === 5;
                 }
 
-                return selectTarget(getSelectibles, isValidSelection, {
+                var parameters = {
                     multiTargeting: true,
                     infoMessage: infoMessage
-                })
-                    .each(familiar => {
-                        familiar.at++;
-                        familiar.hp++;
-                    });
+                };
+
+                return secureSelectTarget(getSelectibles, isValidSelection, parameters, targets => targets.each(familiar => {
+                    familiar.at++;
+                    familiar.hp++;
+                }));
             });
         }
     );
@@ -432,15 +455,16 @@ You may choose the same target up to two times.`,
                     return alreadySelected.length === 4;
                 }
 
-                return selectTarget(getSelectibles, isValidSelection, {
+                var parameters = {
                     multiTargeting: true,
                     infoMessage: infoMessage
-                })
-                    .each(target => {
-                        // TODO: should move this check into the DEAL_DAMAGE event itself
-                        if(!target.isOnBattlefield()) { return; }
-                        return generateDealDamageToSingleTarget(damage, RockSlide.index)(target);
-                    });
+                };
+
+                return secureSelectTarget(getSelectibles, isValidSelection, parameters, targets => targets.each(target => {
+                    // TODO: should move this check into the DEAL_DAMAGE event itself
+                    if(!target.isOnBattlefield()) { return; }
+                    return generateDealDamageToSingleTarget(damage, RockSlide.index)(target);
+                }));
             });
         }
     );
