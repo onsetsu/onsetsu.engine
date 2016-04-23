@@ -45,7 +45,7 @@ function secureSelectTarget(getSelectibles, isValidSelection, parameters, then) 
     return then(selectTarget(getSelectibles, isValidSelection, parameters));
 }
 
-function selectNumberOfUniqueTargets(targets, minNumTargets, maxNumTargets, parameters) {
+function generateNumberOfUniqueTargets(targets, minNumTargets, maxNumTargets) {
     function getSelectibles(alreadySelected) {
         if(alreadySelected.length >= maxNumTargets) {
             return [];
@@ -59,7 +59,7 @@ function selectNumberOfUniqueTargets(targets, minNumTargets, maxNumTargets, para
             alreadySelected.length === _.uniq(alreadySelected).length;
     }
 
-    return selectTarget(getSelectibles, isValidSelection, parameters);
+    return [getSelectibles, isValidSelection];
 }
 
 function ifEnemyResolveElseDo(mage, els) {
@@ -139,7 +139,7 @@ Deal 2 Damage.`,
             var infoMessage = new InfoMessage('Fireball: Select a target.');
 
             return ifEnemyResolveElseDo(mage, function() {
-                return selectNumberOfUniqueTargets(getAllCharacters(), 1, 1, {
+                return selectTarget(...generateNumberOfUniqueTargets(getAllCharacters(), 1, 1), {
                     infoMessage: infoMessage
                 })
                     .spread(generateDealDamageToSingleTarget(damage, Fireball.index));
@@ -331,7 +331,7 @@ Target any number of familiars. Deal 3 Damage to each.`,
                 var allTargets = getAllCharacters()
                     .filter(isFamiliar);
 
-                return selectNumberOfUniqueTargets(allTargets, 0, Number.POSITIVE_INFINITY, {
+                return selectTarget(...generateNumberOfUniqueTargets(allTargets, 0, Number.POSITIVE_INFINITY), {
                     infoMessage: infoMessage
                 })
                     .each(generateDealDamageToSingleTarget(damage, FirePillars.index));
@@ -361,7 +361,7 @@ Target 3 Familiars: Deal 1 damage to the first target,
                 var allTargets = getAllCharacters()
                     .filter(isFamiliar);
 
-                return ifEnemyResolveElseDo(mage, () => selectNumberOfUniqueTargets(allTargets, 3, 3, {
+                return ifEnemyResolveElseDo(mage, () => selectTarget(...generateNumberOfUniqueTargets(allTargets, 3, 3), {
                         infoMessage: infoMessage
                     })
                     .each((target, index) => generateDealDamageToSingleTarget(index + 1, ImpulseSalvo.index)(target))
@@ -1038,7 +1038,7 @@ Deal 2 Damage to 2 different targets.`,
             var damage = 2;
 
             return ifEnemyResolveElseDo(mage, function() {
-                return selectNumberOfUniqueTargets(getAllCharacters(), 2, 2, {
+                return selectTarget(...generateNumberOfUniqueTargets(getAllCharacters(), 2, 2), {
                     infoMessage: infoMessage
                 })
                     .each(generateDealDamageToSingleTarget(damage, ForkedBolt.index))
@@ -1063,7 +1063,7 @@ Target up to 5 Characters: Deal 1 Damage to each.`,
 
             var damage = 1;
             return ifEnemyResolveElseDo(mage, function() {
-                return selectNumberOfUniqueTargets(getAllCharacters(), 0, 5, {
+                return selectTarget(...generateNumberOfUniqueTargets(getAllCharacters(), 0, 5), {
                     infoMessage: infoMessage
                 })
                     .each(generateDealDamageToSingleTarget(damage, SkyFire.index));
@@ -1089,7 +1089,7 @@ Target 2 to 4 Familiars: Deal 1 Damage to each.`,
             var damage = 1;
             return ifEnemyResolveElseDo(mage, function() {
                 // TODO: this check is currently used as an IS_FAMILIAR
-                return selectNumberOfUniqueTargets(getAllCharacters().filter(CHECK.IS_PERMANENT), 2, 4, {
+                return selectTarget(...generateNumberOfUniqueTargets(getAllCharacters().filter(CHECK.IS_PERMANENT), 2, 4), {
                     infoMessage: infoMessage
                 })
                     .each(generateDealDamageToSingleTarget(damage, FireRain.index));
@@ -1128,7 +1128,7 @@ Sacrifice them, [this] gets HP equal to the sum of the sacrified familiars HP.`,
                     // TODO: are Familiars of an allied player/mage also friendly Familiars?
                     .filter(permanent => permanent.mage === mage);
 
-                selectNumberOfUniqueTargets(friendlyFamiliars, 2, Number.POSITIVE_INFINITY, {
+                selectTarget(...generateNumberOfUniqueTargets(friendlyFamiliars, 2, Number.POSITIVE_INFINITY), {
                     infoMessage: infoMessage
                 })
                     .each(target => {
@@ -1180,7 +1180,7 @@ Battlecry: Target another Familiar: [this] gets additional HP equal to targets H
                                 // TODO: extract as IS_NOT(identity)
                                 .filter(target => target !== permanent);
 
-                            return selectNumberOfUniqueTargets(otherFamiliars, 1, 1, {
+                            return selectTarget(...generateNumberOfUniqueTargets(otherFamiliars, 1, 1), {
                                 infoMessage: infoMessage
                             })
                                 .spread(target => {
@@ -1214,7 +1214,7 @@ Target up to 3 Familiars: Deal 3 Damage to each. Loose 1 HP for each beyond the 
             var damage = 3;
             return ifEnemyResolveElseDo(mage, function() {
                 // TODO: this check is currently used as an IS_FAMILIAR
-                return selectNumberOfUniqueTargets(getAllCharacters().filter(CHECK.IS_PERMANENT), 0, 3, {
+                return selectTarget(...generateNumberOfUniqueTargets(getAllCharacters().filter(CHECK.IS_PERMANENT), 0, 3), {
                     infoMessage: infoMessage
                 })
                     .each(generateDealDamageToSingleTarget(damage, Overheat.index))
@@ -1245,7 +1245,7 @@ Target 3 Characters: Deal 3 Damage to the first target, 2 to the second, and 1 t
 
                 var damage = 3;
 
-                return selectNumberOfUniqueTargets(getAllCharacters(), 3, 3, {
+                return selectTarget(...generateNumberOfUniqueTargets(getAllCharacters(), 3, 3), {
                     infoMessage: infoMessage
                 })
                     .each(target => {
@@ -1501,7 +1501,7 @@ Target 3 Characters: Deal 2 Damage to each enemy target and all friendly Targets
                 // TODO: duplicated check: put into CHECK.IS_FRIENDLY(mage)(character)
                 function isFriendly(character) { return character === mage || character.mage === mage}
 
-                return selectNumberOfUniqueTargets(getAllCharacters(), 3, 3, {
+                return selectTarget(...generateNumberOfUniqueTargets(getAllCharacters(), 3, 3), {
                     infoMessage: infoMessage
                 })
                     .each(target => {
@@ -1800,7 +1800,7 @@ Deal Damage equal to the number of friendly Characters.`,
             }).length;
 
             return ifEnemyResolveElseDo(mage, function() {
-                return selectNumberOfUniqueTargets(getAllCharacters(), 1, 1, {
+                return selectTarget(...generateNumberOfUniqueTargets(getAllCharacters(), 1, 1), {
                     infoMessage: infoMessage
                 })
                     .spread(generateDealDamageToSingleTarget(damage, PurgeRay.index));
