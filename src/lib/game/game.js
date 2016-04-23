@@ -240,11 +240,17 @@ GUI.Game = ig.Game.extend({
         targets.push(side2.mages[0]);
 
         return new Promise(function(resolve, reject) {
-            selectNumberOfUniqueTargets(targets, 1, 1).spread(function(combatant2) {
+            secureSelectTarget(...generateNumberOfUniqueTargets(targets, 1, 1), {}, targets => targets.spread(function(combatant2) {
                 GUI.game.animatedBattle(combatant1, combatant2).then(function() {
                     resolve([combatant1, combatant2]);
                 });
-            });
+            }));
+
+            //selectNumberOfUniqueTargets(targets, 1, 1).spread(function(combatant2) {
+            //    GUI.game.animatedBattle(combatant1, combatant2).then(function() {
+            //        resolve([combatant1, combatant2]);
+            //    });
+            //});
         });
 	},
 

@@ -2,7 +2,7 @@
 // Variants
 // --------------------------------------------------------------------------------
 
-var createStandardSyllablePool = function() {
+window.createStandardSyllablePool = function() {
     return new SyllablePool([
         Syllables.CHI,
         Syllables.MA,
@@ -38,15 +38,15 @@ function selectTarget(getSelectibles, isValidSelection, parameters) {
  * Checks whether targeting is even possible to complete
  * (using a simple back-tracking mechanism)
  */
-function secureSelectTarget(getSelectibles, isValidSelection, parameters, then) {
+window.secureSelectTarget = function secureSelectTarget(getSelectibles, isValidSelection, parameters, then) {
     if(!targetingPossible(getSelectibles, isValidSelection, [])) {
         console.log('no valid target combination found');
         return Promise.resolve();
     }
     return then(selectTarget(getSelectibles, isValidSelection, parameters));
-}
+};
 
-function generateNumberOfUniqueTargets(targets, minNumTargets, maxNumTargets) {
+window.generateNumberOfUniqueTargets = function generateNumberOfUniqueTargets(targets, minNumTargets, maxNumTargets) {
     function getSelectibles(alreadySelected) {
         if(alreadySelected.length >= maxNumTargets) {
             return [];
@@ -61,7 +61,7 @@ function generateNumberOfUniqueTargets(targets, minNumTargets, maxNumTargets) {
     }
 
     return [getSelectibles, isValidSelection];
-}
+};
 
 function ifEnemyResolveElseDo(mage, els) {
     var isEnemy = mage.controller !== GUI.game.visualizedMainPlayer;
@@ -107,17 +107,9 @@ window.generateDealDamageToSingleTarget = function generateDealDamageToSingleTar
                 game.eventManager.execute(EVENT_DEAL_DAMAGE, target, damage);
             });
     }
-}
+};
 
-class InfoMessage {
-    constructor(message) {
-        this.message = message;
-    }
-
-    getMessage() {
-        return this.message;
-    }
-}
+import InfoMessage from './../infomessage.js';
 
 window.createTestSpellbook = function() {
     /*
@@ -1949,36 +1941,4 @@ At the start of its turn: Gain 1 AT.`,
         spellClass.index = index;
     });
     return spellBook;
-};
-
-window.configureGameForTwoPlayers = function() {
-    var players = [new Player(), new Player()];
-    var mages = [
-        new Mage(
-            players[0],
-            20,
-            8, // 0
-            6,
-            new SyllableBoard({ x: 8, y: 8 }),
-            createTestSpellbook(),
-            createStandardSyllablePool()
-        ),
-        new Mage(
-            players[1],
-            20,
-            0,
-            6,
-            new SyllableBoard({ x: 8, y: 8 }),
-            createTestSpellbook(),
-            createStandardSyllablePool()
-        )
-    ];
-
-    players.forEach(game.addPlayer.bind(game));
-
-    mages[0].putOntoBattlefield();
-    game.timeline.advance();
-    game.timeline.advance();
-    game.timeline.advance();
-    mages[1].putOntoBattlefield();
 };
