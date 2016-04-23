@@ -274,6 +274,59 @@ When a Spell is casted: Cast Fireball instead.`,
         }
     );
 
+    var FirePillars = Spell.createSpell(
+        'Fire Pillars',
+        [
+            new SyllableSequence([
+                Syllables.EARTH,
+                Syllables.REN,
+                Syllables.REN
+            ], SyllableSequence.ordered),
+        ],
+        `Sorcery:
+Target any number of familiars. Deal 3 Damage to each.`,
+        function resolveSpell(mage) {
+            var damage = 3;
+            return ifEnemyResolveElseDo(mage, function() {
+                // TODO: this check is currently used as an IS_FAMILIAR
+                var isFamiliar = CHECK.IS_PERMANENT;
+
+                var allTargets = getAllCharacters()
+                    .filter(isFamiliar);
+
+                return selectNumberOfUniqueTargets(allTargets, 0, Number.POSITIVE_INFINITY)
+                    .each(generateDealDamageToSingleTarget(damage, FirePillars.index));
+            });
+        }
+    );
+
+    var ImpulseSalvo = Spell.createSpell(
+        'Impulse Salvo',
+        [
+            new SyllableSequence([
+                Syllables.LIGHT,
+                Syllables.REN,
+                Syllables.CHI
+            ], SyllableSequence.ordered),
+        ],
+        `Sorcery:
+Target 3 Familiars: Deal 1 damage to the first target,
+2 damage to the second target, and 3 damage to the third target.`,
+        function resolveSpell(mage) {
+            return ifEnemyResolveElseDo(mage, function() {
+                // TODO: this check is currently used as an IS_FAMILIAR
+                var isFamiliar = CHECK.IS_PERMANENT;
+
+                var allTargets = getAllCharacters()
+                    .filter(isFamiliar);
+
+                return ifEnemyResolveElseDo(mage, () => selectNumberOfUniqueTargets(allTargets, 3, 3)
+                    .each((target, index) => generateDealDamageToSingleTarget(index + 1, ImpulseSalvo.index)(target))
+                );
+            });
+        }
+    );
+
     var ShatteredGrowth = Spell.createSpell(
         'Shattered Growth',
         [
@@ -1718,6 +1771,9 @@ At the start of its turn: Gain 1 AT.`,
         RaidLeader,
 
         MediumOfFire,
+
+        FirePillars,
+        ImpulseSalvo,
 
         ShatteredGrowth,
         RockSlide,
