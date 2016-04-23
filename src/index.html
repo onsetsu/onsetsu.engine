@@ -47,7 +47,6 @@
 	<script type="text/javascript" src="lib/impact/impact.full.js"></script>
 
     <script type="text/javascript" src="lib/game/databindings/databindings.js"></script>
-    <script type="text/javascript" src="lib/game/databindings/testdatabindings.js"></script>
 
     <script type="text/javascript" src="lib/engine/engine.js"></script>
     <script type="text/javascript" src="lib/engine/enginesyllable.js"></script>
@@ -60,6 +59,7 @@
 	<script>
 		System.import("lib/engine/setup.js")
 			.then(() => System.import("test.js"))
+     		.then(() => System.import("lib/game/databindings/testdatabindings.js"))
 		    .then(() => System.import('main.js'));
 	</script>
 

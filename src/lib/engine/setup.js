@@ -1982,5 +1982,3 @@ window.configureGameForTwoPlayers = function() {
     game.timeline.advance();
     mages[1].putOntoBattlefield();
 };
-
-window.game = new Game();
