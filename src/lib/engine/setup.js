@@ -34,7 +34,7 @@ function selectTarget(getSelectibles, isValidSelection, parameters) {
     });
 }
 
-function selectNumberOfUniqueTargets(targets, minNumTargets, maxNumTargets) {
+function selectNumberOfUniqueTargets(targets, minNumTargets, maxNumTargets, parameters) {
     function getSelectibles(alreadySelected) {
         if(alreadySelected.length >= maxNumTargets) {
             return [];
@@ -48,7 +48,7 @@ function selectNumberOfUniqueTargets(targets, minNumTargets, maxNumTargets) {
             alreadySelected.length === _.uniq(alreadySelected).length;
     }
 
-    return selectTarget(getSelectibles, isValidSelection);
+    return selectTarget(getSelectibles, isValidSelection, parameters);
 }
 
 function ifEnemyResolveElseDo(mage, els) {
@@ -117,7 +117,9 @@ Deal 2 Damage.`,
             var infoMessage = new InfoMessage('Fireball: Select a target.');
 
             return ifEnemyResolveElseDo(mage, function() {
-                return selectNumberOfUniqueTargets(getAllCharacters(), 1, 1)
+                return selectNumberOfUniqueTargets(getAllCharacters(), 1, 1, {
+                    infoMessage: infoMessage
+                })
                     .spread(generateDealDamageToSingleTarget(damage, Fireball.index));
             });
             //return ifEnemyResolveElseDo(mage, function() {
@@ -303,6 +305,8 @@ Target any number of familiars. Deal 3 Damage to each.`,
         function resolveSpell(mage) {
             var damage = 3;
             return ifEnemyResolveElseDo(mage, function() {
+                var infoMessage = new InfoMessage('Fire Pillars: Select any number of targets.');
+
                 // TODO: this check is currently used as an IS_FAMILIAR
                 var isFamiliar = CHECK.IS_PERMANENT;
 
@@ -329,6 +333,8 @@ Target 3 Familiars: Deal 1 damage to the first target,
 2 damage to the second target, and 3 damage to the third target.`,
         function resolveSpell(mage) {
             return ifEnemyResolveElseDo(mage, function() {
+                var infoMessage = new InfoMessage('Impulse Salvo: Select 3 targets.');
+
                 // TODO: this check is currently used as an IS_FAMILIAR
                 var isFamiliar = CHECK.IS_PERMANENT;
 
@@ -357,6 +363,7 @@ You may choose the same target multiple times.`,
         function resolveSpell(mage) {
             return ifEnemyResolveElseDo(mage, function() {
                 var infoMessage = new InfoMessage('Shattered Growth: Select 5 Targets.\nYou may choose the same target multiple times.');
+
                 // TODO: this check is currently used as an IS_FAMILIAR
                 var isFamiliar = CHECK.IS_PERMANENT;
 
@@ -401,6 +408,8 @@ Target 4 Familiars. Deal 2 Damage to each target.
 You may choose the same target up to two times.`,
         function resolveSpell(mage) {
             return ifEnemyResolveElseDo(mage, function() {
+                var infoMessage = new InfoMessage('Rock Slide: Select 4 targets.\nYou may choose the same target up to two times.');
+
                 var damage = 2;
 
                 // TODO: this check is currently used as an IS_FAMILIAR
@@ -463,6 +472,8 @@ You may choose the same target up to two times.`,
 Distribute 3 Damage amoung Familiars or Mages`,
         function resolveSpell(mage) {
             return ifEnemyResolveElseDo(mage, function() {
+                var infoMessage = new InfoMessage('Raging Flames: Distribute 3 Damage.');
+
                 // TODO: get only mages and familiars
                 var allTargets = getAllCharacters();
 
@@ -500,6 +511,7 @@ Distribute X +1/+1 counters among up to 3 familiars.
 X is the number of friendly characters.`,
         function resolveSpell(mage) {
             return ifEnemyResolveElseDo(mage, function() {
+
                 // TODO: this check is currently used as an IS_FAMILIAR
                 var isFamiliar = CHECK.IS_PERMANENT;
 
@@ -512,6 +524,7 @@ X is the number of friendly characters.`,
                 }
 
                 var numberOfCountersToDistribute = getAllCharacters().filter(friendlyCharacter).length;
+                var infoMessage = new InfoMessage('Raging Flames: Distribute ' + numberOfCountersToDistribute + ' counter(s).');
 
                 function getSelectibles(alreadySelected) {
                     if(alreadySelected.length >= numberOfCountersToDistribute) {
@@ -551,6 +564,8 @@ X is the number of friendly characters.`,
 Target 2 to 5 Familiars. Each target gets +1/-1. You may choose the same target up to 3 times.`,
         function resolveSpell(mage) {
             return ifEnemyResolveElseDo(mage, function() {
+                var infoMessage = new InfoMessage('Gene Modification: Select 2 to 5 targets.\nYou may choose the same target up to 3 times.');
+
                 // TODO: this check is currently used as an IS_FAMILIAR
                 var isFamiliar = CHECK.IS_PERMANENT;
 
@@ -601,6 +616,8 @@ The first target gets +1/+1, the second target gets +2/+2, etc.
 You may choose the same target multiple times.`,
         function resolveSpell(mage) {
             return ifEnemyResolveElseDo(mage, function() {
+                var infoMessage = new InfoMessage('Chain Buff: Select 4 targets.\nYou may choose the same target multiple times.');
+
                 // TODO: this check is currently used as an IS_FAMILIAR
                 var isFamiliar = CHECK.IS_PERMANENT;
 
@@ -696,6 +713,8 @@ Target a Goblin and a Fire Familiar.
 Sacrifice both: Get HP equal to the sum of their HP.`,
         function resolveSpell(mage) {
             return ifEnemyResolveElseDo(mage, function() {
+                var infoMessage = new InfoMessage('Roast: Select a goblin and a fire familiar.');
+
                 // TODO: duplicated check
                 function isGoblin(character) {
                     return character.subTypes && _(character.subTypes).contains(SUBTYPE_GOBLIN);
@@ -766,6 +785,8 @@ Sacrifice both: Get HP equal to the sum of their HP.`,
 Target Goblins with combined AT of 6 or less: Each target gets +1/+1.`,
         function resolveSpell(mage) {
             return ifEnemyResolveElseDo(mage, function() {
+                var infoMessage = new InfoMessage('Enrage: Select goblins with a combined AT of 6 or less.');
+
                 // TODO: duplicated check
                 function isGoblin(character) {
                     return character.subTypes && _(character.subTypes).contains(SUBTYPE_GOBLIN);
@@ -816,6 +837,8 @@ Target Goblins with combined AT of 6 or less: Each target gets +1/+1.`,
 Target two or more Familiars with the same AT: Their AT becomes doubled.`,
         function resolveSpell(mage) {
             return ifEnemyResolveElseDo(mage, function() {
+                var infoMessage = new InfoMessage('Brothers in Arms: Select 2 targets with the same AT.');
+
                 // TODO: duplicated check
                 function isGoblin(character) {
                     return character.subTypes && _(character.subTypes).contains(SUBTYPE_GOBLIN);
@@ -866,6 +889,8 @@ Target a number of friendly Familiars and a number of enemy Familiars with the s
 Deal 2 Damage to each target.`,
         function resolveSpell(mage) {
             return ifEnemyResolveElseDo(mage, function() {
+                var infoMessage = new InfoMessage('Raise Struggle: Select friendly and enemy characters with the same sum of HP.');
+
                 // TODO: duplicated check: put into CHECK.IS_FRIENDLY(mage)(character)
                 function isFriendly(character) { return character === mage || character.mage === mage}
                 var isEnemy = character => !isFriendly(character);
@@ -959,6 +984,8 @@ Deal 2 Damage to each target.`,
         `Lightning Sorcery
 Deal 2 Damage to 2 different targets.`,
         function resolveSpell(mage) {
+            var infoMessage = new InfoMessage('Forked Bolt: Select 2 targets.');
+
             var damage = 2;
 
             return ifEnemyResolveElseDo(mage, function() {
@@ -981,6 +1008,8 @@ Deal 2 Damage to 2 different targets.`,
         `Sorcery
 Target up to 5 Characters: Deal 1 Damage to each.`,
         function resolveSpell(mage) {
+            var infoMessage = new InfoMessage('Sky Fire: Select up to 5 targets.');
+
             var damage = 1;
             return ifEnemyResolveElseDo(mage, function() {
                 return selectNumberOfUniqueTargets(getAllCharacters(), 0, 5)
@@ -1002,6 +1031,8 @@ Target up to 5 Characters: Deal 1 Damage to each.`,
         `Sorcery
 Target 2 to 4 Familiars: Deal 1 Damage to each.`,
         function resolveSpell(mage) {
+            var infoMessage = new InfoMessage('Fire Rain: Select 2 to 4 targets.');
+
             var damage = 1;
             return ifEnemyResolveElseDo(mage, function() {
                 // TODO: this check is currently used as an IS_FAMILIAR
@@ -1024,6 +1055,8 @@ Choose 2 or more friendly Familiars when you cast/resolve? [this]:
 Sacrifice them, [this] gets HP equal to the sum of the sacrified familiars HP.`,
         function resolveSpell(mage) {
             return new Promise(function(resolve, reject) {
+                var infoMessage = new InfoMessage('Hungry Demon: Select 2 or more targets.');
+
                 var permanent = new Permanent({
                     creatingSpell: HungryDemon,
                     spellTypes: [SpellType.Familiar],
@@ -1066,6 +1099,8 @@ Sacrifice them, [this] gets HP equal to the sum of the sacrified familiars HP.`,
 Battlecry: Target another Familiar: [this] gets additional HP equal to targets HP.`,
         function resolveSpell(mage) {
             return new Promise(function(resolve, reject) {
+                var infoMessage = new InfoMessage('Shield Knight: Select a target.');
+
                 var permanent = new Permanent({
                     creatingSpell: ShieldKnight,
                     spellTypes: [SpellType.Familiar],
@@ -1115,6 +1150,8 @@ Battlecry: Target another Familiar: [this] gets additional HP equal to targets H
         `Sorcery
 Target up to 3 Familiars: Deal 3 Damage to each. Loose 1 HP for each beyond the first one.`,
         function resolveSpell(mage) {
+            var infoMessage = new InfoMessage('Overheat: Select up to 3 targets.');
+
             var damage = 3;
             return ifEnemyResolveElseDo(mage, function() {
                 // TODO: this check is currently used as an IS_FAMILIAR
@@ -1143,6 +1180,8 @@ Target up to 3 Familiars: Deal 3 Damage to each. Loose 1 HP for each beyond the 
 Target 3 Characters: Deal 3 Damage to the first target, 2 to the second, and 1 to the third.`,
         function resolveSpell(mage) {
             return ifEnemyResolveElseDo(mage, function() {
+                var infoMessage = new InfoMessage('Chain Lightning: Select 3 targets.');
+
                 var damage = 3;
 
                 return selectNumberOfUniqueTargets(getAllCharacters(), 3, 3)
@@ -1167,6 +1206,8 @@ Target 3 Characters: Deal 3 Damage to the first target, 2 to the second, and 1 t
 Target a mage and a familiar he/she controls: Both gain 2 HP.`,
         function resolveSpell(mage) {
             return ifEnemyResolveElseDo(mage, function() {
+                var infoMessage = new InfoMessage('Symphony of the Bound Soul: Select a familiar and its controller.');
+
                 var damage = 2;
 
                 // TODO: !CHECK:IS_PERMANENT is not the correct check for a mage
@@ -1227,6 +1268,8 @@ Target a Dragon or 2 FIRE Familiars (currently: target a Spirit or 2 LIGHT):
 Deal Damage equal to the sum of their AT to all enemy Mages.`,
         function resolveSpell(mage) {
             return ifEnemyResolveElseDo(mage, function() {
+                var infoMessage = new InfoMessage('Flame Thrower: Select a dragon or 2 fire familiars.\nCurrently: Select a spirit or 2 light familiars.');
+
                 // TODO: this check is currently used as an IS_FAMILIAR
                 var isFamiliar = CHECK.IS_PERMANENT;
                 function isSpirit(character) {
@@ -1299,6 +1342,8 @@ Target an enemy character and one or more friendly Goblin Familiars.
 Deal 1 Damage to each Goblin and Damage to target enemy equal to each Goblins AT.`,
         function resolveSpell(mage) {
             return ifEnemyResolveElseDo(mage, function() {
+                var infoMessage = new InfoMessage('Goblin Bombardment: Select an enemy and at least one friendly goblin.');
+
                 var damage = 1;
                 // TODO: this check is currently used as an IS_FAMILIAR
                 var isFamiliar = CHECK.IS_PERMANENT;
@@ -1380,6 +1425,8 @@ Deal 1 Damage to each Goblin and Damage to target enemy equal to each Goblins AT
 Target 3 Characters: Deal 2 Damage to each enemy target and all friendly Targets get 2 HP.`,
         function resolveSpell(mage) {
             return ifEnemyResolveElseDo(mage, function() {
+                var infoMessage = new InfoMessage('Blessing and Curse: Select 3 targets.');
+
                 var damageAndHPGain = 2;
 
                 // TODO: duplicated check: put into CHECK.IS_FRIENDLY(mage)(character)
@@ -1411,6 +1458,8 @@ Target 3 Characters: Deal 2 Damage to each enemy target and all friendly Targets
 Target an equal number of friendly and enemy characters: Deal 2 Damage to each.`,
         function resolveSpell(mage) {
             return ifEnemyResolveElseDo(mage, function() {
+                var infoMessage = new InfoMessage('Ferocious Assault: Select an equal number of friendly and enemy targets.');
+
                 var damage = 2;
 
                 // TODO: duplicated check: put into CHECK.IS_FRIENDLY(mage)(character)
@@ -1459,6 +1508,8 @@ Target a friendly and an enemy Character:
 Deal 2 Damage to the enemy Character and heal the friendly Character by 2 HP.`,
         function resolveSpell(mage) {
             return ifEnemyResolveElseDo(mage, function() {
+                var infoMessage = new InfoMessage('Life Drain: Select a friendly and an enemy target.');
+
                 var damage = 2;
 
                 function friendlyCharacter(character) {
@@ -1512,6 +1563,8 @@ Target a Mage and a Familiar:
 Deal 2 Damage to the first target and give +2/+2 to the other.`,
         function resolveSpell(mage) {
             return ifEnemyResolveElseDo(mage, function() {
+                var infoMessage = new InfoMessage('Strength Drain: Select a mage and a familiar.');
+
                 var damage = 2;
 
                 // TODO: !CHECK:IS_PERMANENT is not the correct check for a mage
@@ -1569,6 +1622,8 @@ Target 2 Familiars with different AT:
 Deal Damage equal to the difference to all enemy Mages.`,
         function resolveSpell(mage) {
             return ifEnemyResolveElseDo(mage, function() {
+                var infoMessage = new InfoMessage('Break Down Punch: Select 2 targets.');
+
                 // TODO: this check is currently used as an IS_FAMILIAR
                 var familiars = getAllCharacters().filter(CHECK.IS_PERMANENT);
                 function getSelectibles(alreadySelected) {
@@ -1610,6 +1665,8 @@ Deal Damage equal to the difference to all enemy Mages.`,
 Target 3 Familiars with different AT: Their AT becomes the highest of the 3.`,
         function resolveSpell(mage) {
             return ifEnemyResolveElseDo(mage, function() {
+                var infoMessage = new InfoMessage('Hidden Strength: Select 3 targets.');
+
                 // TODO: this check is currently used as an IS_FAMILIAR
                 var familiars = getAllCharacters().filter(CHECK.IS_PERMANENT);
                 function getSelectibles(alreadySelected) {
@@ -1654,6 +1711,8 @@ Target 3 Familiars with different AT: Their AT becomes the highest of the 3.`,
         `Lightning Sorcery
 Deal Damage equal to the number of friendly Characters.`,
         function resolveSpell(mage) {
+            var infoMessage = new InfoMessage('Purge Ray: Select a target.');
+
             // TODO: use SUBTYPE_LIGHTNING
             var damage = game.battlefield.getCharactersMatching(function(character) {
                 return character === mage || character.mage === mage;

@@ -13,12 +13,7 @@ EntityInfoMessage = ig.Entity.extend({
         EntityInfoMessage.instance = this;
         this.id = 1;
         this.labels = new Map();
-
-        this.pushInfo('foo');
-        var bar = this.pushInfo('bar');
-        this.pushInfo('baz');
-        this.popInfo(bar)
-	},
+    },
     pushInfo: function(info) {
         var id = this.id++;
         this.labels.set(id, info);
@@ -32,7 +27,7 @@ EntityInfoMessage = ig.Entity.extend({
 
         var accumulatedLabel = '';
         this.labels.forEach((label, id) => {
-            accumulatedLabel += label + '\n\n';
+            accumulatedLabel += label.getMessage() + '\n\n';
         });
         var label = "foo",
 //        var label = this.model.baseDelay + ': ' + (this.model.recurring === Action.recurring ? 'recu' : 'once'),
