@@ -86,6 +86,16 @@ function generateDealDamageToSingleTarget(damage, spellIndex) {
     }
 }
 
+class InfoMessage {
+    constructor(message) {
+        this.message = message;
+    }
+
+    getMessage() {
+        return this.message;
+    }
+}
+
 createTestSpellbook = function() {
     /*
      * Currently used Spells
@@ -104,11 +114,16 @@ createTestSpellbook = function() {
 Deal 2 Damage.`,
         function resolveSpell(mage) {
             var damage = 2;
+            var infoMessage = new InfoMessage('Fireball: Select a target.');
 
             return ifEnemyResolveElseDo(mage, function() {
                 return selectNumberOfUniqueTargets(getAllCharacters(), 1, 1)
                     .spread(generateDealDamageToSingleTarget(damage, Fireball.index));
             });
+            //return ifEnemyResolveElseDo(mage, function() {
+            //    return selectNumberOfUniqueTargets(getAllCharacters(), 1, 1)
+            //        .spread(generateDealDamageToSingleTarget(damage, Fireball.index));
+            //});
         }
     );
 
@@ -341,6 +356,7 @@ Target 5 Familiars. Each target gets +1/+1.
 You may choose the same target multiple times.`,
         function resolveSpell(mage) {
             return ifEnemyResolveElseDo(mage, function() {
+                var infoMessage = new InfoMessage('Shattered Growth: Select 5 Targets.\nYou may choose the same target multiple times.');
                 // TODO: this check is currently used as an IS_FAMILIAR
                 var isFamiliar = CHECK.IS_PERMANENT;
 
@@ -359,7 +375,10 @@ You may choose the same target multiple times.`,
                     return alreadySelected.length === 5;
                 }
 
-                return selectTarget(getSelectibles, isValidSelection, { multiTargeting: true })
+                return selectTarget(getSelectibles, isValidSelection, {
+                    multiTargeting: true,
+                    infoMessage: infoMessage
+                })
                     .each(familiar => {
                         familiar.at++;
                         familiar.hp++;

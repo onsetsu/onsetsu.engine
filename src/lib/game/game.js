@@ -22,7 +22,9 @@ ig.module(
 	// handler
 	'game.handler.selecttarget',
 
-	'game.impactextension'
+	'game.impactextension',
+
+    'game.entities.info_message'
 )
 .defines(function(){
 
@@ -220,6 +222,7 @@ GUI.Game = ig.Game.extend({
 
         // START TIMELINE LOOP
         Promise.resolve().delay(2).then(function() {
+            GUI.game.spawnEntity(EntityInfoMessage, 300, 100);
             return GUI.game.advanceAndProcessTurn();
         });
 	},

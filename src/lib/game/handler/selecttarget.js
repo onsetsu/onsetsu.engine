@@ -23,6 +23,9 @@ GUI.SelectTarget = ig.Class.extend({
         });
 
         GUI.SelectTarget.selectTarget = this;
+        if(this.parameters.infoMessage) {
+            this.parameters.infoId = EntityInfoMessage.instance.pushInfo(this.parameters.infoMessage);
+        }
 
         this.checkForTargetSelectionCompleted();
     },
@@ -123,7 +126,9 @@ GUI.SelectTarget = ig.Class.extend({
     },
     completeTargeting: function() {
         GUI.SelectTarget.selectTarget = undefined;
-
+        if(this.parameters.infoId) {
+            EntityInfoMessage.instance.popInfo(this.parameters.infoId);
+        }
         this.clearSelectables();
 
         this.callback(this.selectedTargets);
