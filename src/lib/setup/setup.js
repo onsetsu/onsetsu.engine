@@ -1,6 +1,6 @@
 import { createStandardSyllablePool, createTestSpellbook } from './spells/spells.js';
 
-window.configureGameForTwoPlayers = function() {
+export function configureGameForTwoPlayers() {
     var players = [new Player(), new Player()];
     var mages = [
         new Mage(
@@ -30,4 +30,4 @@ window.configureGameForTwoPlayers = function() {
     game.timeline.advance();
     game.timeline.advance();
     mages[1].putOntoBattlefield();
-};
+}

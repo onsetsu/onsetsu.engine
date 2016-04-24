@@ -3,6 +3,7 @@
 // --------------------------------------------------------------------------------
 
 import {} from 'lib/networking.js';
+import { configureGameForTwoPlayers } from 'lib/setup/setup.js';
 
 window.game = undefined;
 window.engine = undefined;
