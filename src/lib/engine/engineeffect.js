@@ -180,7 +180,7 @@ window.checkStateBasedActions = function checkStateBasedActions() {
     game.battlefield.removeDefeatedPermanents();
 };
 
-const TURN_BASED_ACTIONS = {
+export const TURN_BASED_ACTIONS = {
     /**
      * At the start of the turn of a mage:
      * - increase its maxSp
@@ -192,4 +192,3 @@ const TURN_BASED_ACTIONS = {
         mage.sp = mage.maxSp;
     }
 };
-window.TURN_BASED_ACTIONS = TURN_BASED_ACTIONS;

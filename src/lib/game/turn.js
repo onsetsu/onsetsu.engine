@@ -1,5 +1,7 @@
 'use strict';
 
+import { TURN_BASED_ACTIONS } from './../engine/engineeffect.js';
+
 export default ig.Class.extend({
     init: function(action) {
         this.action = action;
