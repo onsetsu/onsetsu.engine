@@ -48,7 +48,14 @@
 
     <script type="text/javascript" src="lib/game/databindings/databindings.js"></script>
 
-    <script type="text/javascript" src="lib/engine/engine.js"></script>
+	<script>
+		window.game = undefined;
+		window.env = {};
+		window.GUI = {};
+		window.isHost = undefined;
+	</script>
+
+	<script type="text/javascript" src="lib/engine/engine.js"></script>
     <script type="text/javascript" src="lib/engine/enginesyllable.js"></script>
     <script type="text/javascript" src="lib/engine/enginespell.js"></script>
     <script type="text/javascript" src="lib/engine/enginebattlefield.js"></script>
@@ -60,7 +67,8 @@
 			.then(() => System.import("lib/engine/engineeffect.js"))
 			.then(() => System.import("lib/setup/setup.js"))
 			.then(() => System.import("test.js"))
-     		.then(() => System.import("lib/game/databindings/testdatabindings.js"))
+			.then(() => System.import("lib/game/databindings/testdatabindings.js"))
+			.then(() => new Promise(resolve => ig.module('init.game').requires('game.game').defines(resolve)))
 		    .then(() => System.import('main.js'));
 	</script>
 
