@@ -1,5 +1,6 @@
 'use strict';
 
+// TODO: currently unused
 // The 4 types of abilities:
 const SPELL_ABILITY = {};
 const ACTIVATED_ABILITY = {};
@@ -167,13 +168,6 @@ class ONS_EventManager {
         return afterTriggers;
     }
 }
-
-class Pointer {
-    constructor() {
-
-    }
-}
-
 
 function checkStateBasedActions() {
     game.battlefield.removeDefeatedPermanents();
