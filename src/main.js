@@ -7,7 +7,6 @@ import { configureGameForTwoPlayers } from 'lib/setup/setup.js';
 import { Game } from 'lib/engine/enginegame.js';
 
 window.game = undefined;
-window.engine = undefined;
 window.env = {};
 window.GUI = {};
 window.isHost = undefined;
@@ -22,7 +21,6 @@ ig.module(
   var runMain = function(host) {
     game = new Game();
     configureGameForTwoPlayers();
-    engine = new Engine();
     isHost = host;
 
     ig.main( '#canvas', GUI.Game, 60, 1138, 640, 1 );
