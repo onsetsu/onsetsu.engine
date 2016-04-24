@@ -1,4 +1,4 @@
-import * as spells from './spells/spells.js';
+import { createStandardSyllablePool } from './spells/spells.js';
 
 window.configureGameForTwoPlayers = function() {
     var players = [new Player(), new Player()];

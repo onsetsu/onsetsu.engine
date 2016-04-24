@@ -2,7 +2,7 @@
 // Variants
 // --------------------------------------------------------------------------------
 
-window.createStandardSyllablePool = function() {
+export function createStandardSyllablePool() {
     return new SyllablePool([
         Syllables.CHI,
         Syllables.MA,
@@ -23,7 +23,7 @@ window.createStandardSyllablePool = function() {
         Syllables.LIGHT,
         Syllables.SHADOW
     ]);
-};
+}
 
 /*
  * Returns a Promise for an Array of chosen targets.
@@ -120,10 +120,10 @@ window.createTestSpellbook = function() {
         [
             new SyllableSequence([
                 Syllables.FIRE,
-                Syllables.CHI,
+                Syllables.CHI
                 //Syllables.CHI,
                 //Syllables.NIF
-            ], SyllableSequence.ordered),
+            ], SyllableSequence.ordered)
         ],
         `Sorcery
 Deal 2 Damage.`,
@@ -147,8 +147,8 @@ Deal 2 Damage.`,
                 Syllables.XAU,
                 Syllables.CHI,
                 Syllables.CHI,
-                Syllables.NIF,
-            ], SyllableSequence.ordered),
+                Syllables.NIF
+            ], SyllableSequence.ordered)
         ],
         `3/2 (5) Goblin Shaman Familiar
 When [this] enters the Battlefield: Cast Fireball.`,
@@ -189,8 +189,8 @@ When [this] enters the Battlefield: Cast Fireball.`,
                 //Syllables.XAU,
                 //Syllables.CHI,
                 //Syllables.REN,
-                Syllables.REN,
-            ], SyllableSequence.ordered),
+                Syllables.REN
+            ], SyllableSequence.ordered)
         ],
         `Sorcery
 Summon 3 1/1 (3) Goblin Familiars.`,
@@ -220,9 +220,9 @@ Summon 3 1/1 (3) Goblin Familiars.`,
             new SyllableSequence([
                 Syllables.FIRE,
                 //Syllables.XAU,
-                Syllables.MA,
+                Syllables.MA
                 //Syllables.EX,
-            ], SyllableSequence.ordered),
+            ], SyllableSequence.ordered)
         ],
         `3/3 (4) Ogre Familiar
 When a friendly Goblin Familiar enters the battlefield: Give it +1/+1.
@@ -268,10 +268,10 @@ When a friendly Goblin Familiar enters the battlefield: Give it +1/+1.
                 Syllables.FIRE,
                 //Syllables.LIGHT,
                 //Syllables.XAU,
-                Syllables.YUN,
+                Syllables.YUN
                 //Syllables.CHI,
                 //Syllables.NIF,
-            ], SyllableSequence.ordered),
+            ], SyllableSequence.ordered)
         ],
         `2/6 (5) Human Wizard Familiar
 When a Spell is casted: Cast Fireball instead.`,
@@ -308,7 +308,7 @@ When a Spell is casted: Cast Fireball instead.`,
                 Syllables.EARTH,
                 Syllables.REN,
                 Syllables.REN
-            ], SyllableSequence.ordered),
+            ], SyllableSequence.ordered)
         ],
         `Sorcery:
 Target any number of familiars. Deal 3 Damage to each.`,
@@ -337,7 +337,7 @@ Target any number of familiars. Deal 3 Damage to each.`,
                 Syllables.LIGHT,
                 Syllables.REN,
                 Syllables.CHI
-            ], SyllableSequence.ordered),
+            ], SyllableSequence.ordered)
         ],
         `Sorcery:
 Target 3 Familiars: Deal 1 damage to the first target,
@@ -367,7 +367,7 @@ Target 3 Familiars: Deal 1 damage to the first target,
                 Syllables.EARTH,
                 Syllables.REN,
                 Syllables.MA
-            ], SyllableSequence.ordered),
+            ], SyllableSequence.ordered)
         ],
         `Sorcery:
 Target 5 Familiars. Each target gets +1/+1.
@@ -414,7 +414,7 @@ You may choose the same target multiple times.`,
                 Syllables.EARTH,
                 Syllables.CHI,
                 Syllables.KUN
-            ], SyllableSequence.ordered),
+            ], SyllableSequence.ordered)
         ],
         `Sorcery:
 Target 4 Familiars. Deal 2 Damage to each target.
@@ -483,7 +483,7 @@ You may choose the same target up to two times.`,
                 Syllables.REN,
                 // TODO: KUN has incorrect flavor
                 Syllables.KUN
-            ], SyllableSequence.ordered),
+            ], SyllableSequence.ordered)
         ],
         `Sorcery:
 Distribute 3 Damage amoung Familiars or Mages`,
@@ -524,7 +524,7 @@ Distribute 3 Damage amoung Familiars or Mages`,
                 Syllables.EARTH,
                 Syllables.PAI,
                 Syllables.REN
-            ], SyllableSequence.ordered),
+            ], SyllableSequence.ordered)
         ],
         `Sorcery:
 Distribute X +1/+1 counters among up to 3 familiars.
@@ -581,7 +581,7 @@ X is the number of friendly characters.`,
                 Syllables.WATER,
                 Syllables.MA,
                 Syllables.MA
-            ], SyllableSequence.ordered),
+            ], SyllableSequence.ordered)
         ],
         `Sorcery:
 Target 2 to 5 Familiars. Each target gets +1/-1. You may choose the same target up to 3 times.`,
@@ -633,7 +633,7 @@ Target 2 to 5 Familiars. Each target gets +1/-1. You may choose the same target 
                 Syllables.PAI,
                 Syllables.REN,
                 Syllables.MA
-            ], SyllableSequence.ordered),
+            ], SyllableSequence.ordered)
         ],
         `Sorcery:
 Target 4 Familiars.
@@ -691,7 +691,7 @@ You may choose the same target multiple times.`,
                 //Syllables.XAU,
 
                 Syllables.MA
-            ], SyllableSequence.ordered),
+            ], SyllableSequence.ordered)
         ],
         `2/5 (7) Golem Artifact Familiar
 Reduce Damage [this] receives by 1.`,
@@ -718,7 +718,7 @@ Reduce Damage [this] receives by 1.`,
                     new ReplacementEffect(
                         (event, target) => event === EVENT_DEAL_DAMAGE && target === brocky,
                         (event, target, amount, ...args) => [event, target, amount-1, ...args]
-                    ),
+                    )
                 ];
                 game.eventManager.execute(EVENT_ENTER_BATTLEFIELD, brocky, mage);
                 resolve();
@@ -733,7 +733,7 @@ Reduce Damage [this] receives by 1.`,
                 Syllables.FIRE,
                 Syllables.MA,
                 Syllables.TO
-            ], SyllableSequence.ordered),
+            ], SyllableSequence.ordered)
         ],
         `Sorcery:
 Target a Goblin and a Fire Familiar.
@@ -807,7 +807,7 @@ Sacrifice both: Get HP equal to the sum of their HP.`,
                 Syllables.FIRE,
                 Syllables.RYO,
                 Syllables.MA
-            ], SyllableSequence.ordered),
+            ], SyllableSequence.ordered)
         ],
         `Sorcery:
 Target Goblins with combined AT of 6 or less: Each target gets +1/+1.`,
@@ -860,7 +860,7 @@ Target Goblins with combined AT of 6 or less: Each target gets +1/+1.`,
                 Syllables.FIRE,
                 Syllables.MA,
                 Syllables.REN
-            ], SyllableSequence.ordered),
+            ], SyllableSequence.ordered)
         ],
         `Sorcery:
 Target two or more Familiars with the same AT: Their AT becomes doubled.`,
@@ -912,7 +912,7 @@ Target two or more Familiars with the same AT: Their AT becomes doubled.`,
             new SyllableSequence([
                 Syllables.SHADOW,
                 Syllables.CHI
-            ], SyllableSequence.ordered),
+            ], SyllableSequence.ordered)
         ],
         `Sorcery:
 Target a number of friendly Familiars and a number of enemy Familiars with the same sum of HP:
@@ -1008,9 +1008,9 @@ Deal 2 Damage to each target.`,
             new SyllableSequence([
                 //Syllables.FIRE,
                 Syllables.CHI,
-                Syllables.CHI,
+                Syllables.CHI
                 //Syllables.NIF
-            ], SyllableSequence.ordered),
+            ], SyllableSequence.ordered)
         ],
         // TODO: Lightning subtype
         `Lightning Sorcery
@@ -1034,9 +1034,9 @@ Deal 2 Damage to 2 different targets.`,
             new SyllableSequence([
                 //Syllables.FIRE,
                 Syllables.CHI,
-                Syllables.EX,
+                Syllables.EX
                 //Syllables.NIF
-            ], SyllableSequence.ordered),
+            ], SyllableSequence.ordered)
         ],
         `Sorcery
 Target up to 5 Characters: Deal 1 Damage to each.`,
@@ -1058,9 +1058,9 @@ Target up to 5 Characters: Deal 1 Damage to each.`,
             new SyllableSequence([
                 //Syllables.FIRE,
                 Syllables.CHI,
-                Syllables.REN,
+                Syllables.REN
                 //Syllables.NIF
-            ], SyllableSequence.ordered),
+            ], SyllableSequence.ordered)
         ],
         `Sorcery
 Target 2 to 4 Familiars: Deal 1 Damage to each.`,
@@ -1082,8 +1082,8 @@ Target 2 to 4 Familiars: Deal 1 Damage to each.`,
         [
             new SyllableSequence([
                 Syllables.SHADOW,
-                Syllables.MA,
-            ], SyllableSequence.ordered),
+                Syllables.MA
+            ], SyllableSequence.ordered)
         ],
         `5/0 (5) Demon Familiar
 Choose 2 or more friendly Familiars when you cast/resolve? [this]:
@@ -1128,8 +1128,8 @@ Sacrifice them, [this] gets HP equal to the sum of the sacrified familiars HP.`,
         [
             new SyllableSequence([
                 Syllables.LIGHT,
-                Syllables.KUN,
-            ], SyllableSequence.ordered),
+                Syllables.KUN
+            ], SyllableSequence.ordered)
         ],
         `3/2 (4) Human Knight Familiar
 Battlecry: Target another Familiar: [this] gets additional HP equal to targets HP.`,
@@ -1179,10 +1179,10 @@ Battlecry: Target another Familiar: [this] gets additional HP equal to targets H
         [
             new SyllableSequence([
                 Syllables.FIRE,
-                Syllables.TO,
+                Syllables.TO
                 //Syllables.EX,
                 //Syllables.NIF
-            ], SyllableSequence.ordered),
+            ], SyllableSequence.ordered)
         ],
         `Sorcery
 Target up to 3 Familiars: Deal 3 Damage to each. Loose 1 HP for each beyond the first one.`,
@@ -1210,8 +1210,8 @@ Target up to 3 Familiars: Deal 3 Damage to each. Loose 1 HP for each beyond the 
         [
             new SyllableSequence([
                 Syllables.LIGHT,
-                Syllables.REN,
-            ], SyllableSequence.ordered),
+                Syllables.REN
+            ], SyllableSequence.ordered)
         ],
         // TODO: Lightning subtype
         `Lightning Sorcery
@@ -1239,7 +1239,7 @@ Target 3 Characters: Deal 3 Damage to the first target, 2 to the second, and 1 t
                 Syllables.LIGHT,
                 Syllables.MA,
                 Syllables.MA
-            ], SyllableSequence.ordered),
+            ], SyllableSequence.ordered)
         ],
         `Sorcery
 Target a mage and a familiar he/she controls: Both gain 2 HP.`,
@@ -1300,7 +1300,7 @@ Target a mage and a familiar he/she controls: Both gain 2 HP.`,
                 Syllables.FIRE,
                 Syllables.PAI,
                 Syllables.NIF
-            ], SyllableSequence.ordered),
+            ], SyllableSequence.ordered)
         ],
         // TODO: currently, no dragon is availabe, so we use sunlit eidolon instead
         `Sorcery
@@ -1376,7 +1376,7 @@ Deal Damage equal to the sum of their AT to all enemy Mages.`,
                 Syllables.FIRE,
                 Syllables.REN,
                 Syllables.NIF
-            ], SyllableSequence.ordered),
+            ], SyllableSequence.ordered)
         ],
         `Sorcery
 Target an enemy character and one or more friendly Goblin Familiars.
@@ -1461,7 +1461,7 @@ Deal 1 Damage to each Goblin and Damage to target enemy equal to each Goblins AT
                 Syllables.LIGHT,
                 Syllables.SHADOW,
                 Syllables.REN
-            ], SyllableSequence.ordered),
+            ], SyllableSequence.ordered)
         ],
         `Sorcery
 Target 3 Characters: Deal 2 Damage to each enemy target and all friendly Targets get 2 HP.`,
@@ -1495,7 +1495,7 @@ Target 3 Characters: Deal 2 Damage to each enemy target and all friendly Targets
                 Syllables.FIRE,
                 Syllables.REN,
                 Syllables.CHI
-            ], SyllableSequence.ordered),
+            ], SyllableSequence.ordered)
         ],
         `Sorcery
 Target an equal number of friendly and enemy characters: Deal 2 Damage to each.`,
@@ -1545,7 +1545,7 @@ Target an equal number of friendly and enemy characters: Deal 2 Damage to each.`
                 Syllables.LIGHT,
                 Syllables.SHADOW,
                 Syllables.TO
-            ], SyllableSequence.ordered),
+            ], SyllableSequence.ordered)
         ],
         `Sorcery
 Target a friendly and an enemy Character:
@@ -1601,7 +1601,7 @@ Deal 2 Damage to the enemy Character and heal the friendly Character by 2 HP.`,
                 Syllables.FIRE,
                 Syllables.WATER,
                 Syllables.TO
-            ], SyllableSequence.ordered),
+            ], SyllableSequence.ordered)
         ],
         `Sorcery
 Target a Mage and a Familiar:
@@ -1660,8 +1660,8 @@ Deal 2 Damage to the first target and give +2/+2 to the other.`,
         [
             new SyllableSequence([
                 Syllables.FIRE,
-                Syllables.NIF,
-            ], SyllableSequence.ordered),
+                Syllables.NIF
+            ], SyllableSequence.ordered)
         ],
         `Sorcery
 Target 2 Familiars with different AT:
@@ -1706,7 +1706,7 @@ Deal Damage equal to the difference to all enemy Mages.`,
                 Syllables.LIGHT,
                 Syllables.MA,
                 Syllables.REN
-            ], SyllableSequence.ordered),
+            ], SyllableSequence.ordered)
         ],
         `Sorcery
 Target 3 Familiars with different AT: Their AT becomes the highest of the 3.`,
@@ -1753,8 +1753,8 @@ Target 3 Familiars with different AT: Their AT becomes the highest of the 3.`,
                 Syllables.LIGHT,
                 Syllables.CHI,
                 Syllables.REN,
-                Syllables.NIF,
-            ], SyllableSequence.ordered),
+                Syllables.NIF
+            ], SyllableSequence.ordered)
         ],
         `Lightning Sorcery
 Deal Damage equal to the number of friendly Characters.`,
@@ -1782,8 +1782,8 @@ Deal Damage equal to the number of friendly Characters.`,
                 //Syllables.KUN,
                 //Syllables.MA,
                 //Syllables.REN,
-                Syllables.XAU,
-            ], SyllableSequence.ordered),
+                Syllables.XAU
+            ], SyllableSequence.ordered)
         ],
         `2/? (4) Spirit Enchantment Familiar
 When [this] enters the Battlefield:
@@ -1824,9 +1824,9 @@ Its HP become the number of your Light Syllables.`,
             new SyllableSequence([
                 Syllables.LIGHT,
                 //Syllables.XAU,
-                Syllables.MA,
+                Syllables.MA
                 //Syllables.RYO,
-            ], SyllableSequence.ordered),
+            ], SyllableSequence.ordered)
         ],
         `1/3 (5) Human Priest Familiar
 At the start of your turn: Get 1 SP.`,
@@ -1860,9 +1860,9 @@ At the start of your turn: Get 1 SP.`,
             new SyllableSequence([
                 Syllables.LIGHT,
                 //Syllables.GAM,
-                Syllables.MA,
+                Syllables.MA
                 //Syllables.XAU,
-            ], SyllableSequence.ordered),
+            ], SyllableSequence.ordered)
         ],
         `2/3 (4) Human Knight Familiar
 At the start of its turn: Gain 1 AT.`,
