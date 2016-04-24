@@ -44,27 +44,33 @@ class Effect {
  * - match: check whether an event matches the trigger
  * - performAction: execute the effect if the trigger event matched
  */
-class Trigger {
+window.Trigger = class Trigger {
     constructor(check, action) {
         this.match = check;
         this.performAction = action;
     }
-}
+};
 
-class ReplacementEffect extends Effect {
+window.ReplacementEffect = class ReplacementEffect extends Effect {
     constructor(check, replaceEvent) {
         super();
         this.match = check;
         this.replaceEvent = replaceEvent;
     }
-}
+};
 
 const EVENT_NOOP = 'EVENT_NOOP';
+window.EVENT_NOOP = EVENT_NOOP;
 const EVENT_START_TURN = 'EVENT_START_TURN';
+window.EVENT_START_TURN = EVENT_START_TURN;
 const EVENT_DEAL_DAMAGE = 'EVENT_DEAL_DAMAGE';
+window.EVENT_DEAL_DAMAGE = EVENT_DEAL_DAMAGE;
 const EVENT_ENTER_BATTLEFIELD = 'EVENT_ENTER_BATTLEFIELD';
+window.EVENT_ENTER_BATTLEFIELD = EVENT_ENTER_BATTLEFIELD;
 const EVENT_CAST_SPELL = 'EVENT_CAST_SPELL';
+window.EVENT_CAST_SPELL = EVENT_CAST_SPELL;
 const EVENT_SACRIFICE = 'EVENT_SACRIFICE';
+window.EVENT_SACRIFICE = EVENT_SACRIFICE;
 
 const EVENT_MAP = new Map();
 EVENT_MAP.set(EVENT_NOOP, function() {});
@@ -85,13 +91,14 @@ EVENT_MAP.set(EVENT_SACRIFICE, function(permanent) {
     permanent.removeFromBattlefield();
 });
 
+// TODO: unused
 class ONS_Event {
     static before() {}
     static on() {}
     static after() {}
 }
 
-class ONS_EventManager {
+window.ONS_EventManager = class ONS_EventManager {
     execute(eventIdentifier, ...args) {
         console.log(eventIdentifier, '-------------------------------------');
         var replacedEventWithArgs = this.doReplacement(eventIdentifier, ...args);
@@ -167,11 +174,11 @@ class ONS_EventManager {
         }
         return afterTriggers;
     }
-}
+};
 
-function checkStateBasedActions() {
+window.checkStateBasedActions = function checkStateBasedActions() {
     game.battlefield.removeDefeatedPermanents();
-}
+};
 
 const TURN_BASED_ACTIONS = {
     /**
@@ -185,3 +192,4 @@ const TURN_BASED_ACTIONS = {
         mage.sp = mage.maxSp;
     }
 };
+window.TURN_BASED_ACTIONS = TURN_BASED_ACTIONS;
