@@ -1,6 +1,7 @@
 // --------------------------------------------------------------------------------
 // Variants
 // --------------------------------------------------------------------------------
+import { Trigger, ReplacementEffect } from './../../engine/engineeffect.js';
 
 export function createStandardSyllablePool() {
     return new SyllablePool([

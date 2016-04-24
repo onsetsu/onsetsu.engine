@@ -44,20 +44,20 @@ class Effect {
  * - match: check whether an event matches the trigger
  * - performAction: execute the effect if the trigger event matched
  */
-window.Trigger = class Trigger {
+export class Trigger {
     constructor(check, action) {
         this.match = check;
         this.performAction = action;
     }
-};
+}
 
-window.ReplacementEffect = class ReplacementEffect extends Effect {
+export class ReplacementEffect extends Effect {
     constructor(check, replaceEvent) {
         super();
         this.match = check;
         this.replaceEvent = replaceEvent;
     }
-};
+}
 
 const EVENT_NOOP = 'EVENT_NOOP';
 window.EVENT_NOOP = EVENT_NOOP;
