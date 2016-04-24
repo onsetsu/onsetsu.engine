@@ -4,6 +4,7 @@
 
 import {} from 'lib/networking.js';
 import { configureGameForTwoPlayers } from 'lib/setup/setup.js';
+import { Game } from 'lib/engine/enginegame.js';
 
 window.game = undefined;
 window.engine = undefined;

@@ -111,19 +111,4 @@ class Stack {
 // General
 // --------------------------------------------------------------------------------
 
-class Game {
-  constructor() {
-    this.players = [];
-    this.battlefield = new Battlefield();
-    this.timeline = new Timeline();
-    this.stack = new Stack();
-    this.eventManager = new ONS_EventManager();
-  }
-
-  addPlayer(player) {
-    this.players.push(player);
-    this.battlefield.addPlayer(player);
-  }
-}
-
 var Engine = function Engine() {};

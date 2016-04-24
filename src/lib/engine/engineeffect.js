@@ -98,7 +98,7 @@ class ONS_Event {
     static after() {}
 }
 
-window.ONS_EventManager = class ONS_EventManager {
+export class ONS_EventManager {
     execute(eventIdentifier, ...args) {
         console.log(eventIdentifier, '-------------------------------------');
         var replacedEventWithArgs = this.doReplacement(eventIdentifier, ...args);
