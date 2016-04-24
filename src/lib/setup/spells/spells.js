@@ -111,7 +111,7 @@ window.generateDealDamageToSingleTarget = function generateDealDamageToSingleTar
 
 import InfoMessage from './../infomessage.js';
 
-window.createTestSpellbook = function() {
+export function createTestSpellbook() {
     /*
      * Currently used Spells
      */
@@ -1941,4 +1941,4 @@ At the start of its turn: Gain 1 AT.`,
         spellClass.index = index;
     });
     return spellBook;
-};
+}
