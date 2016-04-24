@@ -1,6 +1,7 @@
 'use strict';
 
 import { ONS_EventManager } from './engineeffect.js';
+import Stack from './stack.js';
 
 export class Game {
   constructor() {
