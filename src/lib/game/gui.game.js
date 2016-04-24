@@ -1,3 +1,5 @@
+import Turn from './turn.js';
+
 export default ig.Game.extend({
 
     // Load a font
