@@ -55,32 +55,28 @@ window.Networking = {
       }
 
       // Client: join game
-      var join = {
-        'host id': 'Host ID',
-        join: function() {
-          datGui.destroy();
+      class JoinGame {
+        static join(hostId) {
+          this.datGui.destroy();
 
-          console.log('try to join game', join['host id']);
+          console.log('try to join game', hostId);
           var peer = env.peer = createPeer();
-          var conn = env.conn = peer.connect(join['host id']);
+          var conn = env.conn = peer.connect(hostId);
           conn.on('open', function() {
             prepareOpenedConnection();
             peer.disconnect();
             var isHost = false;
             callback(isHost);
           });
-        },
-        init: function() {
-          datGui = new dat.GUI();
-          var hostIdLi = datGui.add(join, 'host id');
-          console.log(datGui.add(join, 'join'));
+        }
 
+        static init() {
+          this.datGui = new dat.GUI();
           var roomInfos = {};
           var rooms = new Firebase("https://onsetsu.firebaseio.com/lobby/rooms");
           rooms.on('child_added', snapshot => {
-            var li = datGui.add({ func: () => {
-              hostIdLi.setValue(snapshot.val().peerId);
-              join.join();
+            var li = this.datGui.add({ func: () => {
+              JoinGame.join(snapshot.val().peerId);
               Firebase.goOffline();
             }}, 'func');
             li.name(snapshot.val().name);
@@ -195,7 +191,7 @@ window.Networking = {
         },
         'join game': function() {
           datGui.destroy();
-          join.init();
+          JoinGame.init();
         },
         'ai game': function() {
           datGui.destroy();
