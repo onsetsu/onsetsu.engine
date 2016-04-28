@@ -4,11 +4,13 @@ Onsetsu is a game strategy game with a strong puzzle aspect for 2 players. Each 
 
 ### Start a Game
 Visit the game [here].
-For this prototype no lobby server is currently available. So connection is manually set up by the players.
-##### Host
-Click 'host game' and your host 'id' will be generated. Transmit this 'id' to your opponent.
-##### Client
-Click 'join game'. Replace 'Host ID' with the transmitted id, then click 'join'.
+You can battle a punching ball ai, create a new room, or join an existent one to start a game.
+
+##### create_room
+You may change the generated room name and wait for another player to join you.
+
+##### join_room
+Join one of the rooms displayed in the upper right corner to start a game.
 
 ### How to Play
 ![Onsetsu Prototype][screenshot]
