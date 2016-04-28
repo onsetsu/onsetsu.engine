@@ -81,11 +81,22 @@ ig.Entity.inject({
 	markOnTurn: function(value) {
 	    this.shouldMarkOnTurn = value;
 	},
-	visualizeSelectable: function(value) {
-	    this.shouldVisualizeSelectable = value;
-	    this.dashOffset = 0;
-	    this.dashOffsetSpeed = 40;
-	},
+    visualizeSelectable: function(value) {
+        this.shouldVisualizeSelectable = value;
+        this.dashOffset = 0;
+        this.dashOffsetSpeed = 40;
+    },
+    visualizeSelected: function(value) {
+        this.shouldVisualizeSelected = value;
+    },
+    addSelectedNumbers: function(number, shouldShowOnlyTargetQuantity) {
+        this.shouldVisualizeSelectedNumbers = this.shouldVisualizeSelectedNumbers || [];
+        this.shouldShowOnlyTargetQuantity = shouldShowOnlyTargetQuantity;
+        this.shouldVisualizeSelectedNumbers.push(number);
+    },
+    clearSelectedNumbers: function() {
+        this.shouldVisualizeSelectedNumbers = undefined;
+    },
 	drawBattleLine: function(target, duration) {
 	    var battleLine = this.battleLine = {
 	        target: target,
@@ -102,7 +113,7 @@ ig.Entity.inject({
 
         if(this.shouldMarkOnTurn) {
             // TODO: duplicated logic
-            ig.system.context.save()
+            ig.system.context.save();
             ig.system.context.strokeStyle = this.colors.onTurn;
             ig.system.context.lineWidth = 2.0;
             ig.system.context.strokeRect(
@@ -116,7 +127,7 @@ ig.Entity.inject({
 
         if(this.shouldVisualizeSelectable) {
             // TODO: duplicated logic
-            ig.system.context.save()
+            ig.system.context.save();
             ig.system.context.strokeStyle = this.colors.selectable;
             ig.system.context.setLineDash([4,4]);
             this.dashOffset += this.dashOffsetSpeed * ig.system.tick;
@@ -132,9 +143,43 @@ ig.Entity.inject({
             ig.system.context.restore();
         }
 
+        if(this.shouldVisualizeSelected) {
+            ig.system.context.save();
+            ig.system.context.strokeStyle = this.colors.selectable;
+            ig.system.context.lineWidth = 2.0;
+            ig.system.context.strokeRect(
+                ig.system.getDrawPos(this.pos.x.round() - ig.game.screen.x) - 0.5,
+                ig.system.getDrawPos(this.pos.y.round() - ig.game.screen.y) - 0.5,
+                this.size.x * ig.system.scale,
+                this.size.y * ig.system.scale
+            );
+            ig.system.context.restore();
+        }
+
+        if(this.shouldVisualizeSelectedNumbers) {
+            let targetingInfo = this.shouldShowOnlyTargetQuantity ?
+                this.shouldVisualizeSelectedNumbers.map(() => 'O').join('') :
+                this.shouldVisualizeSelectedNumbers.join(', ');
+            ig.system.context.save();
+
+            // styling
+            ig.system.context.fillStyle = this.colors.selectedNumbers;
+            ig.system.context.font = "8px Arial";
+            ig.system.context.textAlign = "left";
+            ig.system.context.textBaseline = 'bottom';
+
+            ig.system.context.fillText(
+                targetingInfo,
+                ig.system.getDrawPos(this.pos.x.round() - ig.game.screen.x) - 0.5,
+                ig.system.getDrawPos(this.pos.y.round() - ig.game.screen.y) - 0.5
+            );
+
+            ig.system.context.restore();
+        }
+
         if(this.battleLine) {
             // TODO: duplicated logic
-            ig.system.context.save()
+            ig.system.context.save();
             ig.system.context.strokeStyle = this.colors.battleLine;
             ig.system.context.setLineDash([16,16]);
             this.battleLine.dashOffset += this.battleLine.dashOffsetSpeed * ig.system.tick;
@@ -182,6 +227,7 @@ ig.Entity.inject({
 		velocities: '#0f0',
         onTurn: '#0ff',
         selectable: '#ff0',
+        selectedNumbers: '#ff0',
         battleLine: '#f00',
         related: '#0f0',
 		boxes: '#f00'

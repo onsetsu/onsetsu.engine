@@ -1,3 +1,5 @@
+import { test, assert } from './../../../testfacility.js';
+
 test(function() {
   var obj = {
     attr: 17,

@@ -1,130 +1,132 @@
 // --------------------------------------------------------------------------------
 // Battlefield
 // --------------------------------------------------------------------------------
+'use strict';
 
-var FieldSide = function(player) {
-  this.player = player;
-  this.mages = [];
-  this.permanents = [];
-};
-FieldSide.prototype.addPermanent = function(permanent) {
-  this.permanents.push(permanent);
-};
-FieldSide.prototype.removePermanent = function(permanent) {
-  var index = this.permanents.indexOf(permanent);
-  this.permanents.splice(index, 1);
-};
-FieldSide.prototype.addMage = function(mage) {
-  this.mages.push(mage);
-};
-FieldSide.prototype.removeMage = function(mage) {
-  var index = this.mages.indexOf(mage);
-  this.mages.splice(index, 1);
-};
+class FieldSide {
+  constructor(player) {
+    this.player = player;
+    this.mages = [];
+    this.permanents = [];
+  }
+  addPermanent(permanent) {
+    this.permanents.push(permanent);
+  }
+  removePermanent(permanent) {
+    var index = this.permanents.indexOf(permanent);
+    this.permanents.splice(index, 1);
+  }
+  addMage(mage) {
+    this.mages.push(mage);
+  }
+  removeMage(mage) {
+    var index = this.mages.indexOf(mage);
+    this.mages.splice(index, 1);
+  }
+}
 
-var Zone = function Zone() {};
+class Zone {}
 
-var Battlefield = function Battlefield() {
-  this.charactersById = new Map();
-  this.sides = new Map();
-};
-Battlefield.prototype.addPlayer = function(player) {
-  this.sides.set(player, new FieldSide(player));
-};
+class Battlefield {
+  constructor() {
+    this.charactersById = new Map();
+    this.sides = new Map();
+  };
+  addPlayer(player) {
+    this.sides.set(player, new FieldSide(player));
+  }
 // TODO: remove player has to remove all associated permanents and effects (the complete FieldSide)
-Battlefield.prototype.addPermanent = function(permanent, mage) {
-  this.charactersById.set(permanent.id, permanent);
-  this.sides.get(mage.controller).addPermanent(permanent);
-};
-Battlefield.prototype.removePermanent = function(permanent, mage) {
-  this.charactersById.delete(permanent.id);
-  this.sides.get(mage.controller).removePermanent(permanent);
-};
-Battlefield.prototype.addMage = function(mage) {
-  this.charactersById.set(mage.id, mage);
-  this.sides.get(mage.controller).addMage(mage);
-};
+  addPermanent(permanent, mage) {
+    this.charactersById.set(permanent.id, permanent);
+    this.sides.get(mage.controller).addPermanent(permanent);
+  }
+  removePermanent(permanent, mage) {
+    this.charactersById.delete(permanent.id);
+    this.sides.get(mage.controller).removePermanent(permanent);
+  }
+  addMage(mage) {
+    this.charactersById.set(mage.id, mage);
+    this.sides.get(mage.controller).addMage(mage);
+  }
 
-Battlefield.prototype.removeMage = function(mage) {
-  this.charactersById.delete(mage.id);
-  this.sides.get(mage.controller).removeMage(mage);
-};
+  removeMage(mage) {
+    this.charactersById.delete(mage.id);
+    this.sides.get(mage.controller).removeMage(mage);
+  }
 
-Battlefield.prototype.removeDefeatedPermanents = function() {
-  this.sides.forEach(function(side) {
-    side.permanents.forEach(function(permanent) {
-      if(permanent.hp <= 0) {
-        permanent.removeFromBattlefield();
+  removeDefeatedPermanents() {
+    this.sides.forEach(function(side) {
+      // TODO: find a cleaner way for the issue of modifying the data structure you are iterating over
+      side.permanents.reduceRight(function(_, permanent) {
+        if(permanent.hp <= 0) {
+          permanent.removeFromBattlefield();
+        }
+      }, undefined);
+    });
+    console.log('removed defeated permanents');
+  }
+
+  // TODO: refactor to .filter
+  // keep in mind: expression is currently called only with the character, not its id
+  getCharactersMatching(expression) {
+    var matchingCharacters = [];
+
+    this.charactersById.forEach(function(character, id) {
+      if(expression(character)) {
+        matchingCharacters.push(character);
       }
     });
-  });
-};
 
-Battlefield.prototype.getCharactersMatching = function(expression) {
-  var matchingCharacters = [];
+    return matchingCharacters;
+  }
 
-  this.charactersById.forEach(function(character, id) {
-    if(expression(character)) {
-      matchingCharacters.push(character);
-    };
-  });
+}
 
-  return matchingCharacters;
-};
+class Permanent {
+  constructor(settings, mage) {
+    this.id = nextBattlefieldID();
+    this.spellTypes = settings.spellTypes;
+    this.subTypes = settings.subTypes;
+    this.hp = settings.hp;
+    this.maxHp = settings.hp;
+    this.at = settings.at;
+    this.baseAt = settings.at;
+    this.delay = settings.delay;
+    this.creatingSpell = settings.creatingSpell;
 
-var Permanent = function Permanent(settings, mage) {
-  this.id = settings.id || nextID();
-  this.spellTypes = settings.spellTypes;
-  this.hp = settings.hp;
-  this.maxHp = settings.hp;
-  this.at = settings.at;
-  this.baseAt = settings.at;
-  this.delay = settings.delay;
+    this.mage = mage;
+    this.action = new Action({}, this.delay, Action.recurring, this);
 
-  this.mage = mage;
-  this.action = new Action({
-    execute: this.takeTurn.bind(this)
-  }, this.delay, Action.recurring, this);
+    this.onBattlefield = false;
+  }
 
-  this.onBattlefield = false;
-};
+  isOnBattlefield() {
+    return this.onBattlefield;
+  }
 
-Permanent.prototype.isOnBattlefield = function() {
-  return this.onBattlefield;
-};
+  putOntoBattlefield() {
+    this.onBattlefield = true;
+    game.battlefield.addPermanent(this, this.mage);
+    game.timeline.addAction(this.action);
+  }
 
-Permanent.prototype.putOntoBattlefield = function() {
-  this.onBattlefield = true;
-  game.battlefield.addPermanent(this, this.mage);
-  game.timeline.addAction(this.action);
-};
+  removeFromBattlefield() {
+    this.onBattlefield = false;
+    game.timeline.removeAction(this.action);
+    game.battlefield.removePermanent(this, this.mage);
+  }
+}
 
-Permanent.prototype.removeFromBattlefield = function() {
-  this.onBattlefield = false;
-  game.timeline.removeAction(this.action);
-  game.battlefield.removePermanent(this, this.mage);
-};
-
-Permanent.prototype.takeTurn = function() {
-  console.log('Familiar on turn.', this);
-};
-
-Permanent.prototype.receiveDamage = function(amount) {
-  this.hp -= amount;
-  game.battlefield.removeDefeatedPermanents();
-};
-
-Permanent.prototype.startTurn = function() {};
-Permanent.prototype.startMageTurn = function(mage) {};
-
-var Battle = function Battle(combatant1, combatant2) {
-  function attack(attacker, defender) {
-    // check whether the attacker has an attack value
-    if(_.isNumber(attacker.at)) {
-      defender.receiveDamage(attacker.at);
+class Battle {
+  constructor(combatant1, combatant2) {
+    function attack(attacker, defender) {
+      // check whether the attacker has an attack value
+      if(_.isNumber(attacker.at)) {
+        game.eventManager.execute(EVENT_DEAL_DAMAGE, defender, attacker.at);
+      }
     }
-  };
 
-  attack(combatant1, combatant2);
-  attack(combatant2, combatant1);
-};
+    attack(combatant1, combatant2);
+    attack(combatant2, combatant1);
+  };
+}

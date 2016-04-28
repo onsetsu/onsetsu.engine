@@ -109,8 +109,8 @@ Timeline.prototype.print = function() {
   console.log(str);
 };
 
+// TODO: argument 'executable' is currently unused
 var Action = function Action(executable, baseDelay, recurring, character) {
-  this.executable = executable;
   this.baseDelay = baseDelay;
   this.recurring = recurring;
   this.character = character;

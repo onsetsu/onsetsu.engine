@@ -6,12 +6,12 @@
 var SyllablePoints = function SyllablePoints() {};
 
 /**
- * Raw SyllableValue representing an atomic characteristic of a Syllable.
+ * Raw SyllableAtom representing an atomic characteristic of a Syllable.
  */
-var SyllableValue = function SyllableValue(value) {
+var SyllableAtom = function SyllableAtom(value) {
   this.value = value;
 };
-SyllableValue.prototype.toString = function() {
+SyllableAtom.prototype.toString = function() {
   return this.value;
 };
 [
@@ -27,7 +27,7 @@ SyllableValue.prototype.toString = function() {
   '7TH_ELEMENT',
   'ELEMENT', 'DUMMY'
 ].forEach(function(name) {
-  SyllableValue[name] = new SyllableValue(name);
+  SyllableAtom[name] = new SyllableAtom(name);
 });
 
 /**
@@ -65,43 +65,43 @@ Syllable.prototype.isA = function(syllable) {
  */
 var Syllables = {};
 ['CHI', 'MA', 'PAI'].forEach(function(name) {
-  Syllables[name] = new Syllable(name, [SyllableValue[name]], 1);
+  Syllables[name] = new Syllable(name, [SyllableAtom[name]], 1);
 });
 ['NIF', 'KUN', 'RYO'].forEach(function(name) {
-  Syllables[name] = new Syllable(name, [SyllableValue[name]], 2);
+  Syllables[name] = new Syllable(name, [SyllableAtom[name]], 2);
 });
 ['YUN', 'REN', 'TO'].forEach(function(name) {
-  Syllables[name] = new Syllable(name, [SyllableValue[name]], 3);
+  Syllables[name] = new Syllable(name, [SyllableAtom[name]], 3);
 });
 ['GAM', 'XAU', 'EX'].forEach(function(name) {
-  Syllables[name] = new Syllable(name, [SyllableValue[name]], 5);
+  Syllables[name] = new Syllable(name, [SyllableAtom[name]], 5);
 });
 ['13TH_SYLLABLE', '14TH_SYLLABLE', '15TH_SYLLABLE', '16TH_SYLLABLE'].forEach(function(name) {
-  Syllables[name] = new Syllable(name, [SyllableValue[name]], -1);
+  Syllables[name] = new Syllable(name, [SyllableAtom[name]], -1);
 });
 [ 'FIRE', 'WATER', 'EARTH', 'WIND', 'LIGHT', 'SHADOW'].forEach(function(name) {
-  Syllables[name] = new Syllable(name, [SyllableValue[name], SyllableValue.ELEMENT], 2);
+  Syllables[name] = new Syllable(name, [SyllableAtom[name], SyllableAtom.ELEMENT], 2);
 });
-Syllables['7TH_ELEMENT'] = new Syllable('7TH_ELEMENT', [SyllableValue['7TH_ELEMENT'], SyllableValue.ELEMENT], -1);
+Syllables['7TH_ELEMENT'] = new Syllable('7TH_ELEMENT', [SyllableAtom['7TH_ELEMENT'], SyllableAtom.ELEMENT], -1);
 Syllables.OMNIPOTENCE = new Syllable('OMNIPOTENCE', [
-  SyllableValue.OMNIPOTENCE,
-  SyllableValue.ELEMENT,
-  SyllableValue.FIRE,
-  SyllableValue.WATER,
-  SyllableValue.EARTH,
-  SyllableValue.WIND,
-  SyllableValue.LIGHT,
-  SyllableValue.SHADOW
+  SyllableAtom.OMNIPOTENCE,
+  SyllableAtom.ELEMENT,
+  SyllableAtom.FIRE,
+  SyllableAtom.WATER,
+  SyllableAtom.EARTH,
+  SyllableAtom.WIND,
+  SyllableAtom.LIGHT,
+  SyllableAtom.SHADOW
 ], -1);
 Syllables.SOL = new Syllable('SOL', [
-  SyllableValue.SOL,
-  SyllableValue.LIGHT,
-  SyllableValue.ELEMENT
+  SyllableAtom.SOL,
+  SyllableAtom.LIGHT,
+  SyllableAtom.ELEMENT
 ], -1);
 Syllables.LUNA = new Syllable('LUNA', [
-  SyllableValue.LUNA,
-  SyllableValue.SHADOW,
-  SyllableValue.ELEMENT
+  SyllableAtom.LUNA,
+  SyllableAtom.SHADOW,
+  SyllableAtom.ELEMENT
 ], -1);
 [
   'FIRE', 'WATER', 'EARTH',
@@ -109,7 +109,7 @@ Syllables.LUNA = new Syllable('LUNA', [
   '7TH_ELEMENT'
 ].forEach(function(name) {
   Syllables[name + 'DUMMY'] = new Syllable(name + 'DUMMY', [
-    SyllableValue[name], SyllableValue.DUMMY
+    SyllableAtom[name], SyllableAtom.DUMMY
   ], -1);
 });
 

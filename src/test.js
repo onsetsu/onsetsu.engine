@@ -1,6 +1,9 @@
 // --------------------------------------------------------------------------------
 // Tests
 // --------------------------------------------------------------------------------
+
+import { test, assert } from './testfacility.js';
+
 test(function() {
   assert(Syllables.CHI.isA(Syllables.CHI));
   assert(!Syllables.CHI.isA(Syllables.FIRE));
@@ -17,8 +20,8 @@ test(function() {
   assert(CHIorNIF.isA(Syllables.NIF));
   assert(!Syllables.NIF.isA(CHIorNIF));
 
-  assert(CHIorNIF.contains(SyllableValue.NIF));
-  assert(!CHIorNIF.contains(SyllableValue.EX));
+  assert(CHIorNIF.contains(SyllableAtom.NIF));
+  assert(!CHIorNIF.contains(SyllableAtom.EX));
 });
 
 test(function() {
