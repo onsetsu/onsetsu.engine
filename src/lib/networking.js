@@ -52,7 +52,7 @@ window.Networking = {
         });
 
         return peer;
-      };
+      }
 
       // Client: join game
       var join = {
@@ -72,8 +72,27 @@ window.Networking = {
         },
         init: function() {
           datGui = new dat.GUI();
-          datGui.add(join, 'host id');
-          datGui.add(join, 'join');
+          var hostIdLi = datGui.add(join, 'host id');
+          console.log(datGui.add(join, 'join'));
+
+          var roomInfos = {};
+          var rooms = new Firebase("https://onsetsu.firebaseio.com/lobby/rooms");
+          rooms.on('child_added', snapshot => {
+            var li = datGui.add({ func: () => {
+              hostIdLi.setValue(snapshot.val().peerId);
+              join.join();
+              Firebase.goOffline();
+            }}, 'func');
+            li.name(snapshot.val().name);
+            roomInfos[snapshot.key()] = { li, snapshot };
+            console.log('snapshot', snapshot);
+          }, error => console.log('reading rooms failed', error));
+          rooms.on('child_changed', snapshot => {
+            roomInfos[snapshot.key()].li.name(snapshot.val().name);
+          }, error => console.log('changing rooms failed', error));
+          rooms.on('child_removed', snapshot => {
+            roomInfos[snapshot.key()].li.remove();
+          }, error => console.log('removing rooms failed', error));
         }
       };
 
@@ -142,10 +161,18 @@ window.Networking = {
         init: function() {
           var peer = env.peer = createPeer();
           var hostIdDatGui = new dat.GUI();
+          var rooms = new Firebase("https://onsetsu.firebaseio.com/lobby/rooms");
 
           peer.on('open', function(id) {
             console.log('My peer ID is: ' + id);
-            hostIdDatGui.add({ id: id }, 'id');
+            var newRoomRef = rooms.push({
+              peerId: id,
+              name: id
+            });
+            hostIdDatGui.add({ 'your room name': id }, 'your room name').onChange(val => {
+              console.log('changed name', val);
+              newRoomRef.update({ name: val });
+            });
           });
 
           peer.on('connection', function(conn) {
