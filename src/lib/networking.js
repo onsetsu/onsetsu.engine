@@ -6,16 +6,15 @@ window.Networking = {
   },
   inbox: [],
   setup: function setupNetworking(callback) {
-    window.onunload = function() {
+    window.addEventListener("beforeunload", function disconnectPeerJS() {
       env.peer.disconnect();
       env.peer.destroy();
-    };
+    });
 
     (function() {
       if(typeof env === 'undefined') {
         env = {};
       }
-      var datGui;
 
       window.chat = function(message) {
         env.conn.send({
@@ -36,20 +35,10 @@ window.Networking = {
 
     // creates a new peer and sets up its disconnection gui
       function createPeer() {
-        var peer = new Peer({key: 'klgy15uvondpwrk9'}),
-          disconnectDatGui = new dat.GUI(),
-          discon = disconnectDatGui.add(peer, 'disconnect');
-        disconnectDatGui.add(peer, 'destroy');
+        var peer = new Peer({key: 'klgy15uvondpwrk9'});
 
-        peer.on('disconnected', function() {
-          console.log('peer disconnected');
-          disconnectDatGui.remove(discon);
-          disconnectDatGui.destroy();
-        });
-        peer.on('close', function() {
-          console.log('peer disconnected and destroyed');
-          disconnectDatGui.destroy();
-        });
+        peer.on('disconnected', () => console.log('peer disconnected'));
+        peer.on('close', () => console.log('peer disconnected and destroyed'));
 
         return peer;
       }
@@ -81,7 +70,6 @@ window.Networking = {
             }}, 'func');
             li.name(snapshot.val().name);
             roomInfos[snapshot.key()] = { li, snapshot };
-            console.log('snapshot', snapshot);
           }, error => console.log('reading rooms failed', error));
           rooms.on('child_changed', snapshot => {
             roomInfos[snapshot.key()].li.name(snapshot.val().name);
@@ -90,7 +78,7 @@ window.Networking = {
             roomInfos[snapshot.key()].li.remove();
           }, error => console.log('removing rooms failed', error));
         }
-      };
+      }
 
       var aiGame = function() {
         Networking = {
@@ -153,60 +141,80 @@ window.Networking = {
       };
 
       // Host side
-      var host = {
-        init: function() {
+      class HostGame {
+        static init() {
           var peer = env.peer = createPeer();
-          var hostIdDatGui = new dat.GUI();
+          var datGui = new dat.GUI();
           var rooms = new Firebase("https://onsetsu.firebaseio.com/lobby/rooms");
 
-          peer.on('open', function(id) {
+          peer.on('open', id => {
             console.log('My peer ID is: ' + id);
+
             var newRoomRef = rooms.push({
               peerId: id,
               name: id
             });
-            hostIdDatGui.add({ 'your room name': id }, 'your room name').onChange(val => {
-              console.log('changed name', val);
+
+            // safely close the room behind you
+            function disposeRoom() {
+              newRoomRef.set(null);
+            }
+            function closeRoom() {
+              window.removeEventListener('beforeunload', disposeRoom);
+              disposeRoom();
+            }
+            window.addEventListener('beforeunload', disposeRoom);
+
+            function closeHost() {
+              closeRoom();
+              datGui.destroy();
+              peer.disconnect();
+            }
+
+            datGui.add({ 'your room name': id }, 'your room name').onChange(val => {
               newRoomRef.update({ name: val });
             });
-          });
+            datGui.add({ 'close room': () => {
+              closeHost();
+              ChooseGameMode.init();
+            }}, 'close room');
 
-          peer.on('connection', function(conn) {
-            env.conn = conn;
-            conn.on('open', function() {
-              hostIdDatGui.destroy();
-              prepareOpenedConnection();
-              peer.disconnect();
-              var isHost = true;
-              callback(isHost);
+            peer.on('connection', conn => {
+              env.conn = conn;
+              conn.on('open', () => {
+                closeHost();
+                prepareOpenedConnection();
+                var isHost = true;
+                callback(isHost);
+              });
             });
           });
         }
-      };
+      }
 
-      var hostOrClient = {
-        'host game': function() {
-          datGui.destroy();
-          host.init();
-        },
-        'join game': function() {
-          datGui.destroy();
+      class ChooseGameMode {
+        static create_room() {
+          this.datGui.destroy();
+          HostGame.init();
+        }
+        static join_room() {
+          this.datGui.destroy();
           JoinGame.init();
-        },
-        'ai game': function() {
-          datGui.destroy();
+        }
+        static ai_game() {
+          this.datGui.destroy();
           aiGame();
           callback(true);
-        },
-        init: function() {
-          datGui = new dat.GUI();
-          datGui.add(hostOrClient, 'ai game');
-          datGui.add(hostOrClient, 'host game');
-          datGui.add(hostOrClient, 'join game');
         }
-      };
+        static init() {
+          this.datGui = new dat.GUI();
+          this.datGui.add(ChooseGameMode, 'ai_game');
+          this.datGui.add(ChooseGameMode, 'create_room');
+          this.datGui.add(ChooseGameMode, 'join_room');
+        }
+      }
 
-      hostOrClient.init();
+      ChooseGameMode.init();
     })();
   }
 };
