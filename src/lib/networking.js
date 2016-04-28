@@ -1,5 +1,8 @@
 'use strict';
 
+var firebaseRoot = 'https://onsetsu.firebaseIO.com',
+    roomAddress = firebaseRoot + '/lobby/rooms';
+
 window.Networking = {
   getNextMessage: function() {
     return Networking.inbox.shift();
@@ -62,7 +65,7 @@ window.Networking = {
         static init() {
           this.datGui = new dat.GUI();
           var roomInfos = {};
-          var rooms = new Firebase("https://onsetsu.firebaseio.com/lobby/rooms");
+          var rooms = new Firebase(roomAddress);
           rooms.on('child_added', snapshot => {
             var li = this.datGui.add({ func: () => {
               JoinGame.join(snapshot.val().peerId);
@@ -145,7 +148,7 @@ window.Networking = {
         static init() {
           var peer = env.peer = createPeer();
           var datGui = new dat.GUI();
-          var rooms = new Firebase("https://onsetsu.firebaseio.com/lobby/rooms");
+          var rooms = new Firebase(roomAddress);
 
           peer.on('open', id => {
             console.log('My peer ID is: ' + id);
