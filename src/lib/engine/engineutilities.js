@@ -1,8 +1,4 @@
-// --------------------------------------------------------------------------------
-// Utilities
-// --------------------------------------------------------------------------------
-
-tryPlaceSyllableAndCastSpells = function(insertionIndex, syllableBoard, syllable, callback) {
+export function tryPlaceSyllableAndCastSpells(insertionIndex, syllableBoard, syllable, callback) {
   var syllablePlaced = syllableBoard.checkAndPlaceSyllable(
     insertionIndex,
     syllable
@@ -19,9 +15,9 @@ tryPlaceSyllableAndCastSpells = function(insertionIndex, syllableBoard, syllable
       );
     });
   }
-};
+}
 
 // HACK: only you are your ally
-allied = function(player1, player2) {
+export function allied(player1, player2) {
   return player1 === player2;
-};
+}

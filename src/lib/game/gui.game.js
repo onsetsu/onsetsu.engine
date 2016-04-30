@@ -8,6 +8,7 @@ import SpellBook from './gui/spellbook.js';
 import SyllablePool from './gui/syllablepool.js';
 import SyllableBoard from './gui/syllableboard.js';
 import { defaultFont } from './font.js';
+import { tryPlaceSyllableAndCastSpells } from './../engine/engineutilities.js';
 
 export default ig.Game.extend({
 

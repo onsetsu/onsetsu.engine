@@ -1,4 +1,5 @@
 import EntityFieldSide from './../entities/fieldside.js';
+import { allied } from './../../engine/engineutilities.js';
 
 export default ig.Class.extend({
     paddingBetweenSpells: 4,

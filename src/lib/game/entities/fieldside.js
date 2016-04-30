@@ -1,5 +1,6 @@
 import EntityMage from './mage.js';
 import EntityPermanent from './permanent.js';
+import { allied } from './../../engine/engineutilities.js';
 
 export default ig.Entity.extend({
 	size: {x:200, y:200},

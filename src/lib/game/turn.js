@@ -1,6 +1,7 @@
 'use strict';
 
 import { TURN_BASED_ACTIONS } from './../engine/engineeffect.js';
+import { tryPlaceSyllableAndCastSpells } from './../engine/engineutilities.js';
 
 export default ig.Class.extend({
     init: function(action) {
