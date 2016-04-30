@@ -1,6 +1,7 @@
 import Turn from './turn.js';
 import EntityInfoMessage from './entities/info_message.js';
 import SelectTarget from './handler/selecttarget.js';
+import LevelBattle from './levels/battle.js';
 
 export default ig.Game.extend({
 

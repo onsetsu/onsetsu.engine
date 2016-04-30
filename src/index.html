@@ -74,8 +74,6 @@
 		.then(() => System.import("lib/setup/setup.js"))
 		.then(() => System.import("test.js"))
 		.then(() => System.import("lib/game/databindings/testdatabindings.js"))
-		.then(() => System.import("lib/game/handler/selecttarget.js"))
-		.then(() => System.import("lib/game/entities/info_message.js"))
 		.then(() => new Promise(resolve => ig.module(uuid.v4()).requires('game.game').defines(resolve)))
 		.then(() => System.import('main.js'));
 	</script>

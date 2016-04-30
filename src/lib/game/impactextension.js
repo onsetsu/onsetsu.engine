@@ -18,13 +18,10 @@ ig.module(
 	//'game.entities.spell',
 	//'game.entities.spell-checker',
 	//'game.entities.spell-list',
-	'game.entities.syllable',
+	'game.entities.syllable'
 	//'game.entities.syllable-board',
 	//'game.entities.syllable-selection',
 	//'game.entities.time-line',
-
-    // maps
-	'game.levels.battle'
 
 	// handler
 	//'game.handler.selecttarget'

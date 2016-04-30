@@ -13,12 +13,6 @@ ig.module(
     // entities
 	'game.entities.syllable',
 
-    // maps
-	'game.levels.battle',
-
-	// handler
-	//'game.handler.selecttarget',
-
 	'game.impactextension'
 )
 .defines(function(){
