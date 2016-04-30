@@ -1,16 +1,7 @@
-ig.module(
-	'game.gui.syllableboard'
-)
-.requires(
-	'impact.impact',
-	'impact.font',
+import EntitySyllable from './../entities/syllable.js';
+import EntityField from './../entities/field.js';
 
-	'game.entities.syllable',
-	'game.entities.field'
-)
-.defines(function(){
-
-GUI.SyllableBoard = ig.Class.extend({
+export default ig.Class.extend({
     pos: { x: 350, y: 200 },
     spawn: function(entityClass, indexX, indexY, model) {
         var entity = GUI.game.spawnEntity(
@@ -74,6 +65,4 @@ GUI.SyllableBoard = ig.Class.extend({
 	},
 
 	update: function() {}
-});
-
 });

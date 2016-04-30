@@ -1,3 +1,5 @@
+import { defaultFont } from './../font.js';
+
 export default ig.Entity.extend({
 	size: {x:32, y:16},
 	animSheet: new ig.AnimationSheet('media/timeline.png', 32, 16),
@@ -32,6 +34,6 @@ export default ig.Entity.extend({
         var label = this.model.baseDelay + ': ' + (this.model.recurring === Action.recurring ? 'recu' : 'once'),
             x = this.pos.x + this.animSheet.width / 2,
             y = this.pos.y + this.animSheet.height / 4;
-        GUI.Font.draw(label, x, y, ig.Font.ALIGN.CENTER);
+        defaultFont.draw(label, x, y, ig.Font.ALIGN.CENTER);
 	}
 });

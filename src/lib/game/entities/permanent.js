@@ -1,3 +1,5 @@
+import { defaultFont } from './../font.js';
+
 export default ig.Entity.extend({
 	size: {x:32, y:48},
 	animSheet: new ig.AnimationSheet('media/permanents.png', 32, 48),
@@ -19,7 +21,7 @@ export default ig.Entity.extend({
             var hp = this.model.hp.toString(),
                 maxHp = this.model.maxHp.toString(),
                 x = this.pos.x + this.animSheet.width;
-            GUI.Font.draw(hp + ' HP', x, this.pos.y, ig.Font.ALIGN.RIGHT);
+            defaultFont.draw(hp + ' HP', x, this.pos.y, ig.Font.ALIGN.RIGHT);
         }
 
         // draw at if at and hp present
@@ -27,8 +29,8 @@ export default ig.Entity.extend({
         if(_.isNumber(this.model.at)) {
             var at = this.model.at.toString(),
                 x = this.pos.x + this.animSheet.width,
-                y = this.pos.y + this.animSheet.height - GUI.Font.heightForString(at);
-            GUI.Font.draw(at + ' AT', x, y, ig.Font.ALIGN.RIGHT);
+                y = this.pos.y + this.animSheet.height - defaultFont.heightForString(at);
+            defaultFont.draw(at + ' AT', x, y, ig.Font.ALIGN.RIGHT);
         }
 
         // TODO: duplicated with EntityMage

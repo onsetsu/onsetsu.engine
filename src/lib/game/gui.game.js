@@ -4,6 +4,10 @@ import SelectTarget from './handler/selecttarget.js';
 import LevelBattle from './levels/battle.js';
 import Timeline from './gui/timeline.js';
 import Battlefield from './gui/battlefield.js';
+import SpellBook from './gui/spellbook.js';
+import SyllablePool from './gui/syllablepool.js';
+import SyllableBoard from './gui/syllableboard.js';
+import { defaultFont } from './font.js';
 
 export default ig.Game.extend({
 
@@ -26,10 +30,10 @@ export default ig.Game.extend({
         this.visualizedMainPlayer.opponent = this.opponentPlayer;
         this.opponentPlayer.opponent = this.visualizedMainPlayer;
 
-        this.syllablePool = new GUI.SyllablePool();
-        this.spellBook = new GUI.SpellBook();
-        this.syllableBoard = new GUI.SyllableBoard(this.visualizedMainPlayer);
-        this.opponentSyllableBoard = new GUI.SyllableBoard(this.opponentPlayer);
+        this.syllablePool = new SyllablePool();
+        this.spellBook = new SpellBook();
+        this.syllableBoard = new SyllableBoard(this.visualizedMainPlayer);
+        this.opponentSyllableBoard = new SyllableBoard(this.opponentPlayer);
         this.timeline = new Timeline();
         this.battlefield = new Battlefield();
 
@@ -59,8 +63,8 @@ export default ig.Game.extend({
                 if(this.settings.label) {
                     var label = this.settings.label,
                         x = this.pos.x + this.animSheet.width / 2,
-                        y = this.pos.y + (this.animSheet.height - GUI.Font.heightForString(label)) / 2;
-                    GUI.Font.draw(label, x, y, ig.Font.ALIGN.CENTER);
+                        y = this.pos.y + (this.animSheet.height - defaultFont.heightForString(label)) / 2;
+                    defaultFont.draw(label, x, y, ig.Font.ALIGN.CENTER);
                 }
             }
         });

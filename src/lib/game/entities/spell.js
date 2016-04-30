@@ -1,14 +1,7 @@
-ig.module(
-	'game.entities.spell'
-)
-.requires(
-	'impact.entity',
-	'game.font',
-	'game.entities.syllable'
-)
-.defines(function(){
+import EntitySyllable from './syllable.js';
+import { defaultFont } from './../font.js';
 
-EntitySpell = ig.Entity.extend({
+export default ig.Entity.extend({
 	size: {x:32, y:32},
 	animSheet: new ig.AnimationSheet('media/board.png', 32, 32),
 	sequencePadding: 4,
@@ -26,7 +19,7 @@ EntitySpell = ig.Entity.extend({
                 GUI.game.spawnEntity(
                     EntitySyllable,
                     this.pos.x + syllablePadding,
-                    this.pos.y + GUI.Font.heightForString(''),
+                    this.pos.y + defaultFont.heightForString(''),
                     { model: syllable }
                 );
                 syllablePadding += this.animSheet.width;
@@ -36,11 +29,11 @@ EntitySpell = ig.Entity.extend({
 
         this.size = {
             x: Math.max(
-                GUI.Font.widthForString(this.model.spellName),
-                GUI.Font.widthForString(this.model.effectText)),
-            y: GUI.Font.heightForString(this.model.spellName) +
+                defaultFont.widthForString(this.model.spellName),
+                defaultFont.widthForString(this.model.effectText)),
+            y: defaultFont.heightForString(this.model.spellName) +
                 this.animSheet.height +
-                GUI.Font.heightForString(this.model.effectText)
+                defaultFont.heightForString(this.model.effectText)
         };
 	},
 	draw: function() {
@@ -49,12 +42,10 @@ EntitySpell = ig.Entity.extend({
 		// draw name
 		var x = this.pos.x,
             y = this.pos.y;
-		GUI.Font.draw(this.model.spellName, x, y, ig.Font.ALIGN.LEFT);
+		defaultFont.draw(this.model.spellName, x, y, ig.Font.ALIGN.LEFT);
 
 		// draw effect
-		var y = this.pos.y + this.animSheet.height + GUI.Font.heightForString('');
-		GUI.Font.draw(this.model.effectText, this.pos.x, y, ig.Font.ALIGN.LEFT);
+		var y = this.pos.y + this.animSheet.height + defaultFont.heightForString('');
+		defaultFont.draw(this.model.effectText, this.pos.x, y, ig.Font.ALIGN.LEFT);
 	}
-});
-
 });

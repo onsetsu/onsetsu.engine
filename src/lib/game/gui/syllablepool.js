@@ -1,15 +1,6 @@
-ig.module(
-	'game.gui.syllablepool'
-)
-.requires(
-	'impact.impact',
-	'impact.font',
+import EntitySyllable from './../entities/syllable.js';
 
-	'game.entities.syllable'
-)
-.defines(function(){
-
-GUI.SyllablePool = ig.Class.extend({
+export default ig.Class.extend({
 	init: function() {
         var syllables = game.battlefield.sides.get(GUI.game.visualizedMainPlayer).mages[0].syllablePool.syllables;
         this.syllables = syllables.map(function(syllable, index) {
@@ -18,6 +9,4 @@ GUI.SyllablePool = ig.Class.extend({
 	},
 
 	update: function() {}
-});
-
 });

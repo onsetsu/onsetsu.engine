@@ -1,3 +1,5 @@
+import { defaultFont } from './../font.js';
+
 var EntityInfoMessage = ig.Entity.extend({
 	init: function(x, y, settings) {
 		this.parent(x, y, settings);
@@ -24,7 +26,7 @@ var EntityInfoMessage = ig.Entity.extend({
 //        var label = this.model.baseDelay + ': ' + (this.model.recurring === Action.recurring ? 'recu' : 'once'),
             x = this.pos.x,// + this.animSheet.width / 2,
             y = this.pos.y; //+ this.animSheet.height / 4;
-        GUI.Font.draw(accumulatedLabel, x, y, ig.Font.ALIGN.CENTER);
+        defaultFont.draw(accumulatedLabel, x, y, ig.Font.ALIGN.CENTER);
 	}
 });
 

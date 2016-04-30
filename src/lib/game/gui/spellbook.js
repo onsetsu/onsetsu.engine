@@ -1,15 +1,6 @@
-ig.module(
-	'game.gui.spellbook'
-)
-.requires(
-	'impact.impact',
-	'impact.font',
+import EntitySpell from './../entities/spell.js';
 
-	'game.entities.spell'
-)
-.defines(function(){
-
-GUI.SpellBook = ig.Class.extend({
+export default ig.Class.extend({
     paddingBetweenSpells: 4,
 	init: function() {
 	    var spellPadding = 0;
@@ -21,6 +12,4 @@ GUI.SpellBook = ig.Class.extend({
 	},
 
 	update: function() {}
-});
-
 });

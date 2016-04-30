@@ -1,3 +1,5 @@
+import { defaultFont } from './../font.js';
+
 export default ig.Entity.extend({
 	size: {x:48, y:48},
 	animSheet: new ig.AnimationSheet('media/timeline.png', 48, 48),
@@ -15,6 +17,6 @@ export default ig.Entity.extend({
 		this.parent();
 
 		var delay = this.model.delay;
-		GUI.Font.draw(delay, this.pos.x + this.size.x / 2, this.pos.y, ig.Font.ALIGN.CENTER);
+		defaultFont.draw(delay, this.pos.x + this.size.x / 2, this.pos.y, ig.Font.ALIGN.CENTER);
 	}
 });
