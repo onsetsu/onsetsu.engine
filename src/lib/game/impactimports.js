@@ -1,7 +1,5 @@
-'use strict';
-
 ig.module(
-	'game.game'
+	'game.impactimports'
 )
 .requires(
     'game.gui.spellbook',
@@ -11,10 +9,6 @@ ig.module(
 	'game.gui.battlefield',
 
     // entities
-	'game.entities.syllable',
-
-	'game.impactextension'
+	'game.entities.syllable'
 )
-.defines(function(){
-
-});
+.defines(function(){});
