@@ -1,13 +1,4 @@
-ig.module(
-	'game.entities.action'
-)
-.requires(
-	'impact.entity',
-	'game.font'
-)
-.defines(function(){
-
-EntityAction = ig.Entity.extend({
+export default ig.Entity.extend({
 	size: {x:32, y:16},
 	animSheet: new ig.AnimationSheet('media/timeline.png', 32, 16),
 	init: function(x, y, settings) {
@@ -43,6 +34,4 @@ EntityAction = ig.Entity.extend({
             y = this.pos.y + this.animSheet.height / 4;
         GUI.Font.draw(label, x, y, ig.Font.ALIGN.CENTER);
 	}
-});
-
 });

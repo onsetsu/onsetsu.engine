@@ -1,16 +1,7 @@
-ig.module(
-	'game.gui.timeline'
-)
-.requires(
-	'impact.impact',
-	'impact.font',
+import EntityAction from './../entities/action.js';
+import EntityTimelineSlot from './../entities/timelineslot.js';
 
-	'game.entities.timelineslot',
-	'game.entities.action'
-)
-.defines(function(){
-
-GUI.Timeline = ig.Class.extend({
+export default ig.Class.extend({
     paddingBetweenTimelineSlots: 4,
     paddingBetweenActions: 2,
 	init: function() {
@@ -96,6 +87,4 @@ GUI.Timeline = ig.Class.extend({
         }).bind(this));
 	},
     update: function() {}
-});
-
 });

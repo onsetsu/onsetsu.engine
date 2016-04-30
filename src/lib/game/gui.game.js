@@ -2,6 +2,7 @@ import Turn from './turn.js';
 import EntityInfoMessage from './entities/info_message.js';
 import SelectTarget from './handler/selecttarget.js';
 import LevelBattle from './levels/battle.js';
+import Timeline from './gui/timeline.js';
 
 export default ig.Game.extend({
 
@@ -28,7 +29,7 @@ export default ig.Game.extend({
         this.spellBook = new GUI.SpellBook();
         this.syllableBoard = new GUI.SyllableBoard(this.visualizedMainPlayer);
         this.opponentSyllableBoard = new GUI.SyllableBoard(this.opponentPlayer);
-        this.timeline = new GUI.Timeline();
+        this.timeline = new Timeline();
         this.battlefield = new GUI.Battlefield();
 
         EntityDebug = window.EntityDebug = ig.Entity.extend({
