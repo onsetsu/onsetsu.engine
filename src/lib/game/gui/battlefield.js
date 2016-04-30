@@ -1,15 +1,6 @@
-ig.module(
-	'game.gui.battlefield'
-)
-.requires(
-	'impact.impact',
-	'impact.font',
+import EntityFieldSide from './../entities/fieldside.js';
 
-	'game.entities.fieldside'
-)
-.defines(function(){
-
-GUI.Battlefield = ig.Class.extend({
+export default ig.Class.extend({
     paddingBetweenSpells: 4,
 	init: function() {
         var upperPosition = { x: 600, y: 100 },
@@ -62,6 +53,4 @@ GUI.Battlefield = ig.Class.extend({
 	update: function() {
 	    // TODO: check for changes of FieldSides on Battlefield
 	}
-});
-
 });

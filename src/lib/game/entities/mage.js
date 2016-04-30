@@ -1,13 +1,4 @@
-ig.module(
-	'game.entities.mage'
-)
-.requires(
-	'impact.entity',
-	'game.font'
-)
-.defines(function(){
-
-EntityMage = ig.Entity.extend({
+export default ig.Entity.extend({
 	size: {x:48, y:48},
 	animSheet: new ig.AnimationSheet('media/mages.png', 48, 48),
 	init: function(x, y, settings) {
@@ -48,9 +39,7 @@ EntityMage = ig.Entity.extend({
                 if(this.model.action === action) {
                     this.drawRelatedTo(GUI.game.timeline.entitiesByAction.get(action));
                 }
-            };
+            }
         }
 	}
-});
-
 });

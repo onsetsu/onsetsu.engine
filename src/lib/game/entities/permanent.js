@@ -1,13 +1,4 @@
-ig.module(
-	'game.entities.permanent'
-)
-.requires(
-	'impact.entity',
-	'game.font'
-)
-.defines(function(){
-
-EntityPermanent = ig.Entity.extend({
+export default ig.Entity.extend({
 	size: {x:32, y:48},
 	animSheet: new ig.AnimationSheet('media/permanents.png', 32, 48),
 	init: function(x, y, settings) {
@@ -55,6 +46,4 @@ EntityPermanent = ig.Entity.extend({
             this.drawRelatedTo(associatedSpellEntity);
         }
 	}
-});
-
 });

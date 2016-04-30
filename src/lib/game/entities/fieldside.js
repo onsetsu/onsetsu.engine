@@ -1,15 +1,7 @@
-ig.module(
-	'game.entities.fieldside'
-)
-.requires(
-	'impact.entity',
-	'game.font',
-    'game.entities.mage',
-    'game.entities.permanent'
-)
-.defines(function(){
+import EntityMage from './mage.js';
+import EntityPermanent from './permanent.js';
 
-EntityFieldSide = ig.Entity.extend({
+export default ig.Entity.extend({
 	size: {x:200, y:200},
 	animSheet: new ig.AnimationSheet('media/board.png', 32, 32),
 	sequencePadding: 4,
@@ -163,6 +155,4 @@ EntityFieldSide = ig.Entity.extend({
 	draw: function() {
 		this.parent();
 	}
-});
-
 });

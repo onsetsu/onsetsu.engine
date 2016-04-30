@@ -3,6 +3,7 @@ import EntityInfoMessage from './entities/info_message.js';
 import SelectTarget from './handler/selecttarget.js';
 import LevelBattle from './levels/battle.js';
 import Timeline from './gui/timeline.js';
+import Battlefield from './gui/battlefield.js';
 
 export default ig.Game.extend({
 
@@ -30,7 +31,7 @@ export default ig.Game.extend({
         this.syllableBoard = new GUI.SyllableBoard(this.visualizedMainPlayer);
         this.opponentSyllableBoard = new GUI.SyllableBoard(this.opponentPlayer);
         this.timeline = new Timeline();
-        this.battlefield = new GUI.Battlefield();
+        this.battlefield = new Battlefield();
 
         EntityDebug = window.EntityDebug = ig.Entity.extend({
             size: {x:64, y:32},
