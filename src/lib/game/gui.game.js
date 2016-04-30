@@ -1,4 +1,6 @@
 import Turn from './turn.js';
+import EntityInfoMessage from './entities/info_message.js';
+import SelectTarget from './handler/selecttarget.js';
 
 export default ig.Game.extend({
 
@@ -244,7 +246,7 @@ export default ig.Game.extend({
         }
 
         // select target
-        GUI.SelectTarget.update();
+        SelectTarget.update();
     },
 
     advanceTimeToNextAction: function() {

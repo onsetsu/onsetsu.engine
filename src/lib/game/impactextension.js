@@ -24,10 +24,10 @@ ig.module(
 	//'game.entities.time-line',
 
     // maps
-	'game.levels.battle',
+	'game.levels.battle'
 
 	// handler
-	'game.handler.selecttarget'
+	//'game.handler.selecttarget'
 )
 .defines(function(){
 

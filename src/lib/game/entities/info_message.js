@@ -1,13 +1,4 @@
-ig.module(
-	'game.entities.info_message'
-)
-.requires(
-	'impact.entity',
-	'game.font'
-)
-.defines(function(){
-
-EntityInfoMessage = ig.Entity.extend({
+var EntityInfoMessage = ig.Entity.extend({
 	init: function(x, y, settings) {
 		this.parent(x, y, settings);
         EntityInfoMessage.instance = this;
@@ -37,4 +28,4 @@ EntityInfoMessage = ig.Entity.extend({
 	}
 });
 
-});
+export default EntityInfoMessage;

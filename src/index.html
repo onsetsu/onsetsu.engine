@@ -44,6 +44,7 @@
 	<script type="text/javascript" src="external/dat.gui.js"></script>
 	<script type="text/javascript" src="external/combinatorics.js"></script>
 	<script type="text/javascript" src="external/firebase.js"></script>
+	<script type="text/javascript" src="external/uuid.js"></script>
 
 	<script type="text/javascript" src="lib/impact/impact.full.js"></script>
 
@@ -65,14 +66,19 @@
 
 	<script>
 		Promise.resolve()
-			.then(() => System.import("lib/engine/engineeffect.js"))
-			.then(() => System.import("lib/setup/setup.js"))
-			.then(() => System.import("test.js"))
-			.then(() => System.import("lib/game/databindings/testdatabindings.js"))
-			.then(() => new Promise(resolve => ig.module('init.game').requires('game.game').defines(resolve)))
-		    .then(() => System.import('main.js'));
+				.then(() => new Promise(resolve => ig.module(uuid.v4()).requires(
+				'impact.game',
+				'impact.font',
+		'impact.entity').defines(resolve)))
+		.then(() => System.import("lib/engine/engineeffect.js"))
+		.then(() => System.import("lib/setup/setup.js"))
+		.then(() => System.import("test.js"))
+		.then(() => System.import("lib/game/databindings/testdatabindings.js"))
+		.then(() => System.import("lib/game/handler/selecttarget.js"))
+		.then(() => System.import("lib/game/entities/info_message.js"))
+		.then(() => new Promise(resolve => ig.module(uuid.v4()).requires('game.game').defines(resolve)))
+		.then(() => System.import('main.js'));
 	</script>
-
 </head>
 <body>
 	<canvas id="canvas"></canvas>

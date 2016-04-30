@@ -2,6 +2,7 @@
 // Variants
 // --------------------------------------------------------------------------------
 import { Trigger, ReplacementEffect } from './../../engine/engineeffect.js';
+import SelectTarget from './../../game/handler/selecttarget.js';
 
 export function createStandardSyllablePool() {
     return new SyllablePool([
@@ -31,7 +32,7 @@ export function createStandardSyllablePool() {
  */
 function selectTarget(getSelectibles, isValidSelection, parameters) {
     return new Promise(function(resolve, reject) {
-        new GUI.SelectTarget(resolve, getSelectibles, isValidSelection, parameters);
+        new SelectTarget(resolve, getSelectibles, isValidSelection, parameters);
     });
 }
 

@@ -1,12 +1,6 @@
-ig.module(
-    'game.handler.selecttarget'
-)
-.requires(
+import EntityInfoMessage from './../entities/info_message.js';
 
-)
-.defines(function(){
-
-GUI.SelectTarget = ig.Class.extend({
+var SelectTarget = ig.Class.extend({
     init: function(callback, getSelectibles, isValidSelection, parameters) {
         this.callback = callback;
         this.getSelectibles = getSelectibles;
@@ -22,7 +16,7 @@ GUI.SelectTarget = ig.Class.extend({
             return targetEntity;
         });
 
-        GUI.SelectTarget.selectTarget = this;
+        SelectTarget.selectTarget = this;
         if(this.parameters.infoMessage) {
             this.parameters.infoId = EntityInfoMessage.instance.pushInfo(this.parameters.infoMessage);
         }
@@ -125,7 +119,7 @@ GUI.SelectTarget = ig.Class.extend({
         }
     },
     completeTargeting: function() {
-        GUI.SelectTarget.selectTarget = undefined;
+        SelectTarget.selectTarget = undefined;
         if(this.parameters.infoId) {
             EntityInfoMessage.instance.popInfo(this.parameters.infoId);
         }
@@ -135,10 +129,10 @@ GUI.SelectTarget = ig.Class.extend({
     }
 });
 
-GUI.SelectTarget.update = function() {
-    if(GUI.SelectTarget.selectTarget) {
-        GUI.SelectTarget.selectTarget.doIt();
+SelectTarget.update = function() {
+    if(SelectTarget.selectTarget) {
+        SelectTarget.selectTarget.doIt();
     }
 };
 
-});
+export default SelectTarget;

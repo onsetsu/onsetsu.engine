@@ -4,9 +4,6 @@ ig.module(
 	'game.game'
 )
 .requires(
-	'impact.game',
-	'impact.font',
-
     'game.gui.spellbook',
 	'game.gui.syllablepool',
 	'game.gui.syllableboard',
@@ -20,11 +17,9 @@ ig.module(
 	'game.levels.battle',
 
 	// handler
-	'game.handler.selecttarget',
+	//'game.handler.selecttarget',
 
-	'game.impactextension',
-
-    'game.entities.info_message'
+	'game.impactextension'
 )
 .defines(function(){
 
