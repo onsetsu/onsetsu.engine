@@ -9,6 +9,7 @@ import {
     EVENT_DEAL_DAMAGE,
     EVENT_CAST_SPELL
 } from './../engine/events.js';
+import { Networking } from './../networking.js';
 
 export default ig.Class.extend({
     init: function(action) {

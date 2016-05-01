@@ -4,7 +4,7 @@ import { Mage } from './engine/engine.js';
 var firebaseRoot = 'https://onsetsu.firebaseIO.com',
     roomAddress = firebaseRoot + '/lobby/rooms';
 
-window.Networking = {
+export var Networking = {
   getNextMessage: function() {
     return Networking.inbox.shift();
   },
