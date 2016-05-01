@@ -1,5 +1,6 @@
 import EntitySyllable from './../entities/syllable.js';
 import EntityField from './../entities/field.js';
+import DataBindings from './../databindings/databindings.js';
 
 export default ig.Class.extend({
     pos: { x: 350, y: 200 },

@@ -59,6 +59,7 @@ export class ReplacementEffect extends Effect {
     }
 }
 
+// TODO: refactor to explicit dependencies
 const EVENT_NOOP = 'EVENT_NOOP';
 window.EVENT_NOOP = EVENT_NOOP;
 const EVENT_START_TURN = 'EVENT_START_TURN';

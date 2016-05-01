@@ -1,4 +1,5 @@
 import { test, assert } from './../../../testfacility.js';
+import DataBindings from './../databindings/databindings.js';
 
 test(function() {
   var obj = {

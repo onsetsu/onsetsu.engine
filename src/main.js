@@ -2,6 +2,7 @@ import {} from 'lib/networking.js';
 import { configureGameForTwoPlayers } from 'lib/setup/setup.js';
 import { Game } from 'lib/engine/enginegame.js';
 import GUIGame from './lib/game/gui.game.js';
+import {} from './lib/game/impactextension.js';
 
 var runMain = function(host) {
   game = new Game();

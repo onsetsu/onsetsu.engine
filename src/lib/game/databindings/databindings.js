@@ -1,4 +1,4 @@
-DataBindings = {
+export default {
   watch: function(obj, attr, callback) {
     var value = obj[attr];
     Object.defineProperty(obj, attr, {
