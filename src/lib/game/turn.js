@@ -2,6 +2,8 @@
 
 import { TURN_BASED_ACTIONS } from './../engine/engineeffect.js';
 import { tryPlaceSyllableAndCastSpells } from './../engine/engineutilities.js';
+import { Permanent } from './../engine/enginebattlefield.js';
+import { Mage } from './../engine/engine.js';
 
 export default ig.Class.extend({
     init: function(action) {

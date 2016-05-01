@@ -1,8 +1,7 @@
-// --------------------------------------------------------------------------------
-// Tests
-// --------------------------------------------------------------------------------
-
 import { test, assert } from './testfacility.js';
+import { Timeline, Action } from './lib/engine/enginetimeline.js';
+import { SyllableSequence, Spell } from './lib/engine/enginespell.js';
+import { SyllableAtom, Syllables, SyllableBoard, SpellChecker, Direction } from './lib/engine/enginesyllable.js';
 
 test(function() {
   assert(Syllables.CHI.isA(Syllables.CHI));

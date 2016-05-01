@@ -1,4 +1,6 @@
 import { createStandardSyllablePool, createTestSpellbook } from './spells/spells.js';
+import { SyllableBoard } from './../engine/enginesyllable.js';
+import { Player, Mage } from './../engine/engine.js';
 
 export function configureGameForTwoPlayers() {
     var players = [new Player(), new Player()];

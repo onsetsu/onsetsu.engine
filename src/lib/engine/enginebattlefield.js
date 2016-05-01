@@ -1,7 +1,5 @@
-// --------------------------------------------------------------------------------
-// Battlefield
-// --------------------------------------------------------------------------------
-'use strict';
+import { Action } from './enginetimeline.js';
+import { nextBattlefieldID } from './engine.js';
 
 class FieldSide {
   constructor(player) {
@@ -25,9 +23,10 @@ class FieldSide {
   }
 }
 
+// TODO: unused
 class Zone {}
 
-class Battlefield {
+export class Battlefield {
   constructor() {
     this.charactersById = new Map();
     this.sides = new Map();
@@ -82,7 +81,7 @@ class Battlefield {
 
 }
 
-class Permanent {
+export class Permanent {
   constructor(settings, mage) {
     this.id = nextBattlefieldID();
     this.spellTypes = settings.spellTypes;
@@ -117,7 +116,7 @@ class Permanent {
   }
 }
 
-class Battle {
+export class Battle {
   constructor(combatant1, combatant2) {
     function attack(attacker, defender) {
       // check whether the attacker has an attack value

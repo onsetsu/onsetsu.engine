@@ -1,4 +1,5 @@
 import { defaultFont } from './../font.js';
+import { Action } from './../../engine/enginetimeline.js';
 
 export default ig.Entity.extend({
 	size: {x:32, y:16},

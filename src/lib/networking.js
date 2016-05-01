@@ -1,4 +1,5 @@
-'use strict';
+import { Permanent } from './engine/enginebattlefield.js';
+import { Mage } from './engine/engine.js';
 
 var firebaseRoot = 'https://onsetsu.firebaseIO.com',
     roomAddress = firebaseRoot + '/lobby/rooms';

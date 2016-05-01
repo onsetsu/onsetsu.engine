@@ -3,6 +3,27 @@
 // --------------------------------------------------------------------------------
 import { Trigger, ReplacementEffect } from './../../engine/engineeffect.js';
 import SelectTarget from './../../game/handler/selecttarget.js';
+import { Permanent } from './../../engine/enginebattlefield.js';
+import { SyllableSequence, Spell, SpellType } from './../../engine/enginespell.js';
+import {
+    SUBTYPE_HUMAN,
+    SUBTYPE_GOBLIN,
+    SUBTYPE_OGRE,
+
+    SUBTYPE_SHAMAN,
+    SUBTYPE_KNIGHT,
+    SUBTYPE_PRIEST,
+    SUBTYPE_WIZARD,
+
+    SUBTYPE_ELEMENTAL,
+    SUBTYPE_SPIRIT,
+    SUBTYPE_GOLEM,
+    SUBTYPE_DEMON,
+
+    SUBTYPE_LIGHTNING,
+    SUBTYPE_ICE
+} from './../../engine/enginespell.js';
+import { Syllables, SyllablePool, SpellBook } from './../../engine/enginesyllable.js';
 
 export function createStandardSyllablePool() {
     return new SyllablePool([

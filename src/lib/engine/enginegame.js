@@ -2,6 +2,8 @@
 
 import { ONS_EventManager } from './engineeffect.js';
 import Stack from './stack.js';
+import { Timeline } from './enginetimeline.js';
+import { Battlefield } from './enginebattlefield.js';
 
 export class Game {
   constructor() {

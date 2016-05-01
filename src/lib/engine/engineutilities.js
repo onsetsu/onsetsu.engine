@@ -1,3 +1,5 @@
+import { SpellChecker } from './enginesyllable.js';
+
 export function tryPlaceSyllableAndCastSpells(insertionIndex, syllableBoard, syllable, callback) {
   var syllablePlaced = syllableBoard.checkAndPlaceSyllable(
     insertionIndex,

@@ -1,16 +1,15 @@
-// --------------------------------------------------------------------------------
-// Syllable Board
-// --------------------------------------------------------------------------------
+import { SyllableSequence } from './enginespell.js';
 
 // TODO: exchange Syllable costs with an instance of this class
+// TODO: unused
 var SyllablePoints = function SyllablePoints() {};
 
 /**
  * Raw SyllableAtom representing an atomic characteristic of a Syllable.
  */
-var SyllableAtom = function SyllableAtom(value) {
+export function SyllableAtom(value) {
   this.value = value;
-};
+}
 SyllableAtom.prototype.toString = function() {
   return this.value;
 };
@@ -63,7 +62,7 @@ Syllable.prototype.isA = function(syllable) {
 /**
  * Concrete Syllable prototypes to copy from.
  */
-var Syllables = {};
+export var Syllables = {};
 ['CHI', 'MA', 'PAI'].forEach(function(name) {
   Syllables[name] = new Syllable(name, [SyllableAtom[name]], 1);
 });
@@ -116,9 +115,9 @@ Syllables.LUNA = new Syllable('LUNA', [
 /**
  * Contains the Syllables a mage can intonate.
  */
-var SyllablePool = function SyllablePool(syllables) {
+export function SyllablePool(syllables) {
   this.syllables = syllables;
-};
+}
 
 /**
  * Represents a Syllable on the SyllableBoard
@@ -135,7 +134,7 @@ var SyllableBoardField = function SyllableBoardField(index) {
   this.type = 'default'
 };
 
-var SyllableBoard = function SyllableBoard(size) {
+export function SyllableBoard(size) {
   this.size = size;
 
   // construct field and stone matrix
@@ -149,7 +148,7 @@ var SyllableBoard = function SyllableBoard(size) {
       this.syllableStones[i].push(undefined);
     }
   }
-};
+}
 SyllableBoard.prototype.placeSyllable = function(index, syllable) {
   var stone = new SyllableStone(syllable);
   this.syllableStones[index.x][index.y] = stone;
@@ -202,7 +201,7 @@ SyllableBoard.prototype.switchSyllables = function(index1, index2) {
   return true;
 };
 
-var SpellChecker = function() {};
+export function SpellChecker() {}
 SpellChecker.prototype.checkForSpell = function(index, board, spell, callback) {
   var column = board.getColumn(index.x),
       row = board.getRow(index.y);
@@ -251,14 +250,14 @@ SpellChecker.prototype.stripeMatchesSpell = function(index, stripe, spell, direc
 
 // TODO: add toString methods
 // Direction enum
-Direction = {
+export var Direction = {
   vertical: { toString: function() { return 'Direction.vertical'; }},
   horizontal: { toString: function() { return 'Direction.horizontal'; }}
 };
 
-var SpellBook = function SpellBook() {
+export function SpellBook() {
   this.spells = [];
-};
+}
 SpellBook.prototype.getSpells = function() {
   return this.spells;
 };
@@ -277,7 +276,8 @@ SpellBook.prototype.removeSpell = function(spell) {
 /**
  * All Spells known to a Mage
  */
+// TODO: unused
 var SpellArchive = function SpellArchive() {};
 
+// TODO: unused
 var SpellRepository = function SpellRepository() {};
-

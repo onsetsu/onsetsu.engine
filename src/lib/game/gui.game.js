@@ -9,6 +9,8 @@ import SyllablePool from './gui/syllablepool.js';
 import SyllableBoard from './gui/syllableboard.js';
 import { defaultFont } from './font.js';
 import { tryPlaceSyllableAndCastSpells } from './../engine/engineutilities.js';
+import { Battle } from './../engine/enginebattlefield.js';
+import { SpellType } from './../engine/enginespell.js';
 
 export default ig.Game.extend({
 

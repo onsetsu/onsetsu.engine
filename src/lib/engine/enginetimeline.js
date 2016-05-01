@@ -1,7 +1,3 @@
-// --------------------------------------------------------------------------------
-// Timeline
-// --------------------------------------------------------------------------------
-
 var TimelineSlot = function(delay) {
   this.delay = delay;
   this.actions = [];
@@ -20,13 +16,13 @@ TimelineSlot.prototype.toString = function() {
   return 'SLOT ' + this.actions.length + ' actions';
 };
 
-var Timeline = function Timeline() {
+export function Timeline() {
   this.actions = [];
 
   var zeroTimelineSlot = new TimelineSlot(0);
   this.negativeTimelineSlots = [zeroTimelineSlot];
   this.positiveTimelineSlots = [zeroTimelineSlot];
-};
+}
 Timeline.prototype.addAction = function(action) {
   this.actions.push(action);
   this.getSlotAt(action.baseDelay).addAction(action);
@@ -110,11 +106,11 @@ Timeline.prototype.print = function() {
 };
 
 // TODO: argument 'executable' is currently unused
-var Action = function Action(executable, baseDelay, recurring, character) {
+export function Action(executable, baseDelay, recurring, character) {
   this.baseDelay = baseDelay;
   this.recurring = recurring;
   this.character = character;
-};
+}
 
 // TODO: add toString methods
 // Recurring enum

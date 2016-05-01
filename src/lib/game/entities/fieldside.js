@@ -1,6 +1,7 @@
 import EntityMage from './mage.js';
 import EntityPermanent from './permanent.js';
 import { allied } from './../../engine/engineutilities.js';
+import { SpellType } from './../../engine/enginespell.js';
 
 export default ig.Entity.extend({
 	size: {x:200, y:200},
@@ -32,7 +33,7 @@ export default ig.Entity.extend({
 
         var isFamiliar = function(permanent) {
             return _(permanent.spellTypes).include(SpellType.Familiar);
-        }
+        };
 
         var entitiesByPermanent = this.entitiesByPermanent = new Map();
         var familiarPadding = 8;

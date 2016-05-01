@@ -1,4 +1,4 @@
-'use strict';
+import { IncrementalIDGenerator } from './engine.js';
 
 // TODO: currently unused
 // The 4 types of abilities:
