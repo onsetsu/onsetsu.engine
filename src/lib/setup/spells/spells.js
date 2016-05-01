@@ -68,15 +68,15 @@ function selectTarget(getSelectibles, isValidSelection, parameters) {
  * Checks whether targeting is even possible to complete
  * (using a simple back-tracking mechanism)
  */
-window.secureSelectTarget = function secureSelectTarget(getSelectibles, isValidSelection, parameters, then) {
+export function secureSelectTarget(getSelectibles, isValidSelection, parameters, then) {
     if(!targetingPossible(getSelectibles, isValidSelection, [])) {
         console.log('no valid target combination found');
         return Promise.resolve();
     }
     return then(selectTarget(getSelectibles, isValidSelection, parameters));
-};
+}
 
-window.generateNumberOfUniqueTargets = function generateNumberOfUniqueTargets(targets, minNumTargets, maxNumTargets) {
+export function generateNumberOfUniqueTargets(targets, minNumTargets, maxNumTargets) {
     function getSelectibles(alreadySelected) {
         if(alreadySelected.length >= maxNumTargets) {
             return [];
@@ -91,7 +91,7 @@ window.generateNumberOfUniqueTargets = function generateNumberOfUniqueTargets(ta
     }
 
     return [getSelectibles, isValidSelection];
-};
+}
 
 function ifEnemyResolveElseDo(mage, els) {
     var isEnemy = mage.controller !== GUI.game.visualizedMainPlayer;
@@ -122,7 +122,7 @@ const CHECK = {
     }
 };
 
-window.generateDealDamageToSingleTarget = function generateDealDamageToSingleTarget(damage, spellIndex) {
+function generateDealDamageToSingleTarget(damage, spellIndex) {
     return function(target) {
         env.conn.send({
             command: 'targetForDamage',
@@ -137,7 +137,7 @@ window.generateDealDamageToSingleTarget = function generateDealDamageToSingleTar
                 game.eventManager.execute(EVENT_DEAL_DAMAGE, target, damage);
             });
     }
-};
+}
 
 import InfoMessage from './../infomessage.js';
 
