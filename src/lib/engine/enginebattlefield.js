@@ -1,5 +1,6 @@
 import { Action } from './enginetimeline.js';
 import { nextBattlefieldID } from './engine.js';
+import { EVENT_DEAL_DAMAGE } from './events.js';
 
 class FieldSide {
   constructor(player) {

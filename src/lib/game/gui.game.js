@@ -11,6 +11,7 @@ import { defaultFont } from './font.js';
 import { tryPlaceSyllableAndCastSpells } from './../engine/engineutilities.js';
 import { Battle } from './../engine/enginebattlefield.js';
 import { SpellType } from './../engine/enginespell.js';
+import { EVENT_CAST_SPELL } from './../engine/events.js';
 
 export default ig.Game.extend({
 

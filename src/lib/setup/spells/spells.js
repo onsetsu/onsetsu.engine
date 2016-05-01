@@ -24,6 +24,13 @@ import {
     SUBTYPE_ICE
 } from './../../engine/enginespell.js';
 import { Syllables, SyllablePool, SpellBook } from './../../engine/enginesyllable.js';
+import {
+    EVENT_START_TURN,
+    EVENT_DEAL_DAMAGE,
+    EVENT_ENTER_BATTLEFIELD,
+    EVENT_CAST_SPELL,
+    EVENT_SACRIFICE
+} from './../../engine/events.js';
 
 export function createStandardSyllablePool() {
     return new SyllablePool([
