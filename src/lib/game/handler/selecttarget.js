@@ -1,7 +1,8 @@
 import EntityInfoMessage from './../entities/info_message.js';
 
-var SelectTarget = ig.Class.extend({
-    init: function(callback, getSelectibles, isValidSelection, parameters) {
+export default class SelectTarget {
+
+    constructor(callback, getSelectibles, isValidSelection, parameters) {
         this.callback = callback;
         this.getSelectibles = getSelectibles;
         this.isValidSelection = isValidSelection;
@@ -22,18 +23,25 @@ var SelectTarget = ig.Class.extend({
         }
 
         this.checkForTargetSelectionCompleted();
-    },
+    }
+
+    static update() {
+        if(this.selectTarget) {
+            this.selectTarget.doIt();
+        }
+    }
+
     // TODO: could be static
-    getHoveredEntityForTargets: function(targets) {
+    getHoveredEntityForTargets(targets) {
         return _(targets).find(target => {
             var targetEntity = GUI.game.battlefield.getEntityFor(target);
             return ig.input.hover(targetEntity);
         });
-    },
-    isSelected: function(target) {
+    }
+    isSelected(target) {
         return this.selectedTargets.indexOf(target) >= 0;
-    },
-    doIt: function() {
+    }
+    doIt() {
         if(ig.input.pressed('leftclick')) {
             // only the selectible targets should be possible
             let hoveredOn = this.getHoveredEntityForTargets(this.selectibles);
@@ -70,24 +78,24 @@ var SelectTarget = ig.Class.extend({
                 }
             }
         }
-    },
-    select: function(target) {
+    }
+    select(target) {
         this.selectedTargets.push(target);
         GUI.game.battlefield.getEntityFor(target).visualizeSelected(true);
-    },
-    deselect: function(target) {
+    }
+    deselect(target) {
         var index = this.selectedTargets.lastIndexOf(target);
         this.selectedTargets.splice(index, 1);
         GUI.game.battlefield.getEntityFor(target).visualizeSelected(false);
-    },
-    clearSelectables: function() {
+    }
+    clearSelectables() {
         this.targetEntities.forEach(entity => {
             entity.visualizeSelectable(false);
             entity.visualizeSelected(false);
             entity.clearSelectedNumbers();
         });
-    },
-    updateSelectibles: function() {
+    }
+    updateSelectibles() {
         this.clearSelectables();
         // TODO: selectibles and this.possibleTargets are out of sync
         // TODO: enable deselect of selected targets and
@@ -103,22 +111,22 @@ var SelectTarget = ig.Class.extend({
             entity.visualizeSelected(true);
             entity.addSelectedNumbers(index, this.parameters && this.parameters.showOnlyTargetQuantity);
         });
-    },
+    }
     // automatically check for 'no more targets available!'
     // e.g.: Choose up to 4 targets, but only 2 available
     // and those are already selected
-    checkForTargetSelectionCompleted: function() {
+    checkForTargetSelectionCompleted() {
         if(this.isValidSelection(this.selectedTargets) &&
             this.getSelectibles(this.selectedTargets).length === 0) {
             this.completeTargeting();
         }
-    },
-    cancelToComplete: function() {
+    }
+    cancelToComplete() {
         if(this.isValidSelection(this.selectedTargets)) {
             this.completeTargeting();
         }
-    },
-    completeTargeting: function() {
+    }
+    completeTargeting() {
         SelectTarget.selectTarget = undefined;
         if(this.parameters.infoId) {
             EntityInfoMessage.instance.popInfo(this.parameters.infoId);
@@ -127,12 +135,4 @@ var SelectTarget = ig.Class.extend({
 
         this.callback(this.selectedTargets);
     }
-});
-
-SelectTarget.update = function() {
-    if(SelectTarget.selectTarget) {
-        SelectTarget.selectTarget.doIt();
-    }
-};
-
-export default SelectTarget;
+}
