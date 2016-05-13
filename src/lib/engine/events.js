@@ -1,3 +1,5 @@
+import { checkStateBasedActions } from './statebasedactions.js';
+
 // TODO: refactor to explicit dependencies
 export const EVENT_NOOP = 'EVENT_NOOP';
 export const EVENT_START_TURN = 'EVENT_START_TURN';

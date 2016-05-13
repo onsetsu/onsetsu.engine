@@ -146,10 +146,6 @@ export class ONS_EventManager {
     }
 }
 
-window.checkStateBasedActions = function checkStateBasedActions() {
-    game.battlefield.removeDefeatedPermanents();
-};
-
 export const TURN_BASED_ACTIONS = {
     /**
      * At the start of the turn of a mage:
