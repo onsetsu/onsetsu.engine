@@ -51,8 +51,7 @@ export var Networking = {
           conn.on('open', function() {
             prepareOpenedConnection();
             peer.disconnect();
-            var isHost = false;
-            callback(isHost);
+            callback(false);
           });
         }
 
@@ -181,8 +180,7 @@ export var Networking = {
               conn.on('open', () => {
                 closeHost();
                 prepareOpenedConnection();
-                var isHost = true;
-                callback(isHost);
+                callback(true);
               });
             });
           });

@@ -14,6 +14,7 @@ import { SpellType } from './../engine/enginespell.js';
 import { EVENT_CAST_SPELL } from './../engine/events.js';
 import { secureSelectTarget, generateNumberOfUniqueTargets } from './../setup/spells/spells.js';
 import { checkStateBasedActions } from './../engine/statebasedactions.js';
+import { isHost } from './../ishost.js';
 
 export default ig.Game.extend({
 
