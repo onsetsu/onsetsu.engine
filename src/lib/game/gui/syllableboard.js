@@ -2,9 +2,9 @@ import EntitySyllable from './../entities/syllable.js';
 import EntityField from './../entities/field.js';
 import DataBindings from './../databindings/databindings.js';
 
-export default ig.Class.extend({
-    pos: { x: 350, y: 200 },
-    spawn: function(entityClass, indexX, indexY, model) {
+export default class {
+
+    spawn(entityClass, indexX, indexY, model) {
         var entity = GUI.game.spawnEntity(
             entityClass,
             this.pos.x + entityClass.prototype.size.x * indexX,
@@ -14,15 +14,17 @@ export default ig.Class.extend({
         entity.index = { x: indexX, y: indexY };
 
         return entity;
-    },
-    resetPosition: function(entity) {
+    }
+    resetPosition(entity) {
         entity.pos.x = this.pos.x + entity.size.x * entity.index.x;
         entity.pos.y = this.pos.y + entity.size.y * entity.index.y;
-    },
-	init: function(player) {
+    }
+	constructor(player) {
 	    if(player === GUI.game.opponentPlayer) {
 	        this.pos = { x: 800, y: 100 }
-	    }
+	    } else {
+            this.pos = { x: 350, y: 200 }
+        }
 
 	    this.fields = [];
 	    this.syllableStones = [];
@@ -40,13 +42,12 @@ export default ig.Class.extend({
             this.syllableStones.push([]);
             column.forEach(function(syllableStone, indexY) {
                 var spawnSyllableStone = (function(syllableModel) {
-                    var syllableEntity = this.spawn(
+                    this.syllableStones[indexX][indexY] = this.spawn(
                         EntitySyllable,
                         indexX,
                         indexY,
                         syllableModel
                     );
-                    this.syllableStones[indexX][indexY] = syllableEntity;
                 }).bind(this);
 
                 DataBindings.watch(column, indexY, (function() {
@@ -57,13 +58,13 @@ export default ig.Class.extend({
                 }
             }, this);
         }, this);
-	},
-	setModel: function(player) {
+	}
+	setModel(player) {
 	    return this.model = game.battlefield.sides.get(player).mages[0].syllableBoard;
-	},
-	getModel: function() {
+	}
+	getModel() {
 	    return this.model;
-	},
+	}
 
-	update: function() {}
-});
+	update() {}
+}

@@ -1,8 +1,8 @@
 import EntityAction from './../entities/action.js';
 import EntityTimelineSlot from './../entities/timelineslot.js';
 
-const paddingBetweenTimelineSlots = 4,
-    paddingBetweenActions = 2;
+const PADDING_BETWEEN_TIMELINE_SLOTS = 4,
+    PADDING_BETWEEN_ACTIONS = 2;
 
 export default class {
 	constructor() {
@@ -14,7 +14,7 @@ export default class {
             var model = game.timeline.getSlotAt(delay);
             return GUI.game.spawnEntity(
                 EntityTimelineSlot,
-                position.x + delay * (EntityTimelineSlot.prototype.size.x + paddingBetweenTimelineSlots),
+                position.x + delay * (EntityTimelineSlot.prototype.size.x + PADDING_BETWEEN_TIMELINE_SLOTS),
                 position.y
             ).applySettings({ model: model });
         }, this);
@@ -24,10 +24,10 @@ export default class {
             var indexInTimelineSlot = timelineSlot.actions.indexOf(action);
             return {
                 x: position.x
-                    + timelineSlot.delay * (EntityTimelineSlot.prototype.size.x + paddingBetweenTimelineSlots)
+                    + timelineSlot.delay * (EntityTimelineSlot.prototype.size.x + PADDING_BETWEEN_TIMELINE_SLOTS)
                     + (EntityTimelineSlot.prototype.size.x - EntityAction.prototype.size.x) / 2,
                 y: position.y
-                    - indexInTimelineSlot * (EntityAction.prototype.size.y + paddingBetweenActions)
+                    - indexInTimelineSlot * (EntityAction.prototype.size.y + PADDING_BETWEEN_ACTIONS)
                     + EntityTimelineSlot.prototype.size.y - EntityAction.prototype.size.y
             };
         }).bind(this);
