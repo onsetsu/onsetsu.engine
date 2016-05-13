@@ -56,13 +56,14 @@
 	</script>
 
 	<script>
-		Promise.resolve()
-				.then(() => new Promise(resolve => ig.module(uuid.v4()).requires(
-				'impact.game',
-				'impact.font',
-		'impact.entity').defines(resolve)))
-		.then(() => System.import("run-tests.js"))
-		.then(() => System.import('main.js'));
+		(new Promise(resolve => ig.module(uuid.v4())
+				.requires(
+					'impact.game',
+					'impact.font',
+					'impact.entity'
+				).defines(resolve)))
+			.then(() => System.import("run-tests.js"))
+			.then(() => System.import('main.js'));
 	</script>
 </head>
 <body>
