@@ -10,6 +10,7 @@ import {
     EVENT_CAST_SPELL
 } from './../engine/events.js';
 import { Networking } from './../networking.js';
+import EntityDebug from './entities/debug.js';
 
 export default ig.Class.extend({
     init: function(action) {
