@@ -1,10 +1,11 @@
 import EntityAction from './../entities/action.js';
 import EntityTimelineSlot from './../entities/timelineslot.js';
 
-export default ig.Class.extend({
-    paddingBetweenTimelineSlots: 4,
-    paddingBetweenActions: 2,
-	init: function() {
+const paddingBetweenTimelineSlots = 4,
+    paddingBetweenActions = 2;
+
+export default class {
+	constructor() {
         var position = { x: 500, y: 500 };
 
         this.entitiesByAction = new Map();
@@ -13,7 +14,7 @@ export default ig.Class.extend({
             var model = game.timeline.getSlotAt(delay);
             return GUI.game.spawnEntity(
                 EntityTimelineSlot,
-                position.x + delay * (EntityTimelineSlot.prototype.size.x + + this.paddingBetweenTimelineSlots),
+                position.x + delay * (EntityTimelineSlot.prototype.size.x + paddingBetweenTimelineSlots),
                 position.y
             ).applySettings({ model: model });
         }, this);
@@ -23,11 +24,11 @@ export default ig.Class.extend({
             var indexInTimelineSlot = timelineSlot.actions.indexOf(action);
             return {
                 x: position.x
-                    + timelineSlot.delay * (EntityTimelineSlot.prototype.size.x + + this.paddingBetweenTimelineSlots)
+                    + timelineSlot.delay * (EntityTimelineSlot.prototype.size.x + paddingBetweenTimelineSlots)
                     + (EntityTimelineSlot.prototype.size.x - EntityAction.prototype.size.x) / 2,
                 y: position.y
-                    - indexInTimelineSlot * (EntityAction.prototype.size.y + this.paddingBetweenActions)
-                    + EntityTimelineSlot.prototype.size.y - EntityAction.prototype.size.y,
+                    - indexInTimelineSlot * (EntityAction.prototype.size.y + paddingBetweenActions)
+                    + EntityTimelineSlot.prototype.size.y - EntityAction.prototype.size.y
             };
         }).bind(this);
 
@@ -50,7 +51,7 @@ export default ig.Class.extend({
                     console.log('ERROR: evil action', action);
                     return {x:100, y:10};
                 }
-            };
+            }
             this.entitiesByAction.forEach(function(entity, action) {
                 entity.move(foo(action), 1.5);
             });
@@ -85,6 +86,6 @@ export default ig.Class.extend({
             moveAllActions();
             return returnValue;
         }).bind(this));
-	},
-    update: function() {}
-});
+	}
+    update() {}
+}
