@@ -12,11 +12,13 @@ import {
 import { Networking } from './../networking.js';
 import EntityDebug from './entities/debug.js';
 
-export default ig.Class.extend({
-    init: function(action) {
+export default class Turn {
+
+    constructor(action) {
         this.action = action;
-    },
-    whenFinished: function() {
+    }
+
+    whenFinished() {
         var action = this.action;
         if(action.character instanceof Mage) {
             TURN_BASED_ACTIONS.START_MAGE_TURN(action.character);
@@ -137,4 +139,4 @@ export default ig.Class.extend({
             });
         }
     }
-});
+}
