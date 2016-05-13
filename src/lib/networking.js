@@ -20,13 +20,6 @@ export var Networking = {
         env = {};
       }
 
-      window.chat = function(message) {
-        env.conn.send({
-          from: env.peer.id,
-          message: message
-        });
-      };
-
       function prepareOpenedConnection() {
         console.log('connection established');
 
