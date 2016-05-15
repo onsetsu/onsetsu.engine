@@ -3,7 +3,7 @@ import { defaultFont } from './../font.js';
 var EntityInfoMessage = ig.Entity.extend({
 	init: function(x, y, settings) {
 		this.parent(x, y, settings);
-        EntityInfoMessage.instance = this;
+        EntityInfoMessage.__instance__ = this;
         this.id = 1;
         this.labels = new Map();
     },
@@ -29,5 +29,12 @@ var EntityInfoMessage = ig.Entity.extend({
         defaultFont.draw(accumulatedLabel, x, y, ig.Font.ALIGN.CENTER);
 	}
 });
+
+EntityInfoMessage.instance = function instance() {
+    if(!this.__instance__) {
+        GUI.game.spawnEntity(EntityInfoMessage, 300, 100);
+    }
+    return this.__instance__;
+};
 
 export default EntityInfoMessage;

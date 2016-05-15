@@ -19,7 +19,7 @@ export default class SelectTarget {
 
         SelectTarget.selectTarget = this;
         if(this.parameters.infoMessage) {
-            this.parameters.infoId = EntityInfoMessage.instance.pushInfo(this.parameters.infoMessage);
+            this.parameters.infoId = EntityInfoMessage.instance().pushInfo(this.parameters.infoMessage);
         }
 
         this.checkForTargetSelectionCompleted();
@@ -129,7 +129,7 @@ export default class SelectTarget {
     completeTargeting() {
         SelectTarget.selectTarget = undefined;
         if(this.parameters.infoId) {
-            EntityInfoMessage.instance.popInfo(this.parameters.infoId);
+            EntityInfoMessage.instance().popInfo(this.parameters.infoId);
         }
         this.clearSelectables();
 

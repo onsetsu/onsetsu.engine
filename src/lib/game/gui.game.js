@@ -1,5 +1,4 @@
 import Turn from './turn.js';
-import EntityInfoMessage from './entities/info_message.js';
 import SelectTarget from './handler/selecttarget.js';
 import LevelBattle from './levels/battle.js';
 import Timeline from './gui/timeline.js';
@@ -45,10 +44,7 @@ export default ig.Game.extend({
         this.battlefield = new Battlefield();
 
         // START TIMELINE LOOP
-        Promise.resolve().delay(2).then(function() {
-            GUI.game.spawnEntity(EntityInfoMessage, 300, 100);
-            return GUI.game.advanceAndProcessTurn();
-        });
+        Promise.resolve().delay(2).then(() => GUI.game.advanceAndProcessTurn());
     },
 
     startBattle: function(combatant1) {
