@@ -18,7 +18,7 @@ export default ig.Entity.extend({
 
         // draw hp if present
         if(_.isNumber(this.model.hp) && _.isNumber(this.model.maxHp)) {
-            var hp = this.model.hp.toString(),
+            let hp = this.model.hp.toString(),
                 maxHp = this.model.maxHp.toString(),
                 x = this.pos.x + this.animSheet.width;
             defaultFont.draw(hp + ' HP', x, this.pos.y, ig.Font.ALIGN.RIGHT);
@@ -27,7 +27,7 @@ export default ig.Entity.extend({
         // draw at if at and hp present
         // TODO: for model: split into at (current) and baseAt
         if(_.isNumber(this.model.at)) {
-            var at = this.model.at.toString(),
+            let at = this.model.at.toString(),
                 x = this.pos.x + this.animSheet.width,
                 y = this.pos.y + this.animSheet.height - defaultFont.heightForString(at);
             defaultFont.draw(at + ' AT', x, y, ig.Font.ALIGN.RIGHT);
@@ -39,7 +39,7 @@ export default ig.Entity.extend({
                 if(this.model.action === action) {
                     this.drawRelatedTo(GUI.game.timeline.entitiesByAction.get(action));
                 }
-            };
+            }
 
             // show associated Spell
             var index = this.model.index;

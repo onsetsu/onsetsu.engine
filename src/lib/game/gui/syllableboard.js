@@ -31,33 +31,30 @@ export default class {
 
         this.setModel(player);
 	    var syllableBoard = this.getModel();
-        syllableBoard.fields.forEach(function(stripe, indexX) {
-            stripe.forEach(function(field, indexY) {
-                var fieldEntity = this.spawn(EntityField, indexX, indexY, field);
-                this.fields.push(fieldEntity);
-            }, this);
-        }, this);
+        syllableBoard.fields.forEach((stripe, indexX) =>
+            stripe.forEach((field, indexY) =>
+                this.fields.push(this.spawn(EntityField, indexX, indexY, field))
+            )
+        );
 
-        syllableBoard.syllableStones.forEach(function(column, indexX) {
+        syllableBoard.syllableStones.forEach((column, indexX) => {
             this.syllableStones.push([]);
-            column.forEach(function(syllableStone, indexY) {
-                var spawnSyllableStone = (function(syllableModel) {
-                    this.syllableStones[indexX][indexY] = this.spawn(
-                        EntitySyllable,
-                        indexX,
-                        indexY,
-                        syllableModel
-                    );
-                }).bind(this);
+            column.forEach((syllableStone, indexY) => {
+                var spawnSyllableStone = syllableModel => this.syllableStones[indexX][indexY] = this.spawn(
+                    EntitySyllable,
+                    indexX,
+                    indexY,
+                    syllableModel
+                );
 
-                DataBindings.watch(column, indexY, (function() {
+                DataBindings.watch(column, indexY, () => {
                     spawnSyllableStone(column[indexY].syllable);
-                }).bind(this));
+                });
                 if(syllableStone) {
                     spawnSyllableStone(syllableStone.syllable);
                 }
-            }, this);
-        }, this);
+            });
+        });
 	}
 	setModel(player) {
 	    return this.model = game.battlefield.sides.get(player).mages[0].syllableBoard;
