@@ -1,8 +1,9 @@
 import { Permanent } from './engine/enginebattlefield.js';
 import { Mage } from './engine/engine.js';
 
-var firebaseRoot = 'https://onsetsu.firebaseIO.com',
-    roomAddress = firebaseRoot + '/lobby/rooms';
+const FIREBASE_ROOT = 'https://onsetsu.firebaseIO.com',
+    ROOM_ADDRESS = FIREBASE_ROOT + '/lobby/rooms',
+    PEERJS_KEY = 'klgy15uvondpwrk9';
 
 export var Networking = {
   getNextMessage: function() {
@@ -32,7 +33,7 @@ export var Networking = {
 
     // creates a new peer and sets up its disconnection gui
     function createPeer() {
-      var peer = new Peer({key: 'klgy15uvondpwrk9'});
+      var peer = new Peer({key: PEERJS_KEY});
 
       peer.on('disconnected', () => console.log('peer disconnected'));
       peer.on('close', () => console.log('peer disconnected and destroyed'));
@@ -58,7 +59,7 @@ export var Networking = {
       static init() {
         this.datGui = new dat.GUI();
         var roomInfos = {};
-        var rooms = new Firebase(roomAddress);
+        var rooms = new Firebase(ROOM_ADDRESS);
         rooms.on('child_added', snapshot => {
           var li = this.datGui.add({ func: () => {
             JoinGame.join(snapshot.val().peerId);
@@ -141,7 +142,7 @@ export var Networking = {
       static init() {
         peer = createPeer();
         var datGui = new dat.GUI();
-        var rooms = new Firebase(roomAddress);
+        var rooms = new Firebase(ROOM_ADDRESS);
 
         peer.on('open', id => {
           console.log('My peer ID is: ' + id);
