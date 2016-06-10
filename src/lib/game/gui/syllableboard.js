@@ -47,6 +47,7 @@ export default class {
                     syllableModel
                 );
 
+                // TODO:HUB
                 DataBindings.watch(column, indexY, () => {
                     spawnSyllableStone(column[indexY].syllable);
                 });
@@ -63,5 +64,7 @@ export default class {
 	    return this.model;
 	}
 
-	update() {}
+	update() {
+        //console.log('this is updated!')
+    }
 }

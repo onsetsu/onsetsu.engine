@@ -1,4 +1,4 @@
-var host = false;
+window.host = false;
 
-export function isHost() { return host; }
-export function setIsHost(bool) { host = bool; }
+export function isHost() { return window.host; }
+export function setIsHost(bool) { window.host = bool; }

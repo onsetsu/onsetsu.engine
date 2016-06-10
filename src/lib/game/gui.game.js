@@ -20,7 +20,6 @@ export default ig.Game.extend({
     // Load a font
     font: new ig.Font( 'media/04b03.font.png' ),
 
-
     init: function() {
         GUI.game = this;
 
@@ -31,8 +30,8 @@ export default ig.Game.extend({
         // Initialize Battle Field
         this.loadLevel(LevelBattle);
 
-        this.visualizedMainPlayer = game.players[isHost ? 0 : 1];
-        this.opponentPlayer = game.players[isHost ? 1 : 0];
+        this.visualizedMainPlayer = game.players[isHost() ? 0 : 1];
+        this.opponentPlayer = game.players[isHost() ? 1 : 0];
         this.visualizedMainPlayer.opponent = this.opponentPlayer;
         this.opponentPlayer.opponent = this.visualizedMainPlayer;
 
