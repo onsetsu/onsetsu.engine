@@ -1,18 +1,10 @@
-ig.module(
-	'game.gui.syllableboard'
-)
-.requires(
-	'impact.impact',
-	'impact.font',
+import EntitySyllable from './../entities/syllable.js';
+import EntityField from './../entities/field.js';
+import DataBindings from './../databindings/databindings.js';
 
-	'game.entities.syllable',
-	'game.entities.field'
-)
-.defines(function(){
+export default class {
 
-GUI.SyllableBoard = ig.Class.extend({
-    pos: { x: 350, y: 200 },
-    spawn: function(entityClass, indexX, indexY, model) {
+    spawn(entityClass, indexX, indexY, model) {
         var entity = GUI.game.spawnEntity(
             entityClass,
             this.pos.x + entityClass.prototype.size.x * indexX,
@@ -22,58 +14,57 @@ GUI.SyllableBoard = ig.Class.extend({
         entity.index = { x: indexX, y: indexY };
 
         return entity;
-    },
-    resetPosition: function(entity) {
+    }
+    resetPosition(entity) {
         entity.pos.x = this.pos.x + entity.size.x * entity.index.x;
         entity.pos.y = this.pos.y + entity.size.y * entity.index.y;
-    },
-	init: function(player) {
+    }
+	constructor(player) {
 	    if(player === GUI.game.opponentPlayer) {
 	        this.pos = { x: 800, y: 100 }
-	    }
+	    } else {
+            this.pos = { x: 350, y: 200 }
+        }
 
 	    this.fields = [];
 	    this.syllableStones = [];
 
         this.setModel(player);
 	    var syllableBoard = this.getModel();
-        syllableBoard.fields.forEach(function(stripe, indexX) {
-            stripe.forEach(function(field, indexY) {
-                var fieldEntity = this.spawn(EntityField, indexX, indexY, field);
-                this.fields.push(fieldEntity);
-            }, this);
-        }, this);
+        syllableBoard.fields.forEach((stripe, indexX) =>
+            stripe.forEach((field, indexY) =>
+                this.fields.push(this.spawn(EntityField, indexX, indexY, field))
+            )
+        );
 
-        syllableBoard.syllableStones.forEach(function(column, indexX) {
+        syllableBoard.syllableStones.forEach((column, indexX) => {
             this.syllableStones.push([]);
-            column.forEach(function(syllableStone, indexY) {
-                var spawnSyllableStone = (function(syllableModel) {
-                    var syllableEntity = this.spawn(
-                        EntitySyllable,
-                        indexX,
-                        indexY,
-                        syllableModel
-                    );
-                    this.syllableStones[indexX][indexY] = syllableEntity;
-                }).bind(this);
+            column.forEach((syllableStone, indexY) => {
+                var spawnSyllableStone = syllableModel => this.syllableStones[indexX][indexY] = this.spawn(
+                    EntitySyllable,
+                    indexX,
+                    indexY,
+                    syllableModel
+                );
 
-                DataBindings.watch(column, indexY, (function() {
+                // TODO:HUB
+                DataBindings.watch(column, indexY, () => {
                     spawnSyllableStone(column[indexY].syllable);
-                }).bind(this));
+                });
                 if(syllableStone) {
                     spawnSyllableStone(syllableStone.syllable);
                 }
-            }, this);
-        }, this);
-	},
-	setModel: function(player) {
+            });
+        });
+	}
+	setModel(player) {
 	    return this.model = game.battlefield.sides.get(player).mages[0].syllableBoard;
-	},
-	getModel: function() {
+	}
+	getModel() {
 	    return this.model;
-	},
+	}
 
-	update: function() {}
-});
-
-});
+	update() {
+        //console.log('this is updated!')
+    }
+}

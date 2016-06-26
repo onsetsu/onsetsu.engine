@@ -44,35 +44,26 @@
 	<script type="text/javascript" src="external/dat.gui.js"></script>
 	<script type="text/javascript" src="external/combinatorics.js"></script>
 	<script type="text/javascript" src="external/firebase.js"></script>
+	<script type="text/javascript" src="external/uuid.js"></script>
 
 	<script type="text/javascript" src="lib/impact/impact.full.compiled.js"></script>
-
-    <script type="text/javascript" src="lib/game/databindings/databindings.js"></script>
 
 	<script>
 		window.game = undefined;
 		window.env = {};
 		window.GUI = {};
-		window.isHost = undefined;
 	</script>
-
-	<script type="text/javascript" src="lib/engine/engine.js"></script>
-    <script type="text/javascript" src="lib/engine/enginesyllable.js"></script>
-    <script type="text/javascript" src="lib/engine/enginespell.js"></script>
-    <script type="text/javascript" src="lib/engine/enginebattlefield.js"></script>
-    <script type="text/javascript" src="lib/engine/enginetimeline.js"></script>
-	<script type="text/javascript" src="lib/engine/engineutilities.js"></script>
 
 	<script>
-		Promise.resolve()
-			.then(() => System.import("lib/engine/engineeffect.js"))
-			.then(() => System.import("lib/setup/setup.js"))
-			.then(() => System.import("test.js"))
-			.then(() => System.import("lib/game/databindings/testdatabindings.js"))
-			.then(() => new Promise(resolve => ig.module('init.game').requires('game.game').defines(resolve)))
-		    .then(() => System.import('main.js'));
+		(new Promise(resolve => ig.module(uuid.v4())
+				.requires(
+					'impact.game',
+					'impact.font',
+					'impact.entity'
+				).defines(resolve)))
+			.then(() => System.import("run-tests.js"))
+			.then(() => System.import('main.js'));
 	</script>
-
 </head>
 <body>
 	<canvas id="canvas"></canvas>

@@ -1,4 +1,4 @@
-'use strict';
+import { checkStateBasedActions } from './statebasedactions.js';
 
 export default class Stack {
   constructor() {

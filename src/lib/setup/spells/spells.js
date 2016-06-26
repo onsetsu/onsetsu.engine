@@ -2,6 +2,35 @@
 // Variants
 // --------------------------------------------------------------------------------
 import { Trigger, ReplacementEffect } from './../../engine/engineeffect.js';
+import SelectTarget from './../../game/handler/selecttarget.js';
+import { Permanent } from './../../engine/enginebattlefield.js';
+import { SyllableSequence, Spell, SpellType } from './../../engine/enginespell.js';
+import {
+    SUBTYPE_HUMAN,
+    SUBTYPE_GOBLIN,
+    SUBTYPE_OGRE,
+
+    SUBTYPE_SHAMAN,
+    SUBTYPE_KNIGHT,
+    SUBTYPE_PRIEST,
+    SUBTYPE_WIZARD,
+
+    SUBTYPE_ELEMENTAL,
+    SUBTYPE_SPIRIT,
+    SUBTYPE_GOLEM,
+    SUBTYPE_DEMON,
+
+    SUBTYPE_LIGHTNING,
+    SUBTYPE_ICE
+} from './../../engine/enginespell.js';
+import { Syllables, SyllablePool, SpellBook } from './../../engine/enginesyllable.js';
+import {
+    EVENT_START_TURN,
+    EVENT_DEAL_DAMAGE,
+    EVENT_ENTER_BATTLEFIELD,
+    EVENT_CAST_SPELL,
+    EVENT_SACRIFICE
+} from './../../engine/events.js';
 
 export function createStandardSyllablePool() {
     return new SyllablePool([
@@ -31,7 +60,7 @@ export function createStandardSyllablePool() {
  */
 function selectTarget(getSelectibles, isValidSelection, parameters) {
     return new Promise(function(resolve, reject) {
-        new GUI.SelectTarget(resolve, getSelectibles, isValidSelection, parameters);
+        new SelectTarget(resolve, getSelectibles, isValidSelection, parameters);
     });
 }
 
@@ -39,15 +68,15 @@ function selectTarget(getSelectibles, isValidSelection, parameters) {
  * Checks whether targeting is even possible to complete
  * (using a simple back-tracking mechanism)
  */
-window.secureSelectTarget = function secureSelectTarget(getSelectibles, isValidSelection, parameters, then) {
+export function secureSelectTarget(getSelectibles, isValidSelection, parameters, then) {
     if(!targetingPossible(getSelectibles, isValidSelection, [])) {
         console.log('no valid target combination found');
         return Promise.resolve();
     }
     return then(selectTarget(getSelectibles, isValidSelection, parameters));
-};
+}
 
-window.generateNumberOfUniqueTargets = function generateNumberOfUniqueTargets(targets, minNumTargets, maxNumTargets) {
+export function generateNumberOfUniqueTargets(targets, minNumTargets, maxNumTargets) {
     function getSelectibles(alreadySelected) {
         if(alreadySelected.length >= maxNumTargets) {
             return [];
@@ -62,7 +91,7 @@ window.generateNumberOfUniqueTargets = function generateNumberOfUniqueTargets(ta
     }
 
     return [getSelectibles, isValidSelection];
-};
+}
 
 function ifEnemyResolveElseDo(mage, els) {
     var isEnemy = mage.controller !== GUI.game.visualizedMainPlayer;
@@ -93,7 +122,7 @@ const CHECK = {
     }
 };
 
-window.generateDealDamageToSingleTarget = function generateDealDamageToSingleTarget(damage, spellIndex) {
+function generateDealDamageToSingleTarget(damage, spellIndex) {
     return function(target) {
         env.conn.send({
             command: 'targetForDamage',
@@ -108,7 +137,7 @@ window.generateDealDamageToSingleTarget = function generateDealDamageToSingleTar
                 game.eventManager.execute(EVENT_DEAL_DAMAGE, target, damage);
             });
     }
-};
+}
 
 import InfoMessage from './../infomessage.js';
 

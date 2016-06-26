@@ -1,12 +1,25 @@
 'use strict';
 
 import { TURN_BASED_ACTIONS } from './../engine/engineeffect.js';
+import { tryPlaceSyllableAndCastSpells } from './../engine/engineutilities.js';
+import { Permanent } from './../engine/enginebattlefield.js';
+import { Mage } from './../engine/engine.js';
+import {
+    EVENT_START_TURN,
+    EVENT_DEAL_DAMAGE,
+    EVENT_CAST_SPELL
+} from './../engine/events.js';
+import { Networking } from './../networking.js';
+import EntityDebug from './entities/debug.js';
+import Interpreter from './../commands/interpreter.js';
 
-export default ig.Class.extend({
-    init: function(action) {
+export default class Turn {
+
+    constructor(action) {
         this.action = action;
-    },
-    whenFinished: function() {
+    }
+
+    whenFinished() {
         var action = this.action;
         if(action.character instanceof Mage) {
             TURN_BASED_ACTIONS.START_MAGE_TURN(action.character);
@@ -127,4 +140,4 @@ export default ig.Class.extend({
             });
         }
     }
-});
+}

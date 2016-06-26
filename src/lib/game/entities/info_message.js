@@ -1,16 +1,9 @@
-ig.module(
-	'game.entities.info_message'
-)
-.requires(
-	'impact.entity',
-	'game.font'
-)
-.defines(function(){
+import { defaultFont } from './../font.js';
 
-EntityInfoMessage = ig.Entity.extend({
+var EntityInfoMessage = ig.Entity.extend({
 	init: function(x, y, settings) {
 		this.parent(x, y, settings);
-        EntityInfoMessage.instance = this;
+        EntityInfoMessage.__instance__ = this;
         this.id = 1;
         this.labels = new Map();
     },
@@ -33,8 +26,15 @@ EntityInfoMessage = ig.Entity.extend({
 //        var label = this.model.baseDelay + ': ' + (this.model.recurring === Action.recurring ? 'recu' : 'once'),
             x = this.pos.x,// + this.animSheet.width / 2,
             y = this.pos.y; //+ this.animSheet.height / 4;
-        GUI.Font.draw(accumulatedLabel, x, y, ig.Font.ALIGN.CENTER);
+        defaultFont.draw(accumulatedLabel, x, y, ig.Font.ALIGN.CENTER);
 	}
 });
 
-});
+EntityInfoMessage.instance = function instance() {
+    if(!this.__instance__) {
+        GUI.game.spawnEntity(EntityInfoMessage, 300, 100);
+    }
+    return this.__instance__;
+};
+
+export default EntityInfoMessage;

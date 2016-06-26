@@ -1,13 +1,6 @@
-ig.module(
-	'game.entities.timelineslot'
-)
-.requires(
-	'impact.entity',
-	'game.font'
-)
-.defines(function(){
+import { defaultFont } from './../font.js';
 
-EntityTimelineSlot = ig.Entity.extend({
+export default ig.Entity.extend({
 	size: {x:48, y:48},
 	animSheet: new ig.AnimationSheet('media/timeline.png', 48, 48),
 	init: function(x, y, settings) {
@@ -24,8 +17,6 @@ EntityTimelineSlot = ig.Entity.extend({
 		this.parent();
 
 		var delay = this.model.delay;
-		GUI.Font.draw(delay, this.pos.x + this.size.x / 2, this.pos.y, ig.Font.ALIGN.CENTER);
+		defaultFont.draw(delay, this.pos.x + this.size.x / 2, this.pos.y, ig.Font.ALIGN.CENTER);
 	}
-});
-
 });

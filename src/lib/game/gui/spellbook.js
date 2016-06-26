@@ -1,26 +1,16 @@
-ig.module(
-	'game.gui.spellbook'
-)
-.requires(
-	'impact.impact',
-	'impact.font',
+import EntitySpell from './../entities/spell.js';
 
-	'game.entities.spell'
-)
-.defines(function(){
+const PADDING_BETWEEN_SPELLS = 4;
 
-GUI.SpellBook = ig.Class.extend({
-    paddingBetweenSpells: 4,
-	init: function() {
+export default class {
+    constructor() {
 	    var spellPadding = 0;
         this.spellEntities = game.battlefield.sides.get(GUI.game.visualizedMainPlayer).mages[0].spellBook.getSpells().map(function(spell, index) {
             var entitySpell = GUI.game.spawnEntity(EntitySpell, 2, 2 + spellPadding, { model: spell });
-            spellPadding += entitySpell.size.y + this.paddingBetweenSpells;
+            spellPadding += entitySpell.size.y + PADDING_BETWEEN_SPELLS;
             return entitySpell;
         }, this);
-	},
+	}
 
-	update: function() {}
-});
-
-});
+	update() {}
+}

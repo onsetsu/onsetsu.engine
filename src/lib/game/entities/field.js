@@ -1,13 +1,4 @@
-ig.module(
-	'game.entities.field'
-)
-.requires(
-	'impact.entity',
-	'game.font'
-)
-.defines(function(){
-
-GUI.FieldDescriptions = {
+var FieldDescriptions = {
     'default': {
         sheetIndexStart: 0,
         sheetIndexEnd: 8
@@ -38,7 +29,7 @@ GUI.FieldDescriptions = {
     }
 };
 
-EntityField = ig.Entity.extend({
+export default ig.Entity.extend({
 	size: {x:32, y:32},
 	animSheet: new ig.AnimationSheet('media/board.png', 32, 32),
 	init: function(x, y, settings) {
@@ -53,12 +44,10 @@ EntityField = ig.Entity.extend({
 	},
 	draw: function() {
         // get description
-		var description = GUI.FieldDescriptions[this.model.type];
+		var description = FieldDescriptions[this.model.type];
 		// HACK:
-        this.anims.visible.sequence[0] = (description || GUI.FieldDescriptions.default).sheetIndexStart;
+        this.anims.visible.sequence[0] = (description || FieldDescriptions.default).sheetIndexStart;
 
 		this.parent();
 	}
-});
-
 });

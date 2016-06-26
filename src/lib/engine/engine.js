@@ -1,16 +1,14 @@
-'use strict';
+import { Action } from './enginetimeline.js';
 
-// --------------------------------------------------------------------------------
-// General
-// --------------------------------------------------------------------------------
-
+// TODO: unused
 var Circle = function Circle() {};
 
-var Player = function Player() {};
+export function Player() {}
 
+// TODO: unused
 var Team = function Team() {};
 
-class IncrementalIDGenerator {
+export class IncrementalIDGenerator {
   constructor() {
     this.id = 1;
   }
@@ -20,12 +18,12 @@ class IncrementalIDGenerator {
   }
 }
 
-var nextBattlefieldID = (function() {
+export var nextBattlefieldID = (function() {
   var generator = new IncrementalIDGenerator();
   return generator.nextID.bind(generator);
 })();
 
-class Mage {
+export class Mage {
   // TODO: separate owner and controller?
   constructor(player, hp, sp, delay, syllableBoard, spellBook, syllablePool) {
     this.id = nextBattlefieldID();
@@ -63,4 +61,5 @@ class Mage {
   }
 }
 
+// TODO: unused
 var Gem = function Gem() {};

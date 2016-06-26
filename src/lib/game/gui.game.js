@@ -1,10 +1,24 @@
 import Turn from './turn.js';
+import SelectTarget from './handler/selecttarget.js';
+import LevelBattle from './levels/battle.js';
+import Timeline from './gui/timeline.js';
+import Battlefield from './gui/battlefield.js';
+import SpellBook from './gui/spellbook.js';
+import SyllablePool from './gui/syllablepool.js';
+import SyllableBoard from './gui/syllableboard.js';
+import { defaultFont } from './font.js';
+import { tryPlaceSyllableAndCastSpells } from './../engine/engineutilities.js';
+import { Battle } from './../engine/enginebattlefield.js';
+import { SpellType } from './../engine/enginespell.js';
+import { EVENT_CAST_SPELL } from './../engine/events.js';
+import { secureSelectTarget, generateNumberOfUniqueTargets } from './../setup/spells/spells.js';
+import { checkStateBasedActions } from './../engine/statebasedactions.js';
+import { isHost } from './../ishost.js';
 
 export default ig.Game.extend({
 
     // Load a font
     font: new ig.Font( 'media/04b03.font.png' ),
-
 
     init: function() {
         GUI.game = this;
@@ -16,60 +30,20 @@ export default ig.Game.extend({
         // Initialize Battle Field
         this.loadLevel(LevelBattle);
 
-        this.visualizedMainPlayer = game.players[isHost ? 0 : 1];
-        this.opponentPlayer = game.players[isHost ? 1 : 0];
+        this.visualizedMainPlayer = game.players[isHost() ? 0 : 1];
+        this.opponentPlayer = game.players[isHost() ? 1 : 0];
         this.visualizedMainPlayer.opponent = this.opponentPlayer;
         this.opponentPlayer.opponent = this.visualizedMainPlayer;
 
-        this.syllablePool = new GUI.SyllablePool();
-        this.spellBook = new GUI.SpellBook();
-        this.syllableBoard = new GUI.SyllableBoard(this.visualizedMainPlayer);
-        this.opponentSyllableBoard = new GUI.SyllableBoard(this.opponentPlayer);
-        this.timeline = new GUI.Timeline();
-        this.battlefield = new GUI.Battlefield();
-
-        EntityDebug = window.EntityDebug = ig.Entity.extend({
-            size: {x:64, y:32},
-            animSheet: new ig.AnimationSheet('media/debug.png', 64, 32),
-            init: function(x, y, settings) {
-                this.parent(x, y, settings);
-
-                this.addAnim('visible', 1, [0], true);
-                this.applySettings(settings);
-            },
-            applySettings: function(settings) {
-                this.settings = settings;
-            },
-            update: function() {
-                this.parent();
-
-                if(this.settings.onclick && ig.input.pressed('leftclick') && ig.input.hover(this)) {
-                    console.log(this.settings.label);
-                    this.settings.onclick.call(this);
-                }
-            },
-            draw: function() {
-                this.parent();
-
-                if(this.settings.label) {
-                    var label = this.settings.label,
-                        x = this.pos.x + this.animSheet.width / 2,
-                        y = this.pos.y + (this.animSheet.height - GUI.Font.heightForString(label)) / 2;
-                    GUI.Font.draw(label, x, y, ig.Font.ALIGN.CENTER);
-                }
-            }
-        });
-        EntityDebug.pos = { x: 50, y: 600 };
-        EntityDebug.spawn = function(settings) {
-            GUI.game.spawnEntity(EntityDebug, EntityDebug.pos.x, EntityDebug.pos.y, settings);
-            EntityDebug.pos.x += 66;
-        };
+        this.syllablePool = new SyllablePool();
+        this.spellBook = new SpellBook();
+        this.syllableBoard = new SyllableBoard(this.visualizedMainPlayer);
+        this.opponentSyllableBoard = new SyllableBoard(this.opponentPlayer);
+        this.timeline = new Timeline();
+        this.battlefield = new Battlefield();
 
         // START TIMELINE LOOP
-        Promise.resolve().delay(2).then(function() {
-            GUI.game.spawnEntity(EntityInfoMessage, 300, 100);
-            return GUI.game.advanceAndProcessTurn();
-        });
+        Promise.resolve().delay(2).then(() => GUI.game.advanceAndProcessTurn());
     },
 
     startBattle: function(combatant1) {
@@ -244,7 +218,7 @@ export default ig.Game.extend({
         }
 
         // select target
-        GUI.SelectTarget.update();
+        SelectTarget.update();
     },
 
     advanceTimeToNextAction: function() {

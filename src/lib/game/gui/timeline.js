@@ -1,19 +1,11 @@
-ig.module(
-	'game.gui.timeline'
-)
-.requires(
-	'impact.impact',
-	'impact.font',
+import EntityAction from './../entities/action.js';
+import EntityTimelineSlot from './../entities/timelineslot.js';
 
-	'game.entities.timelineslot',
-	'game.entities.action'
-)
-.defines(function(){
+const PADDING_BETWEEN_TIMELINE_SLOTS = 4,
+    PADDING_BETWEEN_ACTIONS = 2;
 
-GUI.Timeline = ig.Class.extend({
-    paddingBetweenTimelineSlots: 4,
-    paddingBetweenActions: 2,
-	init: function() {
+export default class {
+	constructor() {
         var position = { x: 500, y: 500 };
 
         this.entitiesByAction = new Map();
@@ -22,7 +14,7 @@ GUI.Timeline = ig.Class.extend({
             var model = game.timeline.getSlotAt(delay);
             return GUI.game.spawnEntity(
                 EntityTimelineSlot,
-                position.x + delay * (EntityTimelineSlot.prototype.size.x + + this.paddingBetweenTimelineSlots),
+                position.x + delay * (EntityTimelineSlot.prototype.size.x + PADDING_BETWEEN_TIMELINE_SLOTS),
                 position.y
             ).applySettings({ model: model });
         }, this);
@@ -32,11 +24,11 @@ GUI.Timeline = ig.Class.extend({
             var indexInTimelineSlot = timelineSlot.actions.indexOf(action);
             return {
                 x: position.x
-                    + timelineSlot.delay * (EntityTimelineSlot.prototype.size.x + + this.paddingBetweenTimelineSlots)
+                    + timelineSlot.delay * (EntityTimelineSlot.prototype.size.x + PADDING_BETWEEN_TIMELINE_SLOTS)
                     + (EntityTimelineSlot.prototype.size.x - EntityAction.prototype.size.x) / 2,
                 y: position.y
-                    - indexInTimelineSlot * (EntityAction.prototype.size.y + this.paddingBetweenActions)
-                    + EntityTimelineSlot.prototype.size.y - EntityAction.prototype.size.y,
+                    - indexInTimelineSlot * (EntityAction.prototype.size.y + PADDING_BETWEEN_ACTIONS)
+                    + EntityTimelineSlot.prototype.size.y - EntityAction.prototype.size.y
             };
         }).bind(this);
 
@@ -59,7 +51,7 @@ GUI.Timeline = ig.Class.extend({
                     console.log('ERROR: evil action', action);
                     return {x:100, y:10};
                 }
-            };
+            }
             this.entitiesByAction.forEach(function(entity, action) {
                 entity.move(foo(action), 1.5);
             });
@@ -94,8 +86,6 @@ GUI.Timeline = ig.Class.extend({
             moveAllActions();
             return returnValue;
         }).bind(this));
-	},
-    update: function() {}
-});
-
-});
+	}
+    update() {}
+}

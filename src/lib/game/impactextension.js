@@ -1,36 +1,3 @@
-ig.module(
-	'game.impactextension'
-)
-.requires(
-	'impact.game',
-	'impact.font',
-
-    'game.gui.spellbook',
-	'game.gui.syllablepool',
-	'game.gui.syllableboard',
-	'game.gui.timeline',
-	'game.gui.battlefield',
-
-    // entities
-	//'game.entities.battle-field',
-	//'game.entities.field',
-	//'game.entities.info-text',
-	//'game.entities.spell',
-	//'game.entities.spell-checker',
-	//'game.entities.spell-list',
-	'game.entities.syllable',
-	//'game.entities.syllable-board',
-	//'game.entities.syllable-selection',
-	//'game.entities.time-line',
-
-    // maps
-	'game.levels.battle',
-
-	// handler
-	'game.handler.selecttarget'
-)
-.defines(function(){
-
 ig.Input.inject({
     hover: function(entity) {
         if(this.mouse.x < entity.pos.x) return false;
@@ -232,6 +199,4 @@ ig.Entity.inject({
         related: '#0f0',
 		boxes: '#f00'
 	}
-});
-
 });

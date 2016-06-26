@@ -1,13 +1,6 @@
-ig.module(
-	'game.entities.syllable'
-)
-.requires(
-	'impact.entity',
-	'game.font'
-)
-.defines(function(){
+import { defaultFont } from './../font.js';
 
-GUI.SyllableDescriptions = {
+var SyllableDescriptions = {
     'CHI': {
         label: 'CHI',
         sheetIndex: 92
@@ -340,7 +333,7 @@ SyllableDescriptions = {
 };
 */
 
-EntitySyllable = ig.Entity.extend({
+var EntitySyllable = ig.Entity.extend({
 	size: {x:32, y:32},
 	animSheet: new ig.AnimationSheet('media/board.png', 32, 32),
 	init: function(x, y, settings) {
@@ -352,33 +345,33 @@ EntitySyllable = ig.Entity.extend({
         this.model = settings.model;
 
         // TODO: duplicated code
-        var description = GUI.SyllableDescriptions[this.model.label];
-		this.addAnim('visible', 1, [(description || GUI.SyllableDescriptions.default).sheetIndex], true);
+        var description = SyllableDescriptions[this.model.label];
+		this.addAnim('visible', 1, [(description || SyllableDescriptions.default).sheetIndex], true);
 	},
 	draw: function() {
         // get description
         // TODO: duplicated code
-		var description = GUI.SyllableDescriptions[this.model.label];
-		var label = (description || GUI.SyllableDescriptions.default).label;
+		var description = SyllableDescriptions[this.model.label];
+		var label = (description || SyllableDescriptions.default).label;
 		// HACK:
         // TODO: duplicated code
-        this.anims.visible.sequence[0] = (description || GUI.SyllableDescriptions.default).sheetIndex;
+        this.anims.visible.sequence[0] = (description || SyllableDescriptions.default).sheetIndex;
 
 		this.parent();
 
 		// draw label
 		var x = this.pos.x + this.animSheet.width / 2,
             y = this.pos.y + this.animSheet.height / 4 * 3;
-		GUI.Font.draw(label, x, y, ig.Font.ALIGN.CENTER);
+		defaultFont.draw(label, x, y, ig.Font.ALIGN.CENTER);
 
 		// draw cost
 		var cost = this.model.cost;
 		var x = this.pos.x + this.animSheet.width;
-		GUI.Font.draw(cost, x, this.pos.y, ig.Font.ALIGN.RIGHT);
+		defaultFont.draw(cost, x, this.pos.y, ig.Font.ALIGN.RIGHT);
 	},
 	copy: function() {
 	    return ig.game.spawnEntity(EntitySyllable, this.pos.x, this.pos.y, { model: this.model.copy() });
 	}
 });
 
-});
+export default EntitySyllable;

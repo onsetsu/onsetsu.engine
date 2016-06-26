@@ -1,17 +1,8 @@
-ig.module(
-	'game.gui.battlefield'
-)
-.requires(
-	'impact.impact',
-	'impact.font',
+import EntityFieldSide from './../entities/fieldside.js';
+import { allied } from './../../engine/engineutilities.js';
 
-	'game.entities.fieldside'
-)
-.defines(function(){
-
-GUI.Battlefield = ig.Class.extend({
-    paddingBetweenSpells: 4,
-	init: function() {
+export default class {
+	constructor() {
         var upperPosition = { x: 600, y: 100 },
             lowerPosition = { x: 600, y: 300 },
             upperSidesPadding = 0,
@@ -43,9 +34,9 @@ GUI.Battlefield = ig.Class.extend({
 
             return returnValue;
         }).bind(this));
-	},
+	}
 
-	getEntityFor: function(character) {
+	getEntityFor(character) {
         var entity;
         this.entitiesBySide.forEach(function(sideEntity, side) {
             if(sideEntity.entitiesByPermanent.has(character)) {
@@ -57,11 +48,9 @@ GUI.Battlefield = ig.Class.extend({
         });
 
         return entity;
-	},
+	}
 
-	update: function() {
+	update() {
 	    // TODO: check for changes of FieldSides on Battlefield
 	}
-});
-
-});
+}

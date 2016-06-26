@@ -1,11 +1,7 @@
-// --------------------------------------------------------------------------------
-// Parts of a Spell
-// --------------------------------------------------------------------------------
-
-var SyllableSequence = function SyllableSequence(syllables, ordered) {
+export function SyllableSequence(syllables, ordered) {
   this.syllables = syllables;
   this.ordered = ordered;
-};
+}
 SyllableSequence.prototype.getSyllables = function() {
   return this.syllables;
 };
@@ -21,7 +17,7 @@ SyllableSequence.prototype.getLength = function() {
 SyllableSequence.ordered = true;
 SyllableSequence.unordered = false;
 
-var Spell = function() {};
+export function Spell() {}
 
 // factory method to create new concrete Spells
 Spell.createSpell = function(name, syllableSequences, effectText, effect) {
@@ -50,6 +46,7 @@ Spell.createSpell = function(name, syllableSequences, effectText, effect) {
 /**
  * The SuperTypes all have rules text attached to them.
  */
+// TODO: unused
 var SuperType = function SuperType() {};
 
 /**
@@ -57,7 +54,7 @@ var SuperType = function SuperType() {};
  * Each SpellType has its own rules for how objects with that type
  * are played, cast, or otherwise handled during gameplay.
  */
-var SpellType = function SpellType() {};
+export function SpellType() {}
 
 SpellType.Sorcery = function Sorcery() {};
 SpellType.Familiar = function Familiar() {};
@@ -69,24 +66,26 @@ SpellType.Mage = function Mage() {};
  * Every Spell may have one or more SubTypes.
  * E.g. a Familiar may have the "Dwarf" and the "Engineer" SubTypes.
  */
+// TODO: unused
 var SubType = function SubType() {};
+
 // races
-const SUBTYPE_HUMAN = 'SUBTYPE_HUMAN';
-const SUBTYPE_GOBLIN = 'SUBTYPE_GOBLIN';
-const SUBTYPE_OGRE = 'SUBTYPE_OGRE';
+export const SUBTYPE_HUMAN = 'SUBTYPE_HUMAN';
+export const SUBTYPE_GOBLIN = 'SUBTYPE_GOBLIN';
+export const SUBTYPE_OGRE = 'SUBTYPE_OGRE';
 
 // classes
-const SUBTYPE_SHAMAN = 'SUBTYPE_SHAMAN';
-const SUBTYPE_KNIGHT = 'SUBTYPE_KNIGHT';
-const SUBTYPE_PRIEST = 'SUBTYPE_PRIEST';
-const SUBTYPE_WIZARD = 'SUBTYPE_WIZARD';
+export const SUBTYPE_SHAMAN = 'SUBTYPE_SHAMAN';
+export const SUBTYPE_KNIGHT = 'SUBTYPE_KNIGHT';
+export const SUBTYPE_PRIEST = 'SUBTYPE_PRIEST';
+export const SUBTYPE_WIZARD = 'SUBTYPE_WIZARD';
 
 // misc
-const SUBTYPE_ELEMENTAL = 'SUBTYPE_ELEMENTAL';
-const SUBTYPE_SPIRIT = 'SUBTYPE_SPIRIT';
-const SUBTYPE_GOLEM = 'SUBTYPE_GOLEM';
-const SUBTYPE_DEMON = 'SUBTYPE_DEMON';
+export const SUBTYPE_ELEMENTAL = 'SUBTYPE_ELEMENTAL';
+export const SUBTYPE_SPIRIT = 'SUBTYPE_SPIRIT';
+export const SUBTYPE_GOLEM = 'SUBTYPE_GOLEM';
+export const SUBTYPE_DEMON = 'SUBTYPE_DEMON';
 
 // attributes
-const SUBTYPE_LIGHTNING = 'SUBTYPE_LIGHTNING';
-const SUBTYPE_ICE = 'SUBTYPE_ICE';
+export const SUBTYPE_LIGHTNING = 'SUBTYPE_LIGHTNING';
+export const SUBTYPE_ICE = 'SUBTYPE_ICE';

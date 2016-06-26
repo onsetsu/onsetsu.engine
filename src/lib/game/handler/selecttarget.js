@@ -1,13 +1,8 @@
-ig.module(
-    'game.handler.selecttarget'
-)
-.requires(
+import EntityInfoMessage from './../entities/info_message.js';
 
-)
-.defines(function(){
+export default class SelectTarget {
 
-GUI.SelectTarget = ig.Class.extend({
-    init: function(callback, getSelectibles, isValidSelection, parameters) {
+    constructor(callback, getSelectibles, isValidSelection, parameters) {
         this.callback = callback;
         this.getSelectibles = getSelectibles;
         this.isValidSelection = isValidSelection;
@@ -22,24 +17,31 @@ GUI.SelectTarget = ig.Class.extend({
             return targetEntity;
         });
 
-        GUI.SelectTarget.selectTarget = this;
+        SelectTarget.selectTarget = this;
         if(this.parameters.infoMessage) {
-            this.parameters.infoId = EntityInfoMessage.instance.pushInfo(this.parameters.infoMessage);
+            this.parameters.infoId = EntityInfoMessage.instance().pushInfo(this.parameters.infoMessage);
         }
 
         this.checkForTargetSelectionCompleted();
-    },
+    }
+
+    static update() {
+        if(this.selectTarget) {
+            this.selectTarget.doIt();
+        }
+    }
+
     // TODO: could be static
-    getHoveredEntityForTargets: function(targets) {
+    getHoveredEntityForTargets(targets) {
         return _(targets).find(target => {
             var targetEntity = GUI.game.battlefield.getEntityFor(target);
             return ig.input.hover(targetEntity);
         });
-    },
-    isSelected: function(target) {
+    }
+    isSelected(target) {
         return this.selectedTargets.indexOf(target) >= 0;
-    },
-    doIt: function() {
+    }
+    doIt() {
         if(ig.input.pressed('leftclick')) {
             // only the selectible targets should be possible
             let hoveredOn = this.getHoveredEntityForTargets(this.selectibles);
@@ -76,24 +78,24 @@ GUI.SelectTarget = ig.Class.extend({
                 }
             }
         }
-    },
-    select: function(target) {
+    }
+    select(target) {
         this.selectedTargets.push(target);
         GUI.game.battlefield.getEntityFor(target).visualizeSelected(true);
-    },
-    deselect: function(target) {
+    }
+    deselect(target) {
         var index = this.selectedTargets.lastIndexOf(target);
         this.selectedTargets.splice(index, 1);
         GUI.game.battlefield.getEntityFor(target).visualizeSelected(false);
-    },
-    clearSelectables: function() {
+    }
+    clearSelectables() {
         this.targetEntities.forEach(entity => {
             entity.visualizeSelectable(false);
             entity.visualizeSelected(false);
             entity.clearSelectedNumbers();
         });
-    },
-    updateSelectibles: function() {
+    }
+    updateSelectibles() {
         this.clearSelectables();
         // TODO: selectibles and this.possibleTargets are out of sync
         // TODO: enable deselect of selected targets and
@@ -109,36 +111,28 @@ GUI.SelectTarget = ig.Class.extend({
             entity.visualizeSelected(true);
             entity.addSelectedNumbers(index, this.parameters && this.parameters.showOnlyTargetQuantity);
         });
-    },
+    }
     // automatically check for 'no more targets available!'
     // e.g.: Choose up to 4 targets, but only 2 available
     // and those are already selected
-    checkForTargetSelectionCompleted: function() {
+    checkForTargetSelectionCompleted() {
         if(this.isValidSelection(this.selectedTargets) &&
             this.getSelectibles(this.selectedTargets).length === 0) {
             this.completeTargeting();
         }
-    },
-    cancelToComplete: function() {
+    }
+    cancelToComplete() {
         if(this.isValidSelection(this.selectedTargets)) {
             this.completeTargeting();
         }
-    },
-    completeTargeting: function() {
-        GUI.SelectTarget.selectTarget = undefined;
+    }
+    completeTargeting() {
+        SelectTarget.selectTarget = undefined;
         if(this.parameters.infoId) {
-            EntityInfoMessage.instance.popInfo(this.parameters.infoId);
+            EntityInfoMessage.instance().popInfo(this.parameters.infoId);
         }
         this.clearSelectables();
 
         this.callback(this.selectedTargets);
     }
-});
-
-GUI.SelectTarget.update = function() {
-    if(GUI.SelectTarget.selectTarget) {
-        GUI.SelectTarget.selectTarget.doIt();
-    }
-};
-
-});
+}
