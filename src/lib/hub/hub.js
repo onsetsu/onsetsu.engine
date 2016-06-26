@@ -1,5 +1,9 @@
+import Interpreter from './../commands/interpreter.js';
+
 export class HUB {
-    constructor() {}
+    constructor() {
+        this._interpreter = new Interpreter();
+    }
 
     giveTargets() {
         return Promise.resolve();
@@ -12,6 +16,15 @@ export class HUB {
     getPlayerAction() {
         return Promise.resolve();
     }
-}
 
-export var hub = new HUB();
+    execute(command, fromRemote) {
+        if(fromRemote) {
+            // no need to broadcast the command
+        }
+        return this._interpreter.execute(command);
+    }
+
+    static instance() {
+        return this._inst || (this._inst = new HUB());
+    }
+}

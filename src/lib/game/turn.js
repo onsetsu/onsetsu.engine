@@ -11,6 +11,7 @@ import {
 } from './../engine/events.js';
 import { Networking } from './../networking.js';
 import EntityDebug from './entities/debug.js';
+import Interpreter from './../commands/interpreter.js';
 
 export default class Turn {
 
